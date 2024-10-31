@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios'
-import { AuthResponse } from '~/types/auth.type'
 import { getAccessTokenFromLS, saveAccessTokenToLS } from './auth'
 
 class Http {
@@ -30,7 +29,7 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        if (url === '/auth/login' || url === '/auth/register') {
+        if (url === '/auth/login') {
           const accessToken = response.data.accessToken
           if (accessToken) {
             this.accessToken = accessToken

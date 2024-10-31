@@ -1,6 +1,7 @@
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import NavBar from '../NavBar'
+import { AppContext } from '~/context/app.context'
 
 interface Props {
   children: React.ReactNode
@@ -27,8 +28,14 @@ const pageData: Record<string, PageInfo> = {
 }
 
 export default function PageHeader({ children }: Props) {
+  const { setIsAuthenticated } = useContext(AppContext)
   const location = useLocation()
-
+  const navigate = useNavigate()
+  const logOut = () => {
+    localStorage.removeItem('accessToken')
+    setIsAuthenticated(false)
+    navigate('/login')
+  }
   // Retrieve page title and description based on path
   const { title, description } = pageData[location.pathname] || {
     title: 'Where to next, Phi?',
@@ -55,6 +62,8 @@ export default function PageHeader({ children }: Props) {
               <Link to={'/'}>Listing your property</Link>
             </span>
             <span>userProfile</span>
+            {/* {isAuthenticated ? `<`} */}
+            <span onClick={logOut}>Log out</span>
           </div>
         </div>
         <NavBar />
