@@ -1,3 +1,4 @@
+import React, { useContext } from 'react'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -7,20 +8,30 @@ import Stays from './pages/Stays'
 import CarRental from './pages/CarRental/CarRental'
 import Attractions from './pages/Attractions'
 import Flights from './pages/Flights'
-const isAuthenticated = false
+import { AppContext } from './context/app.context'
 function ProtectedRoute() {
+  const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
 }
 
 function RejectedRoute() {
+  const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
 }
 
 export default function useRouteElement() {
   const routeElements = useRoutes([
     {
-      path: '',
-      element: <ProtectedRoute />,
+      path: '/',
+      element: (
+        <PageHeader>
+          <Stays />
+        </PageHeader>
+      ),
+      index: true
+    },
+    {
+      element: <ProtectedRoute />, // Apply ProtectedRoute here
       children: [
         {
           path: '/carsRental',
@@ -49,8 +60,7 @@ export default function useRouteElement() {
       ]
     },
     {
-      path: '',
-      element: <RejectedRoute />,
+      element: <RejectedRoute />, // Apply RejectedRoute here
       children: [
         {
           path: '/login',
@@ -69,15 +79,6 @@ export default function useRouteElement() {
           )
         }
       ]
-    },
-    {
-      path: '/',
-      index: true,
-      element: (
-        <PageHeader>
-          <Stays />
-        </PageHeader>
-      )
     }
   ])
   return routeElements

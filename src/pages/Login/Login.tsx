@@ -1,13 +1,14 @@
 import { useMutation } from '@tanstack/react-query'
 import { omit } from 'lodash'
-import React from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom' // import useNavigate
 import { login } from '~/apis/auth.api'
 import loginImage from '~/assets/login_page.avif'
-import { ResponseApi } from '~/types/utils.type'
+import { ErrorResponse } from '~/types/utils.type'
+import { AppContext } from '~/context/app.context'
 import getRules from '~/utils/rules'
 import { isAxiosUnprocessableEntityError } from '~/utils/utils'
+import { useContext } from 'react'
 
 interface FormData {
   email: string
@@ -22,6 +23,9 @@ export default function Login() {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
+  const { setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate() // initialize navigate
+
   const loginMutation = useMutation({
     mutationFn: (body: Omit<FormData, 'confirm_password'>) => login(body)
   })
@@ -31,9 +35,11 @@ export default function Login() {
     loginMutation.mutate(body, {
       onSuccess: (data) => {
         console.log(data)
+        setIsAuthenticated(true)
+        navigate('/') // redirect to home page after login success
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
           if (formError?.email) {
             setError('email', {
@@ -51,7 +57,9 @@ export default function Login() {
       }
     })
   })
+
   const rules = getRules()
+
   return (
     <div className='flex w-3/4 justify-center gap-5 mx-auto'>
       <div className='w-1/2'>

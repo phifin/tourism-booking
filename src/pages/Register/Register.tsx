@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { registerAccount } from '~/apis/auth.api'
 import loginImage from '~/assets/login_page.avif'
-import { ResponseApi } from '~/types/utils.type'
+import { ErrorResponse } from '~/types/utils.type'
 import getRules from '~/utils/rules'
 import { isAxiosUnprocessableEntityError } from '~/utils/utils'
 
@@ -36,7 +36,7 @@ export default function Register() {
         console.log(data)
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
           if (formError?.email) {
             setError('email', {
