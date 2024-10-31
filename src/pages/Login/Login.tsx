@@ -4,10 +4,9 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom' // import useNavigate
 import { login } from '~/apis/auth.api'
 import loginImage from '~/assets/login_page.avif'
-import { ErrorResponse } from '~/types/utils.type'
 import { AppContext } from '~/context/app.context'
 import getRules from '~/utils/rules'
-import { isAxiosUnprocessableEntityError } from '~/utils/utils'
+import { isAxiosUnauthorizedError } from '~/utils/utils'
 import { useContext } from 'react'
 
 interface FormData {
@@ -39,17 +38,16 @@ export default function Login() {
         navigate('/') // redirect to home page after login success
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
-          const formError = error.response?.data.data
-          if (formError?.email) {
+        if (isAxiosUnauthorizedError<string>(error)) {
+          const formError = error.response?.data
+          if (formError?.split(' ')[0] === 'Email') {
             setError('email', {
-              message: formError.email,
-              type: 'Server'
+              message: formError,
+              type: 'server'
             })
-          }
-          if (formError?.password) {
+          } else if (formError?.split(' ')[0] === 'Password') {
             setError('password', {
-              message: formError.password,
+              message: formError,
               type: 'server'
             })
           }
@@ -61,16 +59,38 @@ export default function Login() {
   const rules = getRules()
 
   return (
-    <div className='flex w-3/4 justify-center gap-5 mx-auto'>
+    <div className='flex w-3/4 justify-center mx-auto'>
       <div className='w-1/2'>
-        <img src={loginImage} alt='login-image' className='bg-yellow-300 w-full' />
-        <p className='py-5 font-semibold w-fit text-wrap mx-auto'>
-          Đăng nhập để nhận thêm thật nhiều tiện ích và ưu đãi !!!
-        </p>
+        <img src={loginImage} alt='login-image' className='bg-yellow-300 w-full rounded-t-3xl' />
+        <div className='bg-gray-100 pb-20 pl-3 rounded-b-3xl'>
+          <p className='font-bold text-xl ml-7 pt-10'>Get ready to:</p>
+          <div className='flex ml-10 mt-4'>
+            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' height='20px' width='20px'>
+              <path
+                stroke='currentColor'
+                stroke-linecap='round'
+                stroke-width='2'
+                d='m17 9-7 7M10 16l-3-3M17 9l-7 7M10 16l-3-3'
+              ></path>
+            </svg>
+            <p>Save even more with reward rates from our partner sites</p>
+          </div>
+          <div className='flex ml-10 mt-3'>
+            <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' height='20px' width='20px'>
+              <path
+                stroke='currentColor'
+                stroke-linecap='round'
+                stroke-width='2'
+                d='m17 9-7 7M10 16l-3-3M17 9l-7 7M10 16l-3-3'
+              ></path>
+            </svg>
+            <p>Easily pick up your search again from any device</p>
+          </div>
+        </div>
       </div>
 
       <div className='w-1/2'>
-        <h1 className='font-bold w-fit ml-16 pt-8 text-2xl'>Đăng nhập</h1>
+        <h1 className='font-bold w-fit ml-16 pt-8 text-2xl'>Sign in</h1>
         <form className='px-8 pt-2 pb-8 rounded w-5/6 bg-white shadow-sm' noValidate onSubmit={onSubmit}>
           <div className='mt-2 ml-8'>
             <div className='text-md ml-2'>Email</div>
@@ -84,7 +104,7 @@ export default function Login() {
           </div>
 
           <div className='mt-3 ml-8'>
-            <div className='text-md ml-2'>Mật khẩu</div>
+            <div className='text-md ml-2'>Password</div>
             <input
               type='password'
               autoComplete='on'
@@ -96,15 +116,15 @@ export default function Login() {
 
           <div className='mt-5 ml-7'>
             <button className='w-11/12 text-center p-2 uppercase bg-blue-500 text-white text-sm hover:bg-blue-600 rounded-lg'>
-              Đăng nhập
+              Log in
             </button>
           </div>
 
           <div className='mt-3 text-center'>
             <div className='flex items-center justify-center'>
-              <span className='text-slate-400'>Bạn chưa có tài khoản?</span>
+              <span className='text-slate-400'>Don't have an account?</span>
               <Link to='/register' className='text-blue-500 ml-1'>
-                Đăng ký ngay
+                Sign up
               </Link>
             </div>
           </div>
