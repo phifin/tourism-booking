@@ -1,5 +1,53 @@
 import React from 'react'
 
 export default function CarRental() {
-  return <div>CarRental</div>
+  return (
+    <div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+      <div className='text-lg'>zzz</div>
+    </div>
+  )
 }

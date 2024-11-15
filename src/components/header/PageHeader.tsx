@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import classNames from 'classnames'
 import NavBar from '../NavBar'
 import { AppContext } from '~/context/app.context'
+import PersonalBar from '../PersonalBar'
+import SearchBar from '../SearchBar'
 
 interface Props {
   children: React.ReactNode
@@ -9,21 +12,17 @@ interface Props {
 
 interface PageInfo {
   title: string
-  description: string
 }
 
 const pageData: Record<string, PageInfo> = {
   '/carsRental': {
-    title: 'Car hire for any kind of trip',
-    description: 'Great cars at great prices, from the biggest car rental companies'
+    title: 'Car hire for any kind of trip'
   },
   '/flights': {
-    title: 'Find the Perfect Flight for Every Journey',
-    description: 'Affordable flights worldwide from top airlines to suit every journey.'
+    title: 'Find the Perfect Flight for Every Journey'
   },
   '/attractions': {
-    title: 'Attractions, activities, and experiences',
-    description: 'Discover new attractions and experiences to match your interests and travel style'
+    title: 'Attractions, activities, and experiences'
   }
 }
 
@@ -32,6 +31,7 @@ export default function PageHeader({ children }: Props) {
   const location = useLocation()
   const navigate = useNavigate()
   const [isUserDropdownVisible, setIsUserDropdownVisible] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const toggleDropdown = () => {
     setIsUserDropdownVisible(!isUserDropdownVisible)
   }
@@ -47,44 +47,96 @@ export default function PageHeader({ children }: Props) {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Kiểm tra nếu cuộn xuống một khoảng nhất định, ví dụ 50px
+      if (window.scrollY > 50) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+
+    // Lắng nghe sự kiện cuộn
+    window.addEventListener('scroll', handleScroll)
+
+    // Xóa sự kiện khi component bị hủy
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   const logOut = () => {
     localStorage.removeItem('accessToken')
     setIsAuthenticated(false)
     navigate('/login')
   }
   // Retrieve page title and description based on path
-  const { title, description } = pageData[location.pathname] || {
+  const { title } = pageData[location.pathname] || {
     title: 'Where to next, Phi?',
     description: 'Find exclusive Genius rewards in every corner of the world!'
   }
 
   return (
     <div>
-      <div className='h-96 bg-blue-900'>
-        <div className='flex w-4/5 mx-auto'>
-          <div className='w-1/2'>
-            <header className='text-white text-2xl font-extrabold ml-9 pt-6 pb-4'>
-              <Link to='/'>Velocity</Link>
-            </header>
+      <div>
+        <div className="h-96 bg-[url('/src/assets/head_Bg.jpg')] bg-cover bg-center">
+          <div className='w-4/ mt-32 mx-auto text-white'>
+            <header className='pt-12 ml-44 text-5xl font-extrabold'>{title}</header>
+            <div className='mx-auto mt-10'>
+              <NavBar />
+            </div>
+            <div className='w-3/4 mx-auto mt-10'>
+              <SearchBar />
+            </div>
           </div>
-          <div className='w-2/3 mr-10 flex justify-around items-center text-white font-semibold pb-3 pt-5'>
-            <span className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'>VietNam</span>
-            <span className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'>
-              <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24px' height='24px' fill='white'>
-                <path d='M9.28 21.961a2.837 2.837 0 0 0 5.445 0 .75.75 0 1 0-1.44-.422 1.337 1.337 0 0 1-2.565 0 .75.75 0 1 0-1.44.422M12.75 3V.75a.75.75 0 0 0-1.5 0V3a.75.75 0 0 0 1.5 0m-.75.75a6.75 6.75 0 0 1 6.75 6.75c0 3.154.29 5.436.785 6.994.323 1.02.684 1.59.995 1.84L21 18H3l.59 1.212c.248-.315.572-.958.88-2 .49-1.66.78-3.872.78-6.712A6.75 6.75 0 0 1 12 3.75m0-1.5a8.25 8.25 0 0 0-8.25 8.25c0 2.702-.272 4.772-.72 6.288-.254.864-.493 1.336-.62 1.5A.75.75 0 0 0 3 19.5h18c.708 0 1.022-.892.47-1.335.019.016-.008-.015-.07-.113-.14-.223-.29-.553-.435-1.012-.443-1.396-.715-3.529-.715-6.54A8.25 8.25 0 0 0 12 2.25'></path>
-              </svg>
-            </span>
-            <span className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'>
-              <Link to={'/'}>List your property</Link>
-            </span>
-            {isAuthenticated ? (
-              <span
-                className=' px-5 py-4 relative cursor-pointer hover:bg-slate-50 hover:bg-opacity-10'
-                ref={dropdownRef}
-              >
-                <span onClick={toggleDropdown}>userProfile</span>
-                {isUserDropdownVisible ? (
-                  <span className='flex flex-col w-56 h-68 bg-white font-extralight text-sm text-black border rounded-lg absolute top-8 right-0 '>
+        </div>
+        <div
+          className={classNames('fixed top-0 w-full bg-cover bg-center', {
+            'bg-white text-black border-b border-b-gray-300': isScrolled,
+            'bg-[url("/src/assets/head_Bg.jpg")] text-white ': !isScrolled
+          })}
+        >
+          <div className='flex w-4/5 mx-auto '>
+            <div className='w-1/2'>
+              <header className='text-2xl font-extrabold ml-9 pt-6 pb-4'>
+                <Link to='/'>Velocity</Link>
+              </header>
+            </div>
+            <div className='w-2/3 mr-10 flex justify-around items-center font-semibold pb-3 pt-5'>
+              <span className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'>VietNam</span>
+              <span className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  viewBox='0 0 24 24'
+                  width='24px'
+                  height='24px'
+                  fill={isScrolled ? 'black' : 'white'}
+                >
+                  <path d='M9.28 21.961a2.837 2.837 0 0 0 5.445 0 .75.75 0 1 0-1.44-.422 1.337 1.337 0 0 1-2.565 0 .75.75 0 1 0-1.44.422M12.75 3V.75a.75.75 0 0 0-1.5 0V3a.75.75 0 0 0 1.5 0m-.75.75a6.75 6.75 0 0 1 6.75 6.75c0 3.154.29 5.436.785 6.994.323 1.02.684 1.59.995 1.84L21 18H3l.59 1.212c.248-.315.572-.958.88-2 .49-1.66.78-3.872.78-6.712A6.75 6.75 0 0 1 12 3.75m0-1.5a8.25 8.25 0 0 0-8.25 8.25c0 2.702-.272 4.772-.72 6.288-.254.864-.493 1.336-.62 1.5A.75.75 0 0 0 3 19.5h18c.708 0 1.022-.892.47-1.335.019.016-.008-.015-.07-.113-.14-.223-.29-.553-.435-1.012-.443-1.396-.715-3.529-.715-6.54A8.25 8.25 0 0 0 12 2.25'></path>
+                </svg>
+              </span>
+              <span className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'>
+                <Link to={'/'}>List your property</Link>
+              </span>
+              {isAuthenticated ? (
+                <span
+                  className=' px-5 py-4 relative cursor-pointer hover:bg-slate-50 hover:bg-opacity-10'
+                  ref={dropdownRef}
+                  onClick={toggleDropdown}
+                >
+                  <span>userProfile</span>
+                  <span
+                    className={classNames(
+                      'flex flex-col transition transform w-56 h-68 bg-white font-extralight text-sm text-black border rounded-lg absolute top-14 right-0 ',
+                      {
+                        'opacity-100 scale-100 translate-y-0 pointer-events-auto': isUserDropdownVisible,
+                        'opacity-0 scale-60 -translate-y-5 duration-400 ease-out pointer-events-none':
+                          !isUserDropdownVisible
+                      }
+                    )}
+                  >
                     <span className='flex py-4 pl-5 hover:bg-slate-500 hover:bg-opacity-10'>
                       <span>
                         <svg
@@ -160,37 +212,33 @@ export default function PageHeader({ children }: Props) {
                       Log out
                     </Link>
                   </span>
-                ) : (
-                  ''
-                )}
-              </span>
-            ) : (
-              ''
-            )}
-            {!isAuthenticated ? (
-              <span className='flex'>
-                <Link
-                  to='/login'
-                  className='py-3 px-5 mr-5 bg-white text-blue-500 font-semibold rounded-lg hover:bg-blue-300 hover:bg-opacity-95'
-                >
-                  Log in
-                </Link>
-                <Link
-                  to='/register'
-                  className='py-3 px-5 bg-white text-blue-500 font-semibold rounded-lg hover:bg-blue-300 hover:bg-opacity-95'
-                >
-                  Sign up
-                </Link>
-              </span>
-            ) : (
-              ''
-            )}
+                </span>
+              ) : (
+                ''
+              )}
+              {!isAuthenticated ? (
+                <span className='flex'>
+                  <Link
+                    to='/login'
+                    className='py-3 px-5 mr-5 bg-white text-blue-500 font-semibold rounded-lg hover:bg-blue-300 hover:bg-opacity-95'
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    to='/register'
+                    className='py-3 px-5 bg-white text-blue-500 font-semibold rounded-lg hover:bg-blue-300 hover:bg-opacity-95'
+                  >
+                    Sign up
+                  </Link>
+                </span>
+              ) : (
+                ''
+              )}
+            </div>
           </div>
-        </div>
-        <NavBar />
-        <div className='w-4/5 mt-12 mx-auto text-white'>
-          <header className='ml-9 text-5xl font-extrabold'>{title}</header>
-          <p className='ml-9 mt-5 text-2xl'>{description}</p>
+          <div className='ml-36'>
+            <PersonalBar />
+          </div>
         </div>
       </div>
       {children}

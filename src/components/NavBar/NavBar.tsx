@@ -21,7 +21,7 @@ export default function NavBar() {
     defaultRouteUI.flights = selectedUI
   }
   return (
-    <div className='flex gap-5 w-4/5 mx-auto mt-3 text-white'>
+    <div className='flex justify-between w-3/5 mx-auto mt-14 text-white'>
       <Link to='/' className={`flex ml-5 py-3 px-5 ${defaultRouteUI.defaultPage}`}>
         <span className='pr-2'>
           <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='20px' height='20px' fill='white'>
