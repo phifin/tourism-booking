@@ -81,8 +81,8 @@ export default function PageHeader({ children }: Props) {
   return (
     <div>
       <div>
-        <div className="h-96 bg-[url('/src/assets/head_Bg.jpg')] bg-cover bg-center">
-          <div className='w-4/ mt-32 mx-auto text-white'>
+        <div className="h-120 pt-20 bg-[url('/src/assets/head_Bg.jpg')] bg-cover bg-center">
+          <div className='mt-12 mx-auto text-white'>
             <header className='pt-12 ml-44 text-5xl font-extrabold'>{title}</header>
             <div className='mx-auto mt-10'>
               <NavBar />
@@ -95,7 +95,7 @@ export default function PageHeader({ children }: Props) {
         <div
           className={classNames('fixed top-0 w-full bg-cover bg-center', {
             'bg-white text-black border-b border-b-gray-300': isScrolled,
-            'bg-[url("/src/assets/head_Bg.jpg")] text-white ': !isScrolled
+            'bg-transparent text-white ': !isScrolled
           })}
         >
           <div className='flex w-4/5 mx-auto '>
