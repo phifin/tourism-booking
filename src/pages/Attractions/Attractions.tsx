@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-import React from 'react'
 import travelApi from '~/apis/travels.api'
 import InformationCard from '~/components/InformationCard'
 
@@ -10,7 +9,6 @@ export default function Attractions() {
       return travelApi.getTravels()
     }
   })
-  console.log(data)
   const renderData = () => {
     return data?.data.map((travel, index) => {
       return (

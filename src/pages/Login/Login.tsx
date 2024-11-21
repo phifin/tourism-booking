@@ -1,13 +1,15 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { omit } from 'lodash'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom' // import useNavigate
+import { Link, useNavigate } from 'react-router-dom'
 import { login } from '~/apis/auth.api'
 import loginImage from '~/assets/login_page.avif'
 import { AppContext } from '~/context/app.context'
 import getRules from '~/utils/rules'
 import { isAxiosUnauthorizedError } from '~/utils/utils'
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
+import userDataApi from '~/apis/userData.api'
+import { jwtDecode } from 'jwt-decode'
 
 interface FormData {
   email: string
@@ -16,26 +18,35 @@ interface FormData {
 }
 
 export default function Login() {
+  console.log('Login component rendered')
   const {
     register,
     setError,
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>()
-  const { setIsAuthenticated } = useContext(AppContext)
-  const navigate = useNavigate() // initialize navigate
+
+  const { setIsAuthenticated, userEmail, setUserEmail } = useContext(AppContext)
+  const navigate = useNavigate()
 
   const loginMutation = useMutation({
     mutationFn: (body: Omit<FormData, 'confirm_password'>) => login(body)
   })
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     const body = omit(data, ['confirm_password'])
+
     loginMutation.mutate(body, {
-      onSuccess: (data) => {
-        console.log(data)
+      onSuccess: async (response) => {
+        const email = JSON.parse(response.config.data).email
+        setUserEmail(email) // Cập nhật userEmail
+
+        // Chờ một chút để React kịp cập nhật trạng thái
+        await new Promise((resolve) => setTimeout(resolve, 0))
+
+        // Sau khi đã cập nhật email, điều hướng đến trang chủ
         setIsAuthenticated(true)
-        navigate('/') // redirect to home page after login success
+        navigate('/')
       },
       onError: (error) => {
         if (isAxiosUnauthorizedError<string>(error)) {
@@ -55,6 +66,19 @@ export default function Login() {
       }
     })
   })
+
+  const { data: userData } = useQuery({
+    queryKey: ['userData', userEmail],
+    queryFn: async () => {
+      console.log('Fetching userData with email:', userEmail)
+      const response = await userDataApi.getUserData(userEmail!)
+      console.log('Response from API:', response.data)
+      return response.data
+    },
+    enabled: !!userEmail // Chỉ fetch khi `userEmail` có giá trị
+  })
+  console.log('userdata:', userData)
+  console.log('useremail:', userEmail)
 
   const rules = getRules()
 

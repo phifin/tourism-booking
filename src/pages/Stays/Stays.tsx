@@ -1,10 +1,10 @@
 import React from 'react'
-import InformationCard from '~/components/InformationCard'
+import SearchDetails from '~/components/SearchDetails'
 
 export default function Stays() {
   return (
     <div>
-      <InformationCard />
+      <SearchDetails />
     </div>
   )
 }
