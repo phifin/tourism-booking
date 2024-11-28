@@ -11,5 +11,3 @@ export interface User {
   updatedAt: string
   profileImageUrl: string
 }
-
-export type UserList = User[]
