@@ -6,6 +6,7 @@ const URL = 'user/getUserByEmail'
 const userDataApi = {
   getUserData(email: string) {
     const fullUrl = `${URL}/${encodeURIComponent(email)}`
+    console.log(fullUrl);
     return http.get<UserList>(fullUrl)
   }
 }
