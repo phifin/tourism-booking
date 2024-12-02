@@ -3,14 +3,39 @@ export interface Travel {
   title: string
   description: string
   imageUrl: string[]
-  travelType: string
   price: number
-  ratingPostsIds: never[]
+  rating: number
+  travelType: string
+}
+
+export interface Flight extends Travel {
+  origin: string
+  destination: string
+  departureTime: string
+  arrivalTime: string
+  airline: string
+}
+
+export interface Attraction extends Travel {
   destination: string
   duration: string
   city: string
-  __v: number
-  rating: number
+  capacity: number
 }
 
+export interface Stay extends Travel {
+  address: string
+  contact: string
+  city: string
+}
+
+export interface CarRental extends Travel {
+  location: string
+  contact: string
+  carType: string
+}
 export type TravelList = Travel[]
+export type FlightList = Flight[]
+export type CarRentalList = CarRental[]
+export type AttractionList = Attraction[]
+export type StayList = Stay[]
