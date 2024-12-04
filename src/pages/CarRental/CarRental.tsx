@@ -27,6 +27,7 @@ export default function CarRentals() {
       return (
         <InformationLongCard
           key={index}
+          id={travel._id}
           title={travel.title}
           location={travel.carType}
           ratings={travel.rating}

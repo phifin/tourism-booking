@@ -40,6 +40,7 @@ export default function Attractions() {
       return (
         <InformationLongCard
           key={index}
+          id={travel._id}
           title={travel.title}
           location={travel.city}
           ratings={travel.rating}
