@@ -1,4 +1,8 @@
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+
 interface Props {
+  id: string // Thêm id để xác định thẻ
   image: string
   title: string
   location: string
@@ -8,11 +12,29 @@ interface Props {
   height: string // New prop for controlling the container height
 }
 
-export default function InformationLongCard({ image, title, ratings, price, location, description, height }: Props) {
+export default function InformationLongCard({
+  id,
+  image,
+  title,
+  ratings,
+  price,
+  location,
+  description,
+  height
+}: Props) {
+  const navigate = useNavigate()
+
+  const handleCardClick = () => {
+    navigate(`/travel/${id}`) // Chuyển hướng đến URL chi tiết
+  }
+
   return (
-    <div className={`flex ${height} w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden`}>
-      <div className='w-62 flex-shrink-0'>
-        <img src={image} className='w-full h-full object-cover'></img>
+    <div
+      onClick={handleCardClick} // Gọi hàm điều hướng khi nhấn vào thẻ
+      className={`flex ${height} w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden cursor-pointer`}
+    >
+      <div className='w-1/4 flex-shrink-0'>
+        <img src={image} className='w-full h-full object-cover' alt={title}></img>
       </div>
       <div className='w-3/4'>
         <div className='ml-3 mt-3 text-2xl font-bold'>{title}</div>

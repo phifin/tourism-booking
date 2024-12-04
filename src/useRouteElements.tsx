@@ -69,7 +69,7 @@ export default function useRouteElement() {
           )
         },
         {
-          path: '/tour/id',
+          path: '/travel/:id',
           element: (
             <PageHeader>
               <TourDetails />

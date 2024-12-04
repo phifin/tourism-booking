@@ -1,11 +1,12 @@
-import { FlightList, AttractionList, StayList, CarRentalList, TravelList } from '~/types/travels.type'
+import { FlightList, AttractionList, StayList, CarRentalList, TravelList, Travel } from '~/types/travels.type'
 import http from '~/utils/http'
 
-const URL = 'travel/getAllTravels'
+const URLGetAll = 'travel/getAllTravels'
+const URLGetOne = 'travel/getTravelById'
 
 const travelApi = {
   getTravelsByType() {
-    return http.get<TravelList>(URL).then((response) => {
+    return http.get<TravelList>(URLGetAll).then((response) => {
       const travels = response.data
       const flights = travels.filter((item) => item.travelType === 'flight') as FlightList
       const attractions = travels.filter((item) => item.travelType === 'tour') as AttractionList
@@ -18,6 +19,12 @@ const travelApi = {
         stays,
         carRentals
       }
+    })
+  },
+  getTravelById(id: string) {
+    return http.get<Travel>(`${URLGetOne}/${id}`).then((response) => {
+      const travelDetail = response.data
+      return travelDetail
     })
   }
 }
