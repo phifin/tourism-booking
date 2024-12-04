@@ -1,16 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import travelApi from '~/apis/travels.api'
+import { Attraction, CarRental, Flight, Stay } from '~/types/travels.type'
 
 export default function DetailPage() {
   const { id } = useParams<{ id: string | undefined }>() // Lấy id từ URL
 
   // Sử dụng React Query để lấy dữ liệu, kiểm tra `id` trước khi gọi API
-  const { data: travelDetail, isLoading } = useQuery({
+  const { data: travelDetail, isLoading } = useQuery<Flight | Attraction | CarRental | Stay>({
     queryKey: ['travelDetail', id],
     queryFn: () => {
       if (id) {
-        console.log(id)
         return travelApi.getTravelById(id)
       }
       throw new Error('ID is undefined') // Xử lý trường hợp id bị undefined
@@ -48,7 +48,13 @@ export default function DetailPage() {
                 strokeLinejoin='round'
               />
             </svg>
-            <address className='ml-1'>{travelDetail.description}</address>
+            <address className='ml-1'>
+              {'city' in travelDetail
+                ? travelDetail.city
+                : 'destination' in travelDetail
+                  ? travelDetail.destination
+                  : travelDetail.location || 'Unknown'}
+            </address>
           </div>
           <img src={travelDetail.imageUrl[0]} alt='Detail' className='mt-5' />
         </div>

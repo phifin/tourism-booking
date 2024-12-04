@@ -1,4 +1,15 @@
-import { FlightList, AttractionList, StayList, CarRentalList, TravelList, Travel } from '~/types/travels.type'
+import {
+  FlightList,
+  AttractionList,
+  StayList,
+  CarRentalList,
+  TravelList,
+  Flight,
+  CarRental,
+  Attraction,
+  Stay,
+  Travel
+} from '~/types/travels.type'
 import http from '~/utils/http'
 
 const URLGetAll = 'travel/getAllTravels'
@@ -21,10 +32,25 @@ const travelApi = {
       }
     })
   },
-  getTravelById(id: string) {
+  getTravelById<T extends Flight | Stay | Attraction | CarRental>(id: string): Promise<T> {
     return http.get<Travel>(`${URLGetOne}/${id}`).then((response) => {
       const travelDetail = response.data
-      return travelDetail
+
+      // Type guard to ensure type correctness
+      if (travelDetail.travelType === 'flight' && (travelDetail as Flight)) {
+        return travelDetail as T
+      }
+      if (travelDetail.travelType === 'carRental' && (travelDetail as CarRental)) {
+        return travelDetail as T
+      }
+      if (travelDetail.travelType === 'tour' && (travelDetail as Attraction)) {
+        return travelDetail as T
+      }
+      if (travelDetail.travelType === 'hotel' && (travelDetail as Stay)) {
+        return travelDetail as T
+      }
+
+      throw new Error(`Unexpected travel type: ${travelDetail.travelType}`)
     })
   }
 }
