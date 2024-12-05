@@ -7,7 +7,7 @@ export default function PersonalBar() {
       <Link to='/' className='hover:bg-slate-400 py-3 px-7 rounded-2xl hover:bg-opacity-20'>
         Home
       </Link>
-      <Link to='/' className='hover:bg-slate-400  py-3 px-7 rounded-2xl hover:bg-opacity-20'>
+      <Link to='/bookinghistory' className='hover:bg-slate-400  py-3 px-7 rounded-2xl hover:bg-opacity-20'>
         My bookings
       </Link>
       <Link to='/' className='hover:bg-slate-400  py-3 px-7 rounded-2xl hover:bg-opacity-20'>

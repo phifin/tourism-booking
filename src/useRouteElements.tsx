@@ -11,6 +11,7 @@ import Flights from './pages/Flights'
 import TourDetails from './pages/TourDetails'
 import { AppContext } from './context/app.context'
 import HomePage from './pages/HomePage'
+import BookingHistory from './pages/BookingHistory'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -73,6 +74,14 @@ export default function useRouteElement() {
           element: (
             <PageHeader>
               <TourDetails />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/bookinghistory',
+          element: (
+            <PageHeader>
+              <BookingHistory />
             </PageHeader>
           )
         }
