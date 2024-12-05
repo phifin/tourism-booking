@@ -95,7 +95,7 @@ export const fetchUser = createAsyncThunk(
     'user/fetchUser',
     async (email: string, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/user/getUserByEmail/${email}`);
+            const response = await axios.get(`http://localhost:3000/user/getUserByEmail/${email}`);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || 'Failed to fetch user');
