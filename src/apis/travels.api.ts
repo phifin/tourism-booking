@@ -1,9 +1,18 @@
 import { FlightList, AttractionList, StayList, CarRentalList, TravelList } from '~/types/travels.type'
 import http from '~/utils/http'
+import { TravelModel } from '~/models/travels.model'
+import axios from 'axios';
 
 const URL = 'travel/getAllTravels'
 
+const baseUrl = 'http://localhost:3000/travel/';
+
 const travelApi = {
+  fetchAllTravels: async (): Promise<TravelModel> => {
+    const response = await axios.get<TravelModel>(`${baseUrl}`);
+    return response.data;
+  },
+
   getTravelsByType() {
     return http.get<TravelList>(URL).then((response) => {
       const travels = response.data

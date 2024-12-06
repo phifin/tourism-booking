@@ -1,14 +1,14 @@
-export interface Travel {
+export interface TravelModel {
   _id: string
   title: string
   description: string
   imageUrl: string[]
   price: number
   rating: number
-  travelType: string
+  TravelModelType: string
 }
 
-export interface Flight extends Travel {
+export interface Flight extends TravelModel {
   origin: string
   destination: string
   departureTime: string
@@ -16,26 +16,27 @@ export interface Flight extends Travel {
   airline: string
 }
 
-export interface Attraction extends Travel {
+export interface Tour extends TravelModel {
   destination: string
   duration: string
   city: string
   capacity: number
 }
 
-export interface Stay extends Travel {
+export interface Hotel extends TravelModel {
   address: string
   contact: string
   city: string
 }
 
-export interface CarRental extends Travel {
+export interface CarRental extends TravelModel {
   location: string
   contact: string
   carType: string
 }
-export type TravelList = Travel[]
+
+export type TravelList = TravelModel[]
 export type FlightList = Flight[]
 export type CarRentalList = CarRental[]
-export type AttractionList = Attraction[]
-export type StayList = Stay[]
+export type TourList = Tour[]
+export type HotelList = Hotel[]
