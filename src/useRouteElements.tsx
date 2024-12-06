@@ -12,6 +12,7 @@ import TourDetails from './pages/TourDetails'
 import { AppContext } from './context/app.context'
 import HomePage from './pages/HomePage'
 import BookingHistory from './pages/BookingHistory'
+import SocialPost from './pages/SocialPost'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -82,6 +83,14 @@ export default function useRouteElement() {
           element: (
             <PageHeader>
               <BookingHistory />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/socialposts',
+          element: (
+            <PageHeader>
+              <SocialPost />
             </PageHeader>
           )
         }

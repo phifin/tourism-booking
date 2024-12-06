@@ -1,8 +1,14 @@
-import { useQuery } from '@tanstack/react-query'
-import React, { useContext } from 'react'
-import bookingApi from '~/apis/booking.api'
-import userDataApi from '~/apis/userData.api'
+import { useContext } from 'react'
 import { AppContext } from '~/context/app.context'
+import { useQuery } from '@tanstack/react-query'
+import userDataApi from '~/apis/userData.api'
+import bookingApi from '~/apis/booking.api'
+import BookingCard from '~/components/BookingCard/BookingCard'
+
+interface Booking {
+  travelId: string
+  bookDate: Date
+}
 
 export default function BookingHistory() {
   const { userEmail } = useContext(AppContext)
@@ -19,8 +25,11 @@ export default function BookingHistory() {
   })
 
   // Lấy tất cả travelId từ dữ liệu booking trả về
-  const travelIds = bookingData?.map((booking) => booking.travelId) || []
-  console.log(travelIds)
+  const response: Booking[] =
+    bookingData?.map((booking) => ({
+      travelId: booking.travelId,
+      bookDate: booking.bookedDate
+    })) || []
 
   // Render loading trạng thái nếu booking data chưa được load
   if (isBookingLoading) {
@@ -32,24 +41,22 @@ export default function BookingHistory() {
     return <div>No user found!</div>
   }
 
+  // Hàm render BookingCard
+  const renderBookingCards = () => {
+    if (response.length === 0) {
+      return <div>No bookings found!</div>
+    }
+
+    return response.map((book: Booking) => (
+      <BookingCard key={book.travelId} travelId={book.travelId} bookDate={book.bookDate} />
+    ))
+  }
+
   // Render dữ liệu booking
   return (
     <div className='w-3/4 mx-auto mt-10'>
-      <div>
-        <header className='text-3xl font-bold '>Your Flights</header>
-      </div>
-      <div>
-        <header className='text-3xl font-bold '>Your Stays</header>
-      </div>
-      <div>
-        <header className='text-3xl font-bold '>Your Tour</header>
-      </div>
-      <div>
-        <header className='text-3xl font-bold '>Your Car Rental</header>
-      </div>
-      <div>
-        <pre>{JSON.stringify(bookingData, null, 2)}</pre> {/* Hiển thị mảng travelIds */}
-      </div>
+      <header className='text-3xl font-bold mb-5'>Your Bookings</header>
+      <div>{renderBookingCards()}</div>
     </div>
   )
 }

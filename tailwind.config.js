@@ -8,6 +8,9 @@ export default {
         112: '28rem', // chiều cao 28rem
         120: '30rem' // chiều cao 30rem
         // Thêm chiều cao tùy chỉnh ở đây
+      },
+      width: {
+        '95/100': '95%'
       }
     }
   },

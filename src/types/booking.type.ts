@@ -1,7 +1,7 @@
 export interface Booking {
   id: string
   travelId: string
-  bookDate: string
+  bookedDate: Date
 }
 
 export type BookingList = Booking[]

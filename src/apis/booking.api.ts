@@ -23,9 +23,9 @@ const bookingApi = {
 
     return http.post<Booking>(URLCreateBook, body)
   }
-  // getBookById<T extends Flight | Stay | Attraction | CarRental>(id: string): Promise<T> {
-  //   return http.get<Travel>(`${URLGetOne}/${id}`).then((response) => {
-  //     const travelDetail = response.data
+  // getBookById<Booking>(id: string): Promise<T> {
+  //   return http.get<Booking>(`${URLGetOne}/${id}`).then((response) => {
+  //     const BookingDetail = response.data
 
   //     // Type guard to ensure type correctness
   //     if (travelDetail.travelType === 'flight' && (travelDetail as Flight)) {

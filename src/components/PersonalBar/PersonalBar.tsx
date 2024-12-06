@@ -10,8 +10,8 @@ export default function PersonalBar() {
       <Link to='/bookinghistory' className='hover:bg-slate-400  py-3 px-7 rounded-2xl hover:bg-opacity-20'>
         My bookings
       </Link>
-      <Link to='/' className='hover:bg-slate-400  py-3 px-7 rounded-2xl hover:bg-opacity-20'>
-        My flights
+      <Link to='/socialposts' className='hover:bg-slate-400  py-3 px-7 rounded-2xl hover:bg-opacity-20'>
+        Social Media
       </Link>
       <Link to='/' className='hover:bg-slate-400  py-3 px-7 rounded-2xl hover:bg-opacity-20'>
         My rentals
