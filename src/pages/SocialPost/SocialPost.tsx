@@ -21,7 +21,7 @@ export default function SocialPost() {
   }
 
   return (
-    <div className='mt-10 w-1/2 mx-auto space-y-4'>
+    <div className='mt-10 w-1/2 mx-auto space-y-11'>
       {/* Render PostCard components */}
       {postData.map((post: Post) => (
         <PostCard
@@ -31,6 +31,7 @@ export default function SocialPost() {
           content={post.content}
           likes={post.likes}
           comments={post.comments}
+          imageUrl={post.imageUrl}
           shares={post.shares}
           createdAt={post.createdAt}
         />

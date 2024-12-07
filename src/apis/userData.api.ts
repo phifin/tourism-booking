@@ -1,16 +1,16 @@
 import { User } from '~/types/user.type'
 import http from '~/utils/http'
 
-const URL = 'user/getUserByEmail'
+const URLemail = 'user/getUserByEmail'
+const URLId = 'user/getUSerById'
 // const fullUrl = 'user/getUserByEmail/nhuphivo@gmail.com'
 const userDataApi = {
   getUserData(email: string) {
-    const fullUrl = `${URL}/${encodeURIComponent(email)}`
-    console.log(fullUrl);
-    console.log('userDataApi.getUserData');
-    console.log('====================================');
-    console.log('====================================');
-    console.log('====================================');
+    const fullUrl = `${URLemail}/${encodeURIComponent(email)}`
+    return http.get<User>(fullUrl)
+  },
+  getUserDataById(id: string) {
+    const fullUrl = `${URLId}/${id}`
     return http.get<User>(fullUrl)
   }
 }

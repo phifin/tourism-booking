@@ -4,6 +4,7 @@ export interface Post {
   content: string
   likes: string[]
   comments: string[]
+  imageUrl: string
   shares: string[]
   createdAt: string
 }
