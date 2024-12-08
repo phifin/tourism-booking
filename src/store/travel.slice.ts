@@ -3,14 +3,14 @@ import travelApi from '~/apis/travels.api';
 import { TravelModel } from '~/models/travels.model';
 
 interface TravelState {
-    travel: TravelModel[] | null;
-    loading: boolean;
+    travels: TravelModel[] | null;
+    isLoading: boolean;
     error: string | null;
 }
 
 const initialState: TravelState = {
-    travel: [],
-    loading: false,
+    travels: [],
+    isLoading: false,
     error: null
 };
 
@@ -31,21 +31,21 @@ const travelSlice = createSlice({
     initialState,
     reducers: {
         logout: (state) => {
-            state.travel = null;
+            state.travels = null;
         },
     },
     extraReducers: (builder) => {
         builder
             .addCase(fetchTravel.pending, (state) => {
-                state.loading = true;
+                state.isLoading = true;
                 state.error = null;
             })
             .addCase(fetchTravel.fulfilled, (state, action: PayloadAction<TravelModel[]>) => {
-                state.travel = action.payload;
-                state.loading = false;
+                state.travels = action.payload;
+                state.isLoading = false;
             })
             .addCase(fetchTravel.rejected, (state, action: PayloadAction<any>) => {
-                state.loading = false;
+                state.isLoading = false;
                 state.error = action.payload;
             });
     },

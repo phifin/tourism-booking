@@ -13,9 +13,6 @@ export const userApi = {
         return response.data;
     },
     fetchUserByEmail: async (email: string): Promise<UserModel> => {
-        if (!email) {
-            throw new Error('Email is required');
-        }
         const response = await axios.get<UserModel>(`${baseUrl}/getUserByEmail/${email}`);
         return response.data;
     }

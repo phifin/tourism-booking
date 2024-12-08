@@ -96,8 +96,6 @@ export default function PageHeader({ children }: Props) {
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error}</p>
 
-  if (!user) return <p>No user data available</p>
-
   return (
     <div>
       <div>
