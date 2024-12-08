@@ -2,6 +2,7 @@ import { PostList } from '~/types/post.type'
 import http from '~/utils/http'
 
 const URLGetAll = 'post'
+const URLLikePost = 'post/likePost'
 // const URLGetOne = 'travel/getTravelById'
 // const URLCreateBook = 'book/createBook'
 
@@ -11,6 +12,13 @@ const postDataApi = {
       const posts = response.data
       return posts
     })
+  },
+  likePost(userId: string, postId: string) {
+    const body = {
+      userId,
+      postId
+    }
+    return http.post(URLLikePost, body)
   }
 
   // createNewBooking(userId: string, travelId: string, bookedDate: string, amount: number) {

@@ -2,12 +2,10 @@ import React from 'react'
 import PostCard from '~/components/PostCard/PostCard'
 import { useQuery } from '@tanstack/react-query'
 import postDataApi from '~/apis/post.api'
-import { Post } from '~/types/post.type'
 
 export default function SocialPost() {
   // Fetch all post data
   const { data: postData, isLoading, error } = useQuery(['postData'], () => postDataApi.getAllPosts())
-
   if (isLoading) {
     return <div>Loading posts...</div>
   }
@@ -23,10 +21,10 @@ export default function SocialPost() {
   return (
     <div className='mt-10 w-1/2 mx-auto space-y-11'>
       {/* Render PostCard components */}
-      {postData.map((post: Post) => (
+      {postData.map((post) => (
         <PostCard
-          key={post.id}
-          id={post.id}
+          key={post._id}
+          id={post._id}
           userId={post.userId}
           content={post.content}
           likes={post.likes}

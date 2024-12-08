@@ -1,4 +1,4 @@
-import { Booking, BookingList } from '~/types/booking.type'
+import { BookingList } from '~/types/booking.type'
 import http from '~/utils/http'
 
 const URLGetAll = 'book/getAllBooksByUserId'
@@ -21,7 +21,7 @@ const bookingApi = {
       amount
     }
 
-    return http.post<Booking>(URLCreateBook, body)
+    return http.post(URLCreateBook, body)
   }
   // getBookById<Booking>(id: string): Promise<T> {
   //   return http.get<Booking>(`${URLGetOne}/${id}`).then((response) => {
