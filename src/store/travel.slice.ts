@@ -3,13 +3,13 @@ import travelApi from '~/apis/travels.api';
 import { TravelModel } from '~/models/travels.model';
 
 interface TravelState {
-    travel: TravelModel | null;
+    travel: TravelModel[] | null;
     loading: boolean;
     error: string | null;
 }
 
 const initialState: TravelState = {
-    travel: null,
+    travel: [],
     loading: false,
     error: null
 };
@@ -40,7 +40,7 @@ const travelSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchTravel.fulfilled, (state, action: PayloadAction<TravelModel>) => {
+            .addCase(fetchTravel.fulfilled, (state, action: PayloadAction<TravelModel[]>) => {
                 state.travel = action.payload;
                 state.loading = false;
             })

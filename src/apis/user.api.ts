@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { UserModel } from '~/models/user.model';
 
-const baseUrl = 'http://localhost:3000/user/';
+const baseUrl = 'http://localhost:3000/user';
 
 export const userApi = {
     fetchAllUsers: async (): Promise<UserModel[]> => {
@@ -13,6 +13,9 @@ export const userApi = {
         return response.data;
     },
     fetchUserByEmail: async (email: string): Promise<UserModel> => {
+        if (!email) {
+            throw new Error('Email is required');
+        }
         const response = await axios.get<UserModel>(`${baseUrl}/getUserByEmail/${email}`);
         return response.data;
     }

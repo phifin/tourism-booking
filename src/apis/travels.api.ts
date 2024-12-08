@@ -8,8 +8,8 @@ const URL = 'travel/getAllTravels'
 const baseUrl = 'http://localhost:3000/travel/';
 
 const travelApi = {
-  fetchAllTravels: async (): Promise<TravelModel> => {
-    const response = await axios.get<TravelModel>(`${baseUrl}`);
+  fetchAllTravels: async (): Promise<TravelModel[]> => {
+    const response = await axios.get<TravelModel[]>(`${baseUrl}/getAllTravels`);
     return response.data;
   },
 

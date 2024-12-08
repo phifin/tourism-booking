@@ -5,7 +5,7 @@ export interface TravelModel {
   imageUrl: string[]
   price: number
   rating: number
-  TravelModelType: string
+  travelType: string
 }
 
 export interface Flight extends TravelModel {

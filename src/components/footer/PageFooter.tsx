@@ -1,4 +1,3 @@
-import React from 'react'
 export default function PageFooter() {
   return (
     <footer className='py-16 bg-gray-100'>
