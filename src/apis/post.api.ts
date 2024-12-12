@@ -3,6 +3,7 @@ import http from '~/utils/http'
 
 const URLGetAll = 'post'
 const URLLikePost = 'post/likePost'
+const URLCreatePost = 'post/createPost'
 // const URLGetOne = 'travel/getTravelById'
 // const URLCreateBook = 'book/createBook'
 
@@ -19,6 +20,15 @@ const postDataApi = {
       postId
     }
     return http.post(URLLikePost, body)
+  },
+  createPost(userId: string, content: string | null, imageUrl: string | null, postId: string | null) {
+    const body = {
+      userId,
+      content,
+      imageUrl,
+      postId
+    }
+    return http.post(URLCreatePost, body)
   }
 
   // createNewBooking(userId: string, travelId: string, bookedDate: string, amount: number) {

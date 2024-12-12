@@ -11,6 +11,9 @@ export default {
       },
       width: {
         '95/100': '95%'
+      },
+      spacing: {
+        95: '23rem'
       }
     }
   },

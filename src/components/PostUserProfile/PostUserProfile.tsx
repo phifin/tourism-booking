@@ -4,7 +4,7 @@ import userDataApi from '~/apis/userData.api'
 import { format, formatDistanceToNow, isToday, isYesterday, differenceInDays } from 'date-fns'
 type PostUserProfileProps = {
   userId: string
-  createdAt: string
+  createdAt: string | undefined
 }
 
 export default function PostUserProfile({ userId, createdAt }: PostUserProfileProps) {
@@ -12,6 +12,9 @@ export default function PostUserProfile({ userId, createdAt }: PostUserProfilePr
     enabled: !!userId // Chỉ fetch khi userId tồn tại
   })
   const formattedTime = () => {
+    if (!createdAt) {
+      return undefined
+    }
     const createdDate = new Date(createdAt)
     const daysDifference = differenceInDays(new Date(), createdDate)
 

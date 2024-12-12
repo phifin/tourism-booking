@@ -19,11 +19,11 @@ interface PostCardProps {
 }
 
 export default function PostCard({ id, userId, content, imageUrl, likes, comments, shares, createdAt }: PostCardProps) {
+  // const [createdPost, setCreatedPost] = useState(false)
   const queryClient = new QueryClient()
   const { userEmail } = useContext(AppContext)
   const { data: currentUserData } = useQuery(['userData', userEmail], () => userDataApi.getUserData(userEmail), {})
   const initialLikedState = likes.includes(currentUserData?.data._id ? currentUserData?.data._id : '')
-  console.log(`${content}: ${initialLikedState}`)
   const [liked, setLiked] = useState(initialLikedState)
   const [realLikedLength, setRealLikedLength] = useState(likes.length)
   const onLikedClick = () => {
@@ -31,12 +31,11 @@ export default function PostCard({ id, userId, content, imageUrl, likes, comment
       userId: currentUserData?.data._id ? currentUserData?.data._id : '',
       postId: id
     }
-    console.log('Like Data:', likeData)
     likePost(likeData)
   }
-  const { data: userData } = useQuery(['userData', userId], () => userDataApi.getUserDataById(userId), {
-    enabled: !!userId // Chỉ fetch khi userId tồn tại
-  })
+  // const { data: userData } = useQuery(['userData', userId], () => userDataApi.getUserDataById(userId), {
+  //   enabled: !!userId // Chỉ fetch khi userId tồn tại
+  // })
 
   const { mutate: likePost } = useMutation({
     mutationFn: async (likePostData: { userId: string; postId: string }) => {
