@@ -11,11 +11,20 @@ import {
   Travel
 } from '~/types/travels.type'
 import http from '~/utils/http'
+import { TravelModel } from '~/models/travels.model'
+import axios from 'axios';
 
 const URLGetAll = 'travel/getAllTravels'
 const URLGetOne = 'travel/getTravelById'
 
+const baseUrl = 'http://localhost:3000/travel/';
+
 const travelApi = {
+  fetchAllTravels: async (): Promise<TravelModel[]> => {
+    const response = await axios.get<TravelModel[]>(`${baseUrl}/getAllTravels`);
+    return response.data;
+  },
+
   getTravelsByType() {
     return http.get<TravelList>(URLGetAll).then((response) => {
       const travels = response.data

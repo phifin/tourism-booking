@@ -11,6 +11,8 @@ const userDataApi = {
   },
   getUserDataById(id: string) {
     const fullUrl = `${URLId}/${id}`
+    const fullUrl = `${URL}/${encodeURIComponent(email)}`
+    console.log(fullUrl);
     return http.get<User>(fullUrl)
   }
 }

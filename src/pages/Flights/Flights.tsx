@@ -1,29 +1,45 @@
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import travelApi from '~/apis/travels.api'
+import { useEffect, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import InformationLongCard from '~/components/InformationLongCard/InformationLongCard'
+import { Flight, TravelModel } from '~/models/travels.model'
+import { AppDispatch, RootState } from '~/store'
+import { fetchTravel } from '~/store/travel.slice'
 
 export default function Flights() {
-  const { data } = useQuery({
-    queryKey: ['travels'],
-    queryFn: () => {
-      return travelApi.getTravelsByType()
-    }
-  })
+  const dispatch: AppDispatch = useDispatch()
+  const { travels, isLoading, error } = useSelector((state: RootState) => state.travels)
 
-  // Lọc dữ liệu có travelType === 'tour'
-  const tourData = data?.flights
-  const [sortCheck, setSortCheck] = useState<boolean>(false)
-  const [typeSortCheck, setTypeSortCheck] = useState<string>('')
-  if (sortCheck) {
+  useEffect(() => {
+    dispatch(fetchTravel())
+  }, [dispatch])
+
+  const flightsData = travels!.filter((travel: TravelModel) => travel.travelType === 'flight') as Flight[]
+
+  // Wrap the tourData initialization with useMemo to avoid unnecessary recalculations
+  const flights = useMemo(() => {
+    return flightsData || [] // Fallback to an empty array if tour is undefined
+  }, [flightsData]) // Dependency on data.attractions to recalculate only when it changes
+
+  const [sortCheck, setSortCheck] = useState(false)
+  const [typeSortCheck, setTypeSortCheck] = useState('default')
+
+  const sortedFlights = useMemo(() => {
+    if (!sortCheck) return flights
+
+    const sorted = [...flights]
     if (typeSortCheck === 'price') {
-      tourData?.sort((a, b) => a.price - b.price)
+      sorted.sort((a, b) => Number(a.price) - Number(b.price))
     } else if (typeSortCheck === 'rating') {
-      tourData?.sort((a, b) => a.rating - b.rating)
+      sorted.sort((a, b) => a.rating - b.rating)
     }
-  }
+    return sorted
+  }, [flights, sortCheck, typeSortCheck])
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+
   const renderData = () => {
-    return tourData?.map((travel, index) => {
+    return sortedFlights?.map((travel, index) => {
       return (
         <InformationLongCard
           key={index}
@@ -42,15 +58,15 @@ export default function Flights() {
 
   return (
     <div className='w-2/3 mx-auto'>
-      {/* Nút để thay đổi sort */}
-      <button onClick={() => setSortCheck(!sortCheck)}>Toggle Sort</button>
-
-      {/* Select để chọn loại sắp xếp */}
       <select
-        onChange={(e) => setTypeSortCheck(e.target.value)}
+        onChange={(e) => {
+          setTypeSortCheck(e.target.value)
+          setSortCheck(true) // Trigger sorting when a filter is selected
+        }}
         value={typeSortCheck}
         className='p-2 rounded-md border border-gray-300 text-gray-700 bg-white font-medium focus:ring-2 focus:ring-blue-500 hover:bg-gray-100 focus:outline-none'
       >
+        <option value='default'>Filter By</option>
         <option value='price'>Price</option>
         <option value='rating'>Rating</option>
       </select>
