@@ -13,13 +13,6 @@ export default function CarRentals() {
     dispatch(fetchTravel())
   }, [dispatch])
 
-  // useEffect(() => {
-  //   console.log(travels)
-  //   const filteredTravels = travels.filter((travel: TravelModel) => travel.travelType === 'tour') as CarRental[]
-  //   console.log(filteredTravels)
-  // }, [travels])
-
-  // Lọc dữ liệu có travelType === 'tour'
   const carRentals = travels!.filter((travel: TravelModel) => travel.travelType === 'carRental') as CarRental[]
 
   const [sortCheck, setSortCheck] = useState<boolean>(false)
