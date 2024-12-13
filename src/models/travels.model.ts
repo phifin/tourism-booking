@@ -1,5 +1,5 @@
 export interface TravelModel {
-  _id: string
+  id: string
   title: string
   description: string
   imageUrl: string[]

@@ -40,7 +40,7 @@ export default function CarRentals() {
       return (
         <InformationLongCard
           key={index}
-          id={travel._id}
+          id={travel.id}
           title={travel.title}
           // location={travel.carType}
           location='Car Rental'

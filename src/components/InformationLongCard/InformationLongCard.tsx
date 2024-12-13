@@ -24,6 +24,8 @@ export default function InformationLongCard({
   const navigate = useNavigate()
 
   const handleCardClick = () => {
+    console.log('Clicked on card with id:', id)
+
     navigate(`/travel/${id}`) // Chuyển hướng đến URL chi tiết
   }
 

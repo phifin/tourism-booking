@@ -33,20 +33,20 @@ const travelApi = {
     })
   },
   getTravelById<T extends Flight | Hotel | Tour | CarRental>(id: string): Promise<T> {
-    return http.get<TravelModel>(`${dataPath}/getTravelById/${id}`).then((response) => {
+    return http.get<TravelModel>(`${dataPath}/${id}`).then((response) => {
       const travelDetail = response.data
 
       // Type guard to ensure type correctness
-      if (travelDetail.travelType === 'flight' && (travelDetail as Flight)) {
+      if (travelDetail.travelType === 'Flight' && (travelDetail as Flight)) {
         return travelDetail as T
       }
-      if (travelDetail.travelType === 'carRental' && (travelDetail as CarRental)) {
+      if (travelDetail.travelType === 'CarRental' && (travelDetail as CarRental)) {
         return travelDetail as T
       }
-      if (travelDetail.travelType === 'tour' && (travelDetail as Tour)) {
+      if (travelDetail.travelType === 'Tour' && (travelDetail as Tour)) {
         return travelDetail as T
       }
-      if (travelDetail.travelType === 'hotel' && (travelDetail as Hotel)) {
+      if (travelDetail.travelType === 'Hotel' && (travelDetail as Hotel)) {
         return travelDetail as T
       }
 

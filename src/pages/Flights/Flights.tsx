@@ -43,7 +43,7 @@ export default function Flights() {
       return (
         <InformationLongCard
           key={index}
-          id={travel._id}
+          id={travel.id}
           title={travel.title}
           location={travel.airline}
           ratings={travel.rating}

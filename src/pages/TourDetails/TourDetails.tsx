@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom'
 import userDataApi from '~/apis/userData.api'
 import travelApi from '~/apis/travels.api'
 import bookingApi from '~/apis/booking.api' // API để tạo booking
-import { Attraction, CarRental, Flight, Stay } from '~/types/travels.type'
+// import { Attraction, CarRental, Flight, Stay } from '~/types/travels.type'
+import { Tour, Hotel, Flight, CarRental } from '~/models/travels.model'
 import { useContext } from 'react'
 import { AppContext } from '~/context/app.context' // Giả sử bạn đã lưu thông tin user trong context
 
@@ -14,7 +15,7 @@ export default function DetailPage() {
   const userId = userData?.data._id // Lấy userId từ context
 
   // Sử dụng React Query để lấy dữ liệu, kiểm tra `id` trước khi gọi API
-  const { data: travelDetail, isLoading } = useQuery<Flight | Attraction | CarRental | Stay>({
+  const { data: travelDetail, isLoading } = useQuery<Flight | Tour | CarRental | Hotel>({
     queryKey: ['travelDetail', id],
     queryFn: () => {
       if (id) {
@@ -43,6 +44,8 @@ export default function DetailPage() {
 
   // Hàm để tạo booking khi nút được nhấn
   const handleCreateBooking = () => {
+    console.log(`${userId} ${id}`)
+
     if (!userId || !id) {
       alert('User or Travel ID is missing!')
       return
@@ -92,8 +95,8 @@ export default function DetailPage() {
               {'city' in travelDetail
                 ? travelDetail.city
                 : 'destination' in travelDetail
-                  ? travelDetail.destination
-                  : travelDetail.location || 'Unknown'}
+                ? travelDetail.destination
+                : travelDetail.location || 'Unknown'}
             </address>
           </div>
           <img src={travelDetail.imageUrl[0]} alt='Detail' className='mt-5' />
