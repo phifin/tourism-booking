@@ -4,6 +4,7 @@ import http from '~/utils/http'
 const URLGetAll = 'post'
 const URLLikePost = 'post/likePost'
 const URLCreatePost = 'post/createPost'
+const URLUploadImage = 'post/uploadImage'
 // const URLGetOne = 'travel/getTravelById'
 // const URLCreateBook = 'book/createBook'
 
@@ -21,16 +22,30 @@ const postDataApi = {
     }
     return http.post(URLLikePost, body)
   },
-  createPost(userId: string, content: string | null, imageUrl: string | null, postId: string | null) {
-    const body = {
-      userId,
-      content,
-      imageUrl,
-      postId
-    }
-    return http.post(URLCreatePost, body)
-  }
+  async createPost(userId: string | undefined, content: string, image: string | null, postId: string | null) {
+    try {
+      // Gọi method POST đầu tiên
+      const firstResponse = await http.post(URLUploadImage, {
+        image
+      })
 
+      const imageUrl = firstResponse.data.imageUrl // Chỉnh lại key theo response thực tế
+
+      // Gọi method POST thứ hai với dữ liệu từ method đầu tiên
+      const secondResponse = await http.post(URLCreatePost, {
+        userId,
+        content,
+        postId,
+        imageUrl // Data from cloudinary
+      })
+
+      // Trả về kết quả từ method POST thứ hai
+      return secondResponse.data
+    } catch (error) {
+      console.error('Error creating post:', error)
+      throw error
+    }
+  }
   // createNewBooking(userId: string, travelId: string, bookedDate: string, amount: number) {
   //   const body = {
   //     userId,
