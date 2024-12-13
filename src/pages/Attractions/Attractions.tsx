@@ -13,7 +13,7 @@ export default function Attractions() {
     dispatch(fetchTravel())
   }, [dispatch])
 
-  const tour = travels!.filter((travel: TravelModel) => travel.travelType === 'tour') as Tour[]
+  const tour = travels!.filter((travel: TravelModel) => travel.travelType === 'Tour') as Tour[]
 
   // Wrap the tourData initialization with useMemo to avoid unnecessary recalculations
   const tourData = useMemo(() => {

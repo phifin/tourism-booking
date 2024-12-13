@@ -7,7 +7,8 @@ class Http {
   constructor() {
     this.accessToken = getAccessTokenFromLS()
     this.instance = axios.create({
-      baseURL: 'http://localhost:3000',
+      // baseURL: 'http://localhost:3000',
+      baseURL: 'http://localhost:8080/VelocityBackend_war_exploded/api',
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json'

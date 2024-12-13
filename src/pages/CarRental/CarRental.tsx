@@ -13,7 +13,7 @@ export default function CarRentals() {
     dispatch(fetchTravel())
   }, [dispatch])
 
-  const carRentalsData = travels!.filter((travel: TravelModel) => travel.travelType === 'carRental') as CarRental[]
+  const carRentalsData = travels!.filter((travel: TravelModel) => travel.travelType === 'CarRental') as CarRental[]
 
   // Wrap the tourData initialization with useMemo to avoid unnecessary recalculations
   const carRentals = useMemo(() => {

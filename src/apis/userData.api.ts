@@ -3,6 +3,7 @@ import http from '~/utils/http'
 
 const URLemail = 'user/getUserByEmail'
 const URLId = 'user/getUSerById'
+
 // const fullUrl = 'user/getUserByEmail/nhuphivo@gmail.com'
 const userDataApi = {
   getUserData(email: string) {

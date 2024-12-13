@@ -23,27 +23,6 @@ const bookingApi = {
 
     return http.post<Booking>(URLCreateBook, body)
   }
-  // getBookById<Booking>(id: string): Promise<T> {
-  //   return http.get<Booking>(`${URLGetOne}/${id}`).then((response) => {
-  //     const BookingDetail = response.data
-
-  //     // Type guard to ensure type correctness
-  //     if (travelDetail.travelType === 'flight' && (travelDetail as Flight)) {
-  //       return travelDetail as T
-  //     }
-  //     if (travelDetail.travelType === 'carRental' && (travelDetail as CarRental)) {
-  //       return travelDetail as T
-  //     }
-  //     if (travelDetail.travelType === 'tour' && (travelDetail as Attraction)) {
-  //       return travelDetail as T
-  //     }
-  //     if (travelDetail.travelType === 'hotel' && (travelDetail as Stay)) {
-  //       return travelDetail as T
-  //     }
-
-  //     throw new Error(`Unexpected travel type: ${travelDetail.travelType}`)
-  //   })
-  // }
 }
 
 export default bookingApi

@@ -33,7 +33,15 @@ export default function InformationLongCard({
       className={`flex ${height} w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden cursor-pointer`}
     >
       <div className='w-1/4 flex-shrink-0'>
-        <img src={image} className='w-full h-full object-cover' alt={title}></img>
+        <img
+          src={image}
+          className='w-full h-full object-cover'
+          alt='Card Image'
+          onError={(e) => {
+            const target = e.target as HTMLImageElement
+            target.src = 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
+          }}
+        ></img>
       </div>
       <div className='w-3/4'>
         <div className='ml-3 mt-3 text-2xl font-bold'>{title}</div>
