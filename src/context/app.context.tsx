@@ -34,8 +34,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const token = getAccessTokenFromLS()
     if (token) {
       try {
-        const decodedToken = jwtDecode<{ payload: { email: string } }>(token) // Decode token
-        setUserEmail(decodedToken.payload.email) // Truy cập email từ payload
+        const decodedToken = jwtDecode<{ sub: string }>(token) // Decode token
+        // Note: 'sub' is email. For some reason, in J2EE I can't make it: payload.email
+        setUserEmail(decodedToken.sub) // Truy cập email từ payload
       } catch (error) {
         console.error('Invalid token:', error)
       }
