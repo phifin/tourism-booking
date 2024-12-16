@@ -51,5 +51,4 @@ const travelSlice = createSlice({
     },
 });
 
-export const { logout } = travelSlice.actions;
 export default travelSlice.reducer;

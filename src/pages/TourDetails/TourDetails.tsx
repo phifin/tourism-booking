@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import userDataApi from '~/apis/userData.api'
+// import userDataApi from '~/apis/userData.api'
+import { userApi } from '~/apis/user.api'
 import travelApi from '~/apis/travels.api'
 import bookingApi from '~/apis/booking.api' // API để tạo booking
 // import { Attraction, CarRental, Flight, Stay } from '~/types/travels.type'
@@ -11,8 +12,8 @@ import { AppContext } from '~/context/app.context' // Giả sử bạn đã lưu
 export default function DetailPage() {
   const { id } = useParams<{ id: string | undefined }>() // Lấy id từ URL
   const { userEmail } = useContext(AppContext)
-  const { data: userData } = useQuery(['userData', userEmail], () => userDataApi.getUserData(userEmail), {})
-  const userId = userData?.data._id // Lấy userId từ context
+  const { data: userData } = useQuery(['userData', userEmail], () => userApi.fetchUserByEmail(userEmail), {})
+  const userId = userData?.id // Lấy userId từ context
 
   // Sử dụng React Query để lấy dữ liệu, kiểm tra `id` trước khi gọi API
   const { data: travelDetail, isLoading } = useQuery<Flight | Tour | CarRental | Hotel>({

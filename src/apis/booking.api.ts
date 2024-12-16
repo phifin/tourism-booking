@@ -1,13 +1,13 @@
-import { Booking, BookingList } from '~/types/booking.type'
+import { BookingModel } from '~/models/booking.model';
 import http from '~/utils/http'
 
-const URLGetAll = 'book/getAllBooksByUserId'
-// const URLGetOne = 'travel/getTravelById'
-const URLCreateBook = 'book/createBook'
+const basePath = 'book'
 
 const bookingApi = {
-  getAllBookings(id: string) {
-    return http.get<BookingList>(`${URLGetAll}/${id}`).then((response) => {
+  getAllBookingsByUserId(id: string) {
+    console.log(`${basePath}/getAllBooksByUserId/${id}`);
+
+    return http.get<BookingModel[]>(`${basePath}/getAllBooksByUserId/${id}`).then((response) => {
       const bookings = response.data
       return bookings
     })
@@ -21,7 +21,7 @@ const bookingApi = {
       amount
     }
 
-    return http.post<Booking>(URLCreateBook, body)
+    return http.post<BookingModel>(`${basePath}/createBook`, body)
   }
 }
 

@@ -34,9 +34,3 @@ export interface CarRental extends TravelModel {
   contact: string
   carType: string
 }
-
-export type TravelList = TravelModel[]
-export type FlightList = Flight[]
-export type CarRentalList = CarRental[]
-export type TourList = Tour[]
-export type HotelList = Hotel[]

@@ -3,13 +3,13 @@ import { userApi } from '~/apis/user.api';
 import { UserModel } from '~/models/user.model';
 
 interface UserState {
-    user: UserModel | null;
+    data: UserModel | null;
     loading: boolean;
     error: string | null;
 }
 
 const initialState: UserState = {
-    user: null,
+    data: null,
     loading: false,
     error: null,
 };
@@ -32,7 +32,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         logout: (state) => {
-            state.user = null;
+            state.data = null;
         },
     },
     extraReducers: (builder) => {
@@ -42,7 +42,7 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchUser.fulfilled, (state, action: PayloadAction<UserModel>) => {
-                state.user = action.payload;
+                state.data = action.payload;
                 state.loading = false;
             })
             .addCase(fetchUser.rejected, (state, action: PayloadAction<any>) => {

@@ -35,7 +35,7 @@ const pageData: Record<string, PageInfo> = {
 export default function PageHeader({ children }: Props) {
   const { isAuthenticated, setIsAuthenticated, userEmail, isAppLoading } = useContext(AppContext)
   const dispatch: AppDispatch = useDispatch()
-  const { user, loading, error } = useSelector((state: RootState) => state.user)
+  const userRedux = useSelector((state: RootState) => state.user)
   // const { data: userData } = useQuery(['userData', userEmail], () => userDataApi.getUserData(userEmail), {})
 
   const location = useLocation()
@@ -95,8 +95,8 @@ export default function PageHeader({ children }: Props) {
     }
   }, [dispatch, userEmail])
 
-  if (loading || isAppLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
+  if (userRedux.loading || isAppLoading) return <div>Loading...</div>
+  if (userRedux.error) return <div>Error: {userRedux.error}</div>
 
   return (
     <div>
@@ -158,7 +158,7 @@ export default function PageHeader({ children }: Props) {
                     >
                       <path d='M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.51 6.51 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z'></path>
                     </svg>
-                    <span className='ml-2 text-lg'>{user?.firstName || 'Guest'}</span>
+                    <span className='ml-2 text-lg'>{userRedux.data?.firstName || 'Guest'}</span>
                   </div>
                   <span
                     className={classNames(

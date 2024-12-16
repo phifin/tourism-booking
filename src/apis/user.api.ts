@@ -15,7 +15,7 @@ export const userApi = {
         return response.data;
     },
     fetchUserByEmail: async (email: string): Promise<UserModel> => {
-        const response = await axios.get<UserModel>(`${baseUrl}/getUserByEmail/${encodeURIComponent(email)}`);
+        const response = await http.get<UserModel>(`${dataPath}/getUserByEmail/${encodeURIComponent(email)}`);
         return response.data;
     }
 }

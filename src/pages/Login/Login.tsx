@@ -8,7 +8,7 @@ import { AppContext } from '~/context/app.context'
 import getRules from '~/utils/rules'
 import { isAxiosUnauthorizedError } from '~/utils/utils'
 import { useContext, useState, useEffect } from 'react'
-import userDataApi from '~/apis/userData.api'
+import { userApi } from '~/apis/user.api'
 import { jwtDecode } from 'jwt-decode'
 
 interface FormData {
@@ -71,9 +71,9 @@ export default function Login() {
     queryKey: ['userData', userEmail],
     queryFn: async () => {
       console.log('Fetching userData with email:', userEmail)
-      const response = await userDataApi.getUserData(userEmail!)
-      console.log('Response from API:', response.data)
-      return response.data
+      const response = await userApi.fetchUserByEmail(userEmail!)
+      console.log('Response from API:', response)
+      return response
     },
     enabled: !!userEmail // Chỉ fetch khi `userEmail` có giá trị
   })
