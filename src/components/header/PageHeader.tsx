@@ -33,7 +33,7 @@ const pageData: Record<string, PageInfo> = {
 }
 
 export default function PageHeader({ children }: Props) {
-  const { isAuthenticated, setIsAuthenticated, userEmail } = useContext(AppContext)
+  const { isAuthenticated, setIsAuthenticated, userEmail, isAppLoading } = useContext(AppContext)
   const dispatch: AppDispatch = useDispatch()
   const { user, loading, error } = useSelector((state: RootState) => state.user)
   // const { data: userData } = useQuery(['userData', userEmail], () => userDataApi.getUserData(userEmail), {})
@@ -78,10 +78,6 @@ export default function PageHeader({ children }: Props) {
     }
   }, [])
 
-  useEffect(() => {
-    dispatch(fetchUser(userEmail))
-  }, [dispatch, error])
-
   const logOut = () => {
     localStorage.removeItem('accessToken')
     setIsAuthenticated(false)
@@ -93,8 +89,14 @@ export default function PageHeader({ children }: Props) {
     description: 'Find exclusive Genius rewards in every corner of the world!'
   }
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error}</p>
+  useEffect(() => {
+    if (userEmail || userEmail.trim() !== '') {
+      dispatch(fetchUser(userEmail))
+    }
+  }, [dispatch, userEmail])
+
+  if (loading || isAppLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
 
   return (
     <div>
