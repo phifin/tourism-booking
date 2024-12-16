@@ -8,13 +8,15 @@ interface AppContextInterface {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
   userEmail: string
   setUserEmail: React.Dispatch<React.SetStateAction<string>>
+  isAppLoading: boolean
 }
 
 const initialAppContext: AppContextInterface = {
   isAuthenticated: Boolean(getAccessTokenFromLS()),
   setIsAuthenticated: () => null,
   userEmail: '', // Initial email can be empty
-  setUserEmail: () => null
+  setUserEmail: () => null,
+  isAppLoading: true
 }
 
 export const AppContext = createContext<AppContextInterface>(initialAppContext)
@@ -22,6 +24,7 @@ export const AppContext = createContext<AppContextInterface>(initialAppContext)
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(initialAppContext.isAuthenticated)
   const [userEmail, setUserEmail] = useState<string>(initialAppContext.userEmail)
+  const [isAppLoading, setIsAppLoading] = useState<boolean>(true)
 
   useEffect(() => {
     // Re-check authentication status on app reload
@@ -37,10 +40,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Invalid token:', error)
       }
     }
+    setIsAppLoading(false)
   }, [])
 
   return (
-    <AppContext.Provider value={{ isAuthenticated, setIsAuthenticated, userEmail, setUserEmail }}>
+    <AppContext.Provider value={{ isAuthenticated, setIsAuthenticated, userEmail, setUserEmail, isAppLoading }}>
       {children}
     </AppContext.Provider>
   )
