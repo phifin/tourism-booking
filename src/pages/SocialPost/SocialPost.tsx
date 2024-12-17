@@ -1,4 +1,3 @@
-import React from 'react'
 import PostCard from '~/components/PostCard/PostCard'
 import { useQuery } from '@tanstack/react-query'
 import postDataApi from '~/apis/post.api'

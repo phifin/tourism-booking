@@ -5,9 +5,8 @@ import NavBar from '../NavBar'
 import { AppContext } from '~/context/app.context'
 import PersonalBar from '../PersonalBar'
 import SearchBar from '../SearchBar'
-import { AppDispatch, RootState } from '~/store'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchUser } from '~/store/user.slice'
+import { RootState } from '~/store'
+import { useSelector } from 'react-redux'
 
 interface Props {
   children: React.ReactNode
@@ -33,10 +32,8 @@ const pageData: Record<string, PageInfo> = {
 }
 
 export default function PageHeader({ children }: Props) {
-  const { isAuthenticated, setIsAuthenticated, userEmail, isAppLoading } = useContext(AppContext)
-  const dispatch: AppDispatch = useDispatch()
+  const { isAuthenticated, setIsAuthenticated, isAppLoading } = useContext(AppContext)
   const userRedux = useSelector((state: RootState) => state.user)
-  // const { data: userData } = useQuery(['userData', userEmail], () => userDataApi.getUserData(userEmail), {})
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -88,12 +85,6 @@ export default function PageHeader({ children }: Props) {
     title: 'Where to next?',
     description: 'Find exclusive Genius rewards in every corner of the world!'
   }
-
-  useEffect(() => {
-    if (userEmail || userEmail.trim() !== '') {
-      dispatch(fetchUser(userEmail))
-    }
-  }, [dispatch, userEmail])
 
   if (userRedux.loading || isAppLoading) return <div>Loading...</div>
   if (userRedux.error) return <div>Error: {userRedux.error}</div>

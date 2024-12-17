@@ -21,7 +21,7 @@ const bookingApi = {
       amount
     }
 
-    return http.post<BookingModel>(`${basePath}/createBook`, body)
+    return http.post<BookingModel>(`${basePath}`, body)
   }
 }
 

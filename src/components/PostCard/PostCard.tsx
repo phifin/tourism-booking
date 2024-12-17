@@ -66,7 +66,9 @@ export default function PostCard({ userId, content, imageUrl, likes, comments, s
       <div className='mt-4'>{renderMedia()}</div>
       <div className='mt-4 flex items-center justify-between'>
         <div>
-          {likes.length > 0 ? (
+          {likes === null || likes.length <= 0 ? (
+            ''
+          ) : (
             <div className='flex ml-4'>
               <img
                 height='18'
@@ -76,13 +78,13 @@ export default function PostCard({ userId, content, imageUrl, likes, comments, s
               ></img>
               <span className='ml-1'>{likes.length}</span>
             </div>
-          ) : (
-            ''
           )}
         </div>
         <div className='flex text-gray-500'>
-          <div className='mr-4'>{comments.length > 0 ? <div>{comments.length} comments</div> : ''}</div>
-          <div className='mr-4'>{shares.length > 0 ? <div>{shares.length} shares</div> : ''} </div>
+          <div className='mr-4'>
+            {comments === null || comments.length <= 0 ? '' : <div>{comments.length} comments</div>}
+          </div>
+          <div className='mr-4'>{shares === null || shares.length <= 0 ? '' : <div>{shares.length} shares</div>}</div>
         </div>
       </div>
       <div className='flex w-95/100 mx-auto h-10 mt-2 mb-2 border-y items-center justify-around cursor-pointer'>
