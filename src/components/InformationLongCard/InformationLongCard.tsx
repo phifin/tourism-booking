@@ -11,16 +11,34 @@ interface Props {
   height: string // New prop for controlling the container height
 }
 
-export default function InformationLongCard({
-  id,
-  image,
-  title,
-  ratings,
-  price,
-  location,
-  description,
-  height
-}: Props) {
+export function ShimmerEffectList({ count }: { count: number }) {
+  return (
+    <div>
+      {Array.from({ length: count }).map((_, index) => (
+        <ShimmerEffect key={index} />
+      ))}
+    </div>
+  )
+}
+
+export function ShimmerEffect() {
+  return (
+    <div className='flex animate-pulse h-50 w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden'>
+      <div className='w-1/4 bg-gray-300'></div>
+      <div className='w-3/4 p-3 space-y-3'>
+        <div className='h-6 w-3/4 bg-gray-300 rounded'></div>
+        <div className='h-4 w-full bg-gray-300 rounded'></div>
+        <div className='h-4 w-2/3 bg-gray-300 rounded'></div>
+        <div className='flex justify-between mt-4'>
+          <div className='h-4 w-16 bg-gray-300 rounded'></div>
+          <div className='h-6 w-24 bg-gray-300 rounded'></div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function InformationLongCard({ id, image, title, ratings, price, location, description, height }: Props) {
   const navigate = useNavigate()
 
   const handleCardClick = () => {

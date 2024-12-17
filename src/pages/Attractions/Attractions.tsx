@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import InformationLongCard from '~/components/InformationLongCard/InformationLongCard'
+import { InformationLongCard, ShimmerEffectList } from '~/components/InformationLongCard/InformationLongCard'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchTravel } from '~/store/travel.slice'
 import { AppDispatch, RootState } from '~/store'
@@ -35,10 +35,9 @@ export default function Attractions() {
     return sorted
   }, [tourData, sortCheck, typeSortCheck])
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
-
   const renderData = () => {
+    if (error) return <div>Error: {error}</div>
+    if (isLoading) return <ShimmerEffectList count={5} />
     return sortedTourData?.map((travel, index) => {
       return (
         <InformationLongCard

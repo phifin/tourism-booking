@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import InformationLongCard from '~/components/InformationLongCard/InformationLongCard'
+import { InformationLongCard, ShimmerEffectList } from '~/components/InformationLongCard/InformationLongCard'
 import { Hotel, TravelModel } from '~/models/travels.model'
 import { AppDispatch, RootState } from '~/store'
 import { fetchTravel } from '~/store/travel.slice'
@@ -35,10 +35,9 @@ export default function Stays() {
     return sorted
   }, [hotels, sortCheck, typeSortCheck])
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
-
   const renderData = () => {
+    if (isLoading) return <ShimmerEffectList count={5} />
+    if (error) return <div>Error: {error}</div>
     return sortedHotels?.map((travel, index) => {
       return (
         <InformationLongCard

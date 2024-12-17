@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import InformationLongCard from '~/components/InformationLongCard/InformationLongCard'
+import { InformationLongCard, ShimmerEffectList } from '~/components/InformationLongCard/InformationLongCard'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchTravel } from '~/store/travel.slice'
 import { AppDispatch, RootState } from '~/store'
@@ -36,6 +36,8 @@ export default function CarRentals() {
   }, [carRentals, sortCheck, typeSortCheck])
 
   const renderData = () => {
+    if (isLoading) return <ShimmerEffectList count={5} />
+    if (error) return <div>Error: {error}</div>
     return sortedCarRentals?.map((travel, index) => {
       return (
         <InformationLongCard
@@ -53,9 +55,6 @@ export default function CarRentals() {
       )
     })
   }
-
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
 
   return (
     <div className='w-2/3 mx-auto'>
