@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage'
 import BookingHistory from './pages/BookingHistory'
 import SocialPost from './pages/SocialPost'
 import TravelPage from './pages/TravelPage'
+import NotFoundPage from './pages/404Page'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -114,6 +115,11 @@ export default function useRouteElement() {
           )
         }
       ]
+    },
+
+    {
+      path: '*',
+      element: <NotFoundPage />
     }
   ])
   return routeElements
