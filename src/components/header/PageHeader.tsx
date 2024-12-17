@@ -17,16 +17,16 @@ interface PageInfo {
 }
 
 const pageData: Record<string, PageInfo> = {
-  '/carsRental': {
+  '/carRental': {
     title: 'Car hire for any kind of trip'
   },
-  '/flights': {
+  '/flight': {
     title: 'Find the Perfect Flight for Every Journey'
   },
-  '/attractions': {
+  '/tour': {
     title: 'Attractions, activities, and experiences'
   },
-  '/stays': {
+  '/hotel': {
     title: 'Choose your favourable home'
   }
 }

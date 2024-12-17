@@ -4,7 +4,7 @@ interface Props {
   id: string // Thêm id để xác định thẻ
   image: string
   title: string
-  location: string
+  city?: string
   description: string
   ratings: number
   price: number
@@ -38,7 +38,7 @@ export function ShimmerEffect() {
   )
 }
 
-export function InformationLongCard({ id, image, title, ratings, price, location, description, height }: Props) {
+export function InformationLongCard({ id, image, title, ratings, price, city, description, height }: Props) {
   const navigate = useNavigate()
 
   const handleCardClick = () => {
@@ -66,7 +66,7 @@ export function InformationLongCard({ id, image, title, ratings, price, location
       <div className='w-3/4'>
         <div className='ml-3 mt-3 text-2xl font-bold'>{title}</div>
         <div className='ml-3 mt-4 w-full pr-6 line-clamp-2'>{description}</div>
-        <div className='ml-3 mt-3'>{location}</div>
+        <div className='ml-3 mt-3'>{city}</div>
         <div className='flex mt-3 ml-3'>
           <div className='w-52'>
             <span
