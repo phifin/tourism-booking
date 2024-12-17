@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react'
-import InformationLongCard from '~/components/InformationLongCard/InformationLongCard'
+import { InformationLongCard, ShimmerEffectList } from '~/components/InformationLongCard/InformationLongCard'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchTravel } from '~/store/travel.slice'
 import { AppDispatch, RootState } from '~/store'
-import { Tour, TravelModel } from '~/models/travels.model'
+import { Hotel, Tour, TravelModel } from '~/models/travels.model'
 
-export default function Attractions() {
+export default function Attractions({ travelType }: { travelType: string }) {
   const dispatch: AppDispatch = useDispatch()
   const { travels, isLoading, error } = useSelector((state: RootState) => state.travels)
 
@@ -13,39 +13,38 @@ export default function Attractions() {
     dispatch(fetchTravel())
   }, [dispatch])
 
-  const tour = travels!.filter((travel: TravelModel) => travel.travelType === 'Tour') as Tour[]
+  const travel = travels!.filter((travel: TravelModel) => travel.travelType === travelType) as TravelModel[]
 
-  // Wrap the tourData initialization with useMemo to avoid unnecessary recalculations
-  const tourData = useMemo(() => {
-    return tour || [] // Fallback to an empty array if tour is undefined
-  }, [tour]) // Dependency on data.attractions to recalculate only when it changes
+  // Wrap the travelData initialization with useMemo to avoid unnecessary recalculations
+  const travelData = useMemo(() => {
+    return travel || [] // Fallback to an empty array if travel is undefined
+  }, [travel]) // Dependency on data.attractions to recalculate only when it changes
 
   const [sortCheck, setSortCheck] = useState(false)
   const [typeSortCheck, setTypeSortCheck] = useState('default')
 
   const sortedTourData = useMemo(() => {
-    if (!sortCheck) return tourData
+    if (!sortCheck) return travelData
 
-    const sorted = [...tourData]
+    const sorted = [...travelData]
     if (typeSortCheck === 'price') {
       sorted.sort((a, b) => Number(a.price) - Number(b.price))
     } else if (typeSortCheck === 'rating') {
       sorted.sort((a, b) => a.rating - b.rating)
     }
     return sorted
-  }, [tourData, sortCheck, typeSortCheck])
-
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
+  }, [travelData, sortCheck, typeSortCheck])
 
   const renderData = () => {
+    if (error) return <div>Error: {error}</div>
+    if (isLoading) return <ShimmerEffectList count={5} />
     return sortedTourData?.map((travel, index) => {
       return (
         <InformationLongCard
           key={index}
           id={travel.id}
           title={travel.title}
-          location={travel.city}
+          city={'city' in travel ? (travel as Hotel | Tour).city : undefined}
           ratings={travel.rating}
           image={travel.imageUrl[0]}
           description={travel.description}

@@ -4,15 +4,13 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import AuthenticationLayout from './layouts/AuthencationLayout'
 import PageHeader from './components/header'
-import Stays from './pages/Stays'
-import CarRental from './pages/CarRental/CarRental'
-import Attractions from './pages/Attractions'
-import Flights from './pages/Flights'
 import TourDetails from './pages/TourDetails'
 import { AppContext } from './context/app.context'
 import HomePage from './pages/HomePage'
 import BookingHistory from './pages/BookingHistory'
 import SocialPost from './pages/SocialPost'
+import TravelPage from './pages/TravelPage'
+import NotFoundPage from './pages/404Page'
 import UserProfile from './pages/UserProfile'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
@@ -39,35 +37,35 @@ export default function useRouteElement() {
       element: <ProtectedRoute />, // Apply ProtectedRoute here
       children: [
         {
-          path: '/stays',
+          path: '/hotel',
           element: (
             <PageHeader>
-              <Stays />
+              <TravelPage travelType='Hotel' />
             </PageHeader>
           ),
           index: true
         },
         {
-          path: '/carsRental',
+          path: '/carRental',
           element: (
             <PageHeader>
-              <CarRental />
+              <TravelPage travelType='CarRental' />
             </PageHeader>
           )
         },
         {
-          path: '/attractions',
+          path: '/tour',
           element: (
             <PageHeader>
-              <Attractions />
+              <TravelPage travelType='Tour' />
             </PageHeader>
           )
         },
         {
-          path: '/flights',
+          path: '/flight',
           element: (
             <PageHeader>
-              <Flights />
+              <TravelPage travelType='Flight' />
             </PageHeader>
           )
         },
@@ -126,6 +124,11 @@ export default function useRouteElement() {
           )
         }
       ]
+    },
+
+    {
+      path: '*',
+      element: <NotFoundPage />
     }
   ])
   return routeElements
