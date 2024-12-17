@@ -1,8 +1,6 @@
-
 import http from '~/utils/http'
 import { UserModel } from '~/models/user.model';
 
-// const baseUrl = 'http://localhost:3000/user';
 const dataPath = 'user';
 
 export const userApi = {
@@ -11,7 +9,7 @@ export const userApi = {
         return response.data;
     },
     fetchUserById: async (id: string): Promise<UserModel> => {
-        const response = await http.get<UserModel>(`${dataPath}/getUserById/${id}`);
+        const response = await http.get<UserModel>(`${dataPath}/${id}`);
         return response.data;
     },
     fetchUserByEmail: async (email: string): Promise<UserModel> => {

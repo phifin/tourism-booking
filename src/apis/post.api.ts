@@ -5,7 +5,7 @@ const URLGetAll = 'post'
 // const URLGetOne = 'travel/getTravelById'
 // const URLCreateBook = 'book/createBook'
 
-const postDataApi = {
+export const postApi = {
   getAllPosts() {
     return http.get<PostList>(URLGetAll).then((response) => {
       const posts = response.data
@@ -47,4 +47,3 @@ const postDataApi = {
   // }
 }
 
-export default postDataApi

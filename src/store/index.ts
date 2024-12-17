@@ -1,14 +1,16 @@
 // store/index.ts
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './user.slice';
-import travelReducer from './travel.slice';
-import bookingReducer from './booking.slice';
+import userSlice from './user.slice';
+import travelSlice from './travel.slice';
+import bookingSlice from './booking.slice';
+import postSlice from './post.slice';
 
 export const store = configureStore({
     reducer: {
-        travels: travelReducer,
-        user: userReducer,
-        bookings: bookingReducer,
+        user: userSlice,
+        travels: travelSlice,
+        bookings: bookingSlice,
+        posts: postSlice,
     },
 });
 
