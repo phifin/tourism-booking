@@ -22,28 +22,38 @@ const postDataApi = {
     }
     return http.post(URLLikePost, body)
   },
-  async createPost(userId: string | undefined, content: string, image: string | null, postId: string | null) {
-    try {
-      // Gọi method POST đầu tiên
-      const firstResponse = await http.post(URLUploadImage, {
-        image
-      })
+  async createPost(userId: string | undefined, content: string, image: File | null, postId: string | null) {
+    if (image) {
+      try {
+        // Gọi method POST đầu tiên
+        const firstResponse = await http.post(URLUploadImage, {
+          image
+        })
 
-      const imageUrl = firstResponse.data.imageUrl // Chỉnh lại key theo response thực tế
+        const imageUrl = firstResponse.data.imageUrl // Chỉnh lại key theo response thực tế
 
-      // Gọi method POST thứ hai với dữ liệu từ method đầu tiên
-      const secondResponse = await http.post(URLCreatePost, {
+        // Gọi method POST thứ hai với dữ liệu từ method đầu tiên
+        const secondResponse = await http.post(URLCreatePost, {
+          userId,
+          content,
+          postId,
+          imageUrl // Data from cloudinary
+        })
+
+        // Trả về kết quả từ method POST thứ hai
+        return secondResponse.data
+      } catch (error) {
+        console.error('Error creating post:', error)
+        throw error
+      }
+    } else {
+      const response = await http.post(URLCreatePost, {
         userId,
         content,
-        postId,
-        imageUrl // Data from cloudinary
+        postId
       })
 
-      // Trả về kết quả từ method POST thứ hai
-      return secondResponse.data
-    } catch (error) {
-      console.error('Error creating post:', error)
-      throw error
+      return response.data
     }
   }
   // createNewBooking(userId: string, travelId: string, bookedDate: string, amount: number) {

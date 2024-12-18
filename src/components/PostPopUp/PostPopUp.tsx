@@ -15,9 +15,9 @@ interface PostPopUpProps {
 }
 
 interface FormData {
-  userId: string
+  userId: string | undefined
   content: string
-  image: string
+  image: File
   postId: string
 }
 
@@ -29,7 +29,7 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
 
   const onSubmit = handleSubmit(async (data) => {
     const body = {
-      userId: data.userId,
+      userId: userData?.data._id,
       content: data.content,
       image: data.image,
       postId: data.postId
@@ -37,6 +37,10 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
     createPostMutation.mutate(body, {
       onSuccess: async (response) => {
         console.log(response)
+      },
+      onError: async (error) => {
+        console.log('image:', data.image)
+        console.log(error)
       }
     })
   })
@@ -59,7 +63,7 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
     if (files && files[0]) {
       const previewUrl = URL.createObjectURL(files[0])
       setPreviewImage(previewUrl)
-      setValue('image', files[0].name) // Cập nhật tên file vào React Hook Form
+      setValue('image', files[0])
     }
   }
 

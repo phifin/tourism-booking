@@ -1,4 +1,3 @@
-import React from 'react'
 import PostCard from '~/components/PostCard/PostCard'
 import { useQuery } from '@tanstack/react-query'
 import postDataApi from '~/apis/post.api'
@@ -17,11 +16,11 @@ export default function SocialPost() {
   if (!postData || postData.length === 0) {
     return <div>No posts available.</div>
   }
-
+  const posts = Array.isArray(postData) ? [...postData].reverse() : []
   return (
     <div className='mt-10 w-1/2 mx-auto space-y-11'>
       {/* Render PostCard components */}
-      {postData.map((post) => (
+      {posts.map((post) => (
         <PostCard
           key={post._id}
           id={post._id}
