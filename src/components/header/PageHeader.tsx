@@ -10,6 +10,11 @@ import { useSelector } from 'react-redux'
 
 interface Props {
   children: React.ReactNode
+  showNavBar?: boolean
+}
+
+PageHeader.defaultProps = {
+  showNavBar: true
 }
 
 interface PageInfo {
@@ -31,7 +36,7 @@ const pageData: Record<string, PageInfo> = {
   }
 }
 
-export default function PageHeader({ children }: Props) {
+export default function PageHeader({ children, showNavBar }: Props) {
   const { isAuthenticated, setIsAuthenticated, isAppLoading } = useContext(AppContext)
   const userRedux = useSelector((state: RootState) => state.user)
 
@@ -92,21 +97,23 @@ export default function PageHeader({ children }: Props) {
   return (
     <div>
       <div>
-        <div className="h-120 pt-20 bg-[url('/src/assets/head_Bg.jpg')] bg-cover bg-center">
-          <div className='mt-12 mx-auto text-white'>
-            <header className='pt-12 ml-44 text-5xl font-extrabold'>{title}</header>
-            <div className='mx-auto mt-10'>
-              <NavBar />
-            </div>
-            <div className='w-3/4 mx-auto mt-10'>
-              <SearchBar />
+        {showNavBar && (
+          <div className="h-120 pt-20 bg-[url('/src/assets/mountains.avif')] bg-cover bg-center">
+            <div className='mt-12 mx-auto text-white'>
+              <header className='pt-12 ml-44 text-5xl font-extrabold'>{title}</header>
+              <div className='mx-auto mt-10'>
+                <NavBar />
+              </div>
+              <div className='w-3/4 mx-auto mt-10'>
+                <SearchBar />
+              </div>
             </div>
           </div>
-        </div>
+        )}
         <div
-          className={classNames('fixed top-0 z-50 w-full bg-cover bg-center', {
-            'bg-white text-black border-b border-b-gray-300': isScrolled,
-            'bg-transparent text-white ': !isScrolled
+          className={classNames('fixed top-0 z-50 w-full bg-cover bg-center overscroll-none', {
+            'bg-white text-black border-b border-b-gray-300': isScrolled || !showNavBar,
+            'bg-transparent text-white ': !isScrolled && showNavBar
           })}
         >
           <div className='flex w-4/5 mx-auto '>
@@ -123,7 +130,7 @@ export default function PageHeader({ children }: Props) {
                   viewBox='0 0 24 24'
                   width='24px'
                   height='24px'
-                  fill={isScrolled ? 'black' : 'white'}
+                  fill={isScrolled || !showNavBar ? 'black' : 'white'}
                 >
                   <path d='M9.28 21.961a2.837 2.837 0 0 0 5.445 0 .75.75 0 1 0-1.44-.422 1.337 1.337 0 0 1-2.565 0 .75.75 0 1 0-1.44.422M12.75 3V.75a.75.75 0 0 0-1.5 0V3a.75.75 0 0 0 1.5 0m-.75.75a6.75 6.75 0 0 1 6.75 6.75c0 3.154.29 5.436.785 6.994.323 1.02.684 1.59.995 1.84L21 18H3l.59 1.212c.248-.315.572-.958.88-2 .49-1.66.78-3.872.78-6.712A6.75 6.75 0 0 1 12 3.75m0-1.5a8.25 8.25 0 0 0-8.25 8.25c0 2.702-.272 4.772-.72 6.288-.254.864-.493 1.336-.62 1.5A.75.75 0 0 0 3 19.5h18c.708 0 1.022-.892.47-1.335.019.016-.008-.015-.07-.113-.14-.223-.29-.553-.435-1.012-.443-1.396-.715-3.529-.715-6.54A8.25 8.25 0 0 0 12 2.25'></path>
                 </svg>
@@ -143,7 +150,7 @@ export default function PageHeader({ children }: Props) {
                       viewBox='0 0 32 32'
                       aria-hidden='true'
                       role='presentation'
-                      fill={isScrolled ? 'black' : 'white'}
+                      fill={isScrolled || !showNavBar ? 'black' : 'white'}
                       width={27}
                       height={27}
                     >
@@ -173,7 +180,7 @@ export default function PageHeader({ children }: Props) {
                           <path d='M16.5 6a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0M18 6A6 6 0 1 0 6 6a6 6 0 0 0 12 0M3 23.25a9 9 0 1 1 18 0 .75.75 0 0 0 1.5 0c0-5.799-4.701-10.5-10.5-10.5S1.5 17.451 1.5 23.25a.75.75 0 0 0 1.5 0'></path>
                         </svg>
                       </span>
-                      Manage account
+                      <Link to={'/user'}>Manage Account</Link>
                     </span>
                     <span className='py-4 pl-5 flex hover:bg-slate-500 hover:bg-opacity-10'>
                       <span>
