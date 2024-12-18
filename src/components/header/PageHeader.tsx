@@ -100,7 +100,6 @@ export default function PageHeader({ children, showNavBar }: Props) {
         className={classNames('top-0 z-50 w-full bg-cover bg-center overscroll-none', {
           'fixed bg-white text-black shadow-md transition-all duration-300 ease-in-out': isScrolled && showNavBar,
           'bg-transparent text-white transition-all duration-300 ease-in-out': !isScrolled && showNavBar,
-          // // if !showNavBar, then the background is white with black text
           'fixed bg-white text-black shadow-md': !showNavBar
         })}
       >
@@ -156,20 +155,22 @@ export default function PageHeader({ children, showNavBar }: Props) {
                     }
                   )}
                 >
-                  <span className='flex py-4 pl-5 hover:bg-slate-500 hover:bg-opacity-10'>
-                    <span>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        viewBox='0 0 24 24'
-                        width='16px'
-                        height='16px'
-                        className='mr-3'
-                      >
-                        <path d='M16.5 6a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0M18 6A6 6 0 1 0 6 6a6 6 0 0 0 12 0M3 23.25a9 9 0 1 1 18 0 .75.75 0 0 0 1.5 0c0-5.799-4.701-10.5-10.5-10.5S1.5 17.451 1.5 23.25a.75.75 0 0 0 1.5 0'></path>
-                      </svg>
+                  <Link to={'/user'}>
+                    <span className='flex py-4 pl-5 hover:bg-slate-500 hover:bg-opacity-10'>
+                      <span>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          viewBox='0 0 24 24'
+                          width='16px'
+                          height='16px'
+                          className='mr-3'
+                        >
+                          <path d='M16.5 6a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0M18 6A6 6 0 1 0 6 6a6 6 0 0 0 12 0M3 23.25a9 9 0 1 1 18 0 .75.75 0 0 0 1.5 0c0-5.799-4.701-10.5-10.5-10.5S1.5 17.451 1.5 23.25a.75.75 0 0 0 1.5 0'></path>
+                        </svg>
+                      </span>
+                      Manage Account
                     </span>
-                    <Link to={'/user'}>Manage Account</Link>
-                  </span>
+                  </Link>
                   <span className='py-4 pl-5 flex hover:bg-slate-500 hover:bg-opacity-10'>
                     <span>
                       <svg

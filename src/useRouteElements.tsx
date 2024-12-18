@@ -100,6 +100,14 @@ export default function useRouteElement() {
               <UserPage />
             </PageHeader>
           )
+        },
+        {
+          path: '/user/*',
+          element: (
+            <PageHeader showNavBar={false}>
+              <UserPage />
+            </PageHeader>
+          )
         }
       ]
     },
