@@ -22,38 +22,39 @@ const postDataApi = {
     }
     return http.post(URLLikePost, body)
   },
-  async createPost(userId: string | undefined, content: string, image: File | null, postId: string | null) {
-    if (image) {
-      try {
-        // Gọi method POST đầu tiên
-        const firstResponse = await http.post(URLUploadImage, {
-          image
-        })
+  async createPost({
+    userId,
+    content,
+    postId,
+    imageUrl
+  }: {
+    userId: string | undefined
+    content: string
+    postId: string | null
+    imageUrl: string | null
+  }) {
+    const response = await http.post(URLCreatePost, {
+      userId,
+      content,
+      postId,
+      imageUrl
+    })
+    return response.data
+  },
+  async uploadImage(image: File) {
+    const formData = new FormData()
+    formData.append('image', image)
 
-        const imageUrl = firstResponse.data.imageUrl // Chỉnh lại key theo response thực tế
-
-        // Gọi method POST thứ hai với dữ liệu từ method đầu tiên
-        const secondResponse = await http.post(URLCreatePost, {
-          userId,
-          content,
-          postId,
-          imageUrl // Data from cloudinary
-        })
-
-        // Trả về kết quả từ method POST thứ hai
-        return secondResponse.data
-      } catch (error) {
-        console.error('Error creating post:', error)
-        throw error
-      }
-    } else {
-      const response = await http.post(URLCreatePost, {
-        userId,
-        content,
-        postId
+    try {
+      const response = await http.post(URLUploadImage, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       })
-
-      return response.data
+      return response.data // Trả về URL của ảnh từ Cloudinary
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      throw error
     }
   }
   // createNewBooking(userId: string, travelId: string, bookedDate: string, amount: number) {
