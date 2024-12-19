@@ -4,7 +4,7 @@ export interface UserModel {
     password: string
     firstName: string
     lastName: string
-    number: string
+    phoneNumber: string
     userFriends: never[]
     refreshToken: string
     bookmarkedTravels: string[]

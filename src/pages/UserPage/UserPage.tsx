@@ -99,6 +99,8 @@ interface UserPageProps {
 }
 
 export default function UserPage({ children }: UserPageProps) {
+  console.log('welcome to user page')
+
   const userRedux = useSelector((state: RootState) => state.user)
 
   if (userRedux.loading || userRedux.data == null) return <div>Loading...</div>

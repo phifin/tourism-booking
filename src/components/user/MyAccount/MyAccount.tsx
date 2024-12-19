@@ -17,7 +17,7 @@ const MyAccount: React.FC = () => {
     firstName: userRedux.data.firstName,
     lastName: userRedux.data.lastName,
     email: userRedux.data.email,
-    number: userRedux.data.number,
+    phoneNumber: userRedux.data.phoneNumber,
     profileImageUrl: userRedux.data.profileImageUrl
   })
 
@@ -128,8 +128,8 @@ const MyAccount: React.FC = () => {
             <label className='block text-sm font-medium text-gray-700'>Phone Number</label>
             <input
               type='tel'
-              name='number'
-              value={formData.number}
+              name='phoneNumber'
+              value={formData.phoneNumber || ''}
               onChange={handleChange}
               className='w-full mt-1 px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500'
             />

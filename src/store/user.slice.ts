@@ -36,7 +36,7 @@ export const editUser = createAsyncThunk(
     'user/editUser',
     async (body: Props, { rejectWithValue }) => {
         try {
-            await userApi.editUserById(body.id, body.data);
+            userApi.editUserById(body.id, body.data);
             return body;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || 'Failed to edit user');
@@ -74,9 +74,7 @@ const userSlice = createSlice({
             })
             .addCase(editUser.fulfilled, (state, action: PayloadAction<Props>) => {
                 if (state.data) {
-                    console.log("before: ", state.data);
                     state.data = { ...state.data, ...action.payload.data }; // Merge the passed data with current user data
-                    console.log("after: ", state.data);
                 }
                 state.loading = false;
             })
