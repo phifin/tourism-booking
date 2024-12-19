@@ -155,7 +155,7 @@ export default function PageHeader({ children, showNavBar }: Props) {
                     }
                   )}
                 >
-                  <Link to={'/user'}>
+                  <Link to={'/user/account'}>
                     <span className='flex py-4 pl-5 hover:bg-slate-500 hover:bg-opacity-10'>
                       <span>
                         <svg

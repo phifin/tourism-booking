@@ -12,6 +12,7 @@ import SocialPost from './pages/SocialPost'
 import TravelPage from './pages/TravelPage'
 import NotFoundPage from './pages/404Page'
 import UserPage from './pages/UserPage/UserPage'
+import MyAccount from './components/user/MyAccount/MyAccount'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -98,6 +99,16 @@ export default function useRouteElement() {
           element: (
             <PageHeader showNavBar={false}>
               <UserPage />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/user/account',
+          element: (
+            <PageHeader showNavBar={false}>
+              <UserPage>
+                <MyAccount />
+              </UserPage>
             </PageHeader>
           )
         },

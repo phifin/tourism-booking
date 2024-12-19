@@ -14,6 +14,11 @@ const initialState: UserState = {
     error: null,
 };
 
+interface Props {
+    id: string;
+    data: Partial<UserModel>
+}
+
 // Async thunk to fetch user data
 export const fetchUser = createAsyncThunk(
     'user/fetchUser',
@@ -27,6 +32,18 @@ export const fetchUser = createAsyncThunk(
     }
 );
 
+export const editUser = createAsyncThunk(
+    'user/editUser',
+    async (body: Props, { rejectWithValue }) => {
+        try {
+            await userApi.editUserById(body.id, body.data);
+            return body;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || 'Failed to edit user');
+        }
+    }
+)
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -37,6 +54,7 @@ const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            // Fetch User Cases
             .addCase(fetchUser.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -46,6 +64,23 @@ const userSlice = createSlice({
                 state.loading = false;
             })
             .addCase(fetchUser.rejected, (state, action: PayloadAction<any>) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // Edit User Cases
+            .addCase(editUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(editUser.fulfilled, (state, action: PayloadAction<Props>) => {
+                if (state.data) {
+                    console.log("before: ", state.data);
+                    state.data = { ...state.data, ...action.payload.data }; // Merge the passed data with current user data
+                    console.log("after: ", state.data);
+                }
+                state.loading = false;
+            })
+            .addCase(editUser.rejected, (state, action: PayloadAction<any>) => {
                 state.loading = false;
                 state.error = action.payload;
             });

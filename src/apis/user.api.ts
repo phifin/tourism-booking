@@ -15,5 +15,9 @@ export const userApi = {
     fetchUserByEmail: async (email: string): Promise<UserModel> => {
         const response = await http.get<UserModel>(`${dataPath}/getUserByEmail/${encodeURIComponent(email)}`);
         return response.data;
-    }
+    },
+    editUserById: async (id: string, body: Partial<UserModel>): Promise<UserModel> => {
+        const response = await http.put<UserModel>(`${dataPath}/${id}`, body);
+        return response.data;
+    },
 }
