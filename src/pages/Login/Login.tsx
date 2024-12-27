@@ -7,10 +7,9 @@ import loginImage from '~/assets/login_page.avif'
 import { AppContext } from '~/context/app.context'
 import getRules from '~/utils/rules'
 import { isAxiosUnauthorizedError } from '~/utils/utils'
-import { useContext, useState, useEffect } from 'react'
-import { userApi } from '~/apis/user.api'
-import { jwtDecode } from 'jwt-decode'
-
+import { useContext } from 'react'
+// import { userApi } from '~/apis/user.api'
+// import { useQuery } from '@tanstack/react-query'
 interface FormData {
   email: string
   password: string
@@ -18,7 +17,6 @@ interface FormData {
 }
 
 export default function Login() {
-  console.log('Login component rendered')
   const {
     register,
     setError,
@@ -67,18 +65,16 @@ export default function Login() {
     })
   })
 
-  const { data: userData } = useQuery({
-    queryKey: ['userData', userEmail],
-    queryFn: async () => {
-      console.log('Fetching userData with email:', userEmail)
-      const response = await userApi.fetchUserByEmail(userEmail!)
-      console.log('Response from API:', response)
-      return response
-    },
-    enabled: !!userEmail // Chỉ fetch khi `userEmail` có giá trị
-  })
-  console.log('userdata:', userData)
-  console.log('useremail:', userEmail)
+  // const { data: userData } = useQuery({
+  //   queryKey: ['userData', userEmail],
+  //   queryFn: async () => {
+  //     console.log('Fetching userData with email:', userEmail)
+  //     const response = await userApi.fetchUserByEmail(userEmail!)
+  //     console.log('Response from API:', response)
+  //     return response
+  //   },
+  //   enabled: !!userEmail // Chỉ fetch khi `userEmail` có giá trị
+  // })
 
   const rules = getRules()
 
