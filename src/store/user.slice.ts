@@ -72,47 +72,23 @@ const userSlice = createSlice({
         // Kiểm tra nếu payload là undefined, thì gán giá trị mặc định
         state.error = action.payload ?? 'An unknown error occurred'
       })
+      // Edit User Cases
+      .addCase(editUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editUser.fulfilled, (state, action: PayloadAction<Props>) => {
+        if (state.data) {
+          state.data = { ...state.data, ...action.payload.data }; // Merge the passed data with current user data
+        }
+        state.loading = false;
+      })
+      .addCase(editUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   }
 })
-name: 'user',
-  initialState,
-  reducers: {
-  logout: (state) => {
-    state.data = null;
-  },
-    },
-extraReducers: (builder) => {
-  builder
-    // Fetch User Cases
-    .addCase(fetchUser.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    })
-    .addCase(fetchUser.fulfilled, (state, action: PayloadAction<UserModel>) => {
-      state.data = action.payload;
-      state.loading = false;
-    })
-    .addCase(fetchUser.rejected, (state, action: PayloadAction<any>) => {
-      state.loading = false;
-      state.error = action.payload;
-    })
-    // Edit User Cases
-    .addCase(editUser.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    })
-    .addCase(editUser.fulfilled, (state, action: PayloadAction<Props>) => {
-      if (state.data) {
-        state.data = { ...state.data, ...action.payload.data }; // Merge the passed data with current user data
-      }
-      state.loading = false;
-    })
-    .addCase(editUser.rejected, (state, action: PayloadAction<any>) => {
-      state.loading = false;
-      state.error = action.payload;
-    });
-},
-});
 
 export const { logout } = userSlice.actions
 export default userSlice.reducer
