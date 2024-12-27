@@ -1,54 +1,32 @@
-import { useContext } from 'react'
-import { AppContext } from '~/context/app.context'
-import { useQuery } from '@tanstack/react-query'
-import userDataApi from '~/apis/userData.api'
-import bookingApi from '~/apis/booking.api'
+import { useEffect } from 'react'
 import BookingCard from '~/components/BookingCard/BookingCard'
-
-interface Booking {
-  travelId: string
-  bookDate: Date
-}
+import { AppDispatch, RootState } from '~/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchBookingsByUserId } from '~/store/booking.slice'
+import { BookingModel } from '~/models/booking.model'
 
 export default function BookingHistory() {
-  const { userEmail } = useContext(AppContext)
+  const dispatch: AppDispatch = useDispatch()
+  const { bookings, isLoading, error } = useSelector((state: RootState) => state.bookings)
+  const userRedux = useSelector((state: RootState) => state.user)
 
-  // Fetch user data
-  const { data: userData } = useQuery(['userData', userEmail], () => userDataApi.getUserData(userEmail))
-  const userId = userData?.data._id || ''
+  useEffect(() => {
+    if (userRedux.data) {
+      dispatch(fetchBookingsByUserId(userRedux.data!.id))
+    }
+  }, [dispatch])
 
-  // Fetch booking data - sử dụng enabled để chỉ thực thi khi userId đã có giá trị
-  const { data: bookingData, isLoading: isBookingLoading } = useQuery({
-    queryKey: ['bookings', userId],
-    queryFn: () => bookingApi.getAllBookings(userId),
-    enabled: !!userId // Chỉ thực thi query khi userId có giá trị
-  })
-
-  // Lấy tất cả travelId từ dữ liệu booking trả về
-  const response: Booking[] =
-    bookingData?.map((booking) => ({
-      travelId: booking.travelId,
-      bookDate: booking.bookedDate
-    })) || []
-
-  // Render loading trạng thái nếu booking data chưa được load
-  if (isBookingLoading) {
-    return <div>Loading booking history...</div>
-  }
-
-  // Nếu không có userId, hiển thị lỗi
-  if (!userId) {
-    return <div>No user found!</div>
-  }
+  if (isLoading || userRedux.loading) return <div>Loading...</div>
+  if (error || userRedux.error) return <div>Error: {error}</div>
 
   // Hàm render BookingCard
   const renderBookingCards = () => {
-    if (response.length === 0) {
+    if (bookings === null || bookings.length === 0) {
       return <div>No bookings found!</div>
     }
 
-    return response.map((book: Booking) => (
-      <BookingCard key={book.travelId} travelId={book.travelId} bookDate={book.bookDate} />
+    return bookings.map((book: BookingModel) => (
+      <BookingCard key={book.travelId} travelId={book.travelId} bookDate={book.bookedDate} />
     ))
   }
 

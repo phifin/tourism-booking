@@ -7,7 +7,10 @@ import loginImage from '~/assets/login_page.avif'
 import { AppContext } from '~/context/app.context'
 import getRules from '~/utils/rules'
 import { isAxiosUnauthorizedError } from '~/utils/utils'
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
+import { userApi } from '~/apis/user.api'
+import { jwtDecode } from 'jwt-decode'
+
 interface FormData {
   email: string
   password: string
@@ -63,6 +66,19 @@ export default function Login() {
       }
     })
   })
+
+  const { data: userData } = useQuery({
+    queryKey: ['userData', userEmail],
+    queryFn: async () => {
+      console.log('Fetching userData with email:', userEmail)
+      const response = await userApi.fetchUserByEmail(userEmail!)
+      console.log('Response from API:', response)
+      return response
+    },
+    enabled: !!userEmail // Chỉ fetch khi `userEmail` có giá trị
+  })
+  console.log('userdata:', userData)
+  console.log('useremail:', userEmail)
 
   const rules = getRules()
 

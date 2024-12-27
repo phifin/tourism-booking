@@ -2,9 +2,9 @@ import React, { useRef, useState, useContext } from 'react'
 import PostUserProfile from '../PostUserProfile'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { AppContext } from '~/context/app.context'
-import userDataApi from '~/apis/userData.api'
-import postDataApi from '~/apis/post.api'
 import { useForm } from 'react-hook-form'
+import { userApi } from '~/apis/user.api'
+import { postApi } from '~/apis/post.api'
 
 interface FormData {
   content: string
@@ -20,7 +20,7 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
   const { userEmail } = useContext(AppContext)
 
   // Fetch user data
-  const { data: userData } = useQuery(['userData', userEmail], () => userDataApi.getUserData(userEmail))
+  const { data: userData } = useQuery(['userData', userEmail], () => userApi.fetchUserByEmail(userEmail))
 
   // State for image preview
   const [previewImage, setPreviewImage] = useState<string>('')
@@ -34,12 +34,12 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
       let imageUrl = null
 
       if (formData.image) {
-        const uploadResponse = await postDataApi.uploadImage(formData.image)
-        imageUrl = uploadResponse.imageUrl
+        const uploadResponse = await postApi.uploadImage(formData.image)
+        imageUrl = uploadResponse.url
       }
 
-      return postDataApi.createPost({
-        userId: userData?.data._id,
+      return postApi.createPost({
+        userId: userData?.id,
         content: formData.content,
         postId: null,
         imageUrl
@@ -92,7 +92,7 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
         </div>
       </div>
       <div>
-        <PostUserProfile createdAt='' userId={userData?.data._id ? userData?.data._id : ''} />
+        <PostUserProfile createdAt='' userId={userData?.id ? userData?.id : ''} />
       </div>
       <input
         className='mt-4 ml-4 w-95/100 text-2xl border-none focus:ring-0 focus:outline-none bg-slate-50'

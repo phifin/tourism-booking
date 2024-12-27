@@ -1,16 +1,15 @@
-import { PostList } from '~/types/post.type'
 import http from '~/utils/http'
-
+import { PostModel } from '~/models/post.model'
 const URLGetAll = 'post'
 const URLLikePost = 'post/likePost'
-const URLCreatePost = 'post/createPost'
-const URLUploadImage = 'post/uploadImage'
+const URLCreatePost = 'post'
+const URLUploadImage = 'cloudinary/uploadImage'
 // const URLGetOne = 'travel/getTravelById'
 // const URLCreateBook = 'book/createBook'
 
-const postDataApi = {
+export const postApi = {
   getAllPosts() {
-    return http.get<PostList>(URLGetAll).then((response) => {
+    return http.get<PostModel[]>(URLGetAll).then((response) => {
       const posts = response.data
       return posts
     })
@@ -43,7 +42,7 @@ const postDataApi = {
   },
   async uploadImage(image: File) {
     const formData = new FormData()
-    formData.append('image', image)
+    formData.append('file', image)
 
     try {
       const response = await http.post(URLUploadImage, formData, {
@@ -51,6 +50,7 @@ const postDataApi = {
           'Content-Type': 'multipart/form-data'
         }
       })
+      console.log(response.data)
       return response.data // Trả về URL của ảnh từ Cloudinary
     } catch (error) {
       console.error('Error uploading image:', error)
@@ -90,5 +90,3 @@ const postDataApi = {
   //   })
   // }
 }
-
-export default postDataApi

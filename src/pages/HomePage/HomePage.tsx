@@ -3,26 +3,33 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
-import { useQuery } from '@tanstack/react-query'
-import travelApi from '~/apis/travels.api'
 import InformationCard from '~/components/InformationCard'
 import HomeCardSlide from '~/components/HomeCardSlide'
+import { CarRental, Flight, Hotel, Tour, TravelModel } from '~/models/travels.model'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { AppDispatch, RootState } from '~/store'
+import { fetchTravel } from '~/store/travel.slice'
 
 export default function HomePage() {
-  const { data } = useQuery({
-    queryKey: ['travels'],
-    queryFn: () => travelApi.getTravelsByType()
-  })
-  const tourData = data?.attractions
-  const stayData = data?.stays
-  const flightData = data?.flights
-  const carRentalData = data?.carRentals
+  const { travels, isLoading, error } = useSelector((state: RootState) => state.travels)
+  const dispatch: AppDispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchTravel())
+  }, [dispatch])
+
+  const tourData = travels?.filter((travel: TravelModel) => travel.travelType === 'Tour') as Tour[]
+  const hotelData = travels?.filter((travel: TravelModel) => travel.travelType === 'Hotel') as Hotel[]
+  const flightData = travels?.filter((travel: TravelModel) => travel.travelType === 'Flight') as Flight[]
+  const carRentalData = travels?.filter((travel: TravelModel) => travel.travelType === 'CarRental') as CarRental[]
+
   const renderTourData = () => {
     return tourData?.map((travel, index) => {
       return (
         <SwiperSlide key={index}>
           <InformationCard
-            id={travel._id}
+            id={travel.id}
             title={travel.title}
             place={travel.city}
             ratings={travel.rating}
@@ -35,11 +42,11 @@ export default function HomePage() {
   }
 
   const renderStayData = () => {
-    return stayData?.map((travel, index) => {
+    return hotelData?.map((travel, index) => {
       return (
         <SwiperSlide key={index}>
           <InformationCard
-            id={travel._id}
+            id={travel.id}
             title={travel.title}
             place={travel.city}
             ratings={travel.rating}
@@ -56,7 +63,7 @@ export default function HomePage() {
       return (
         <SwiperSlide key={index}>
           <InformationCard
-            id={travel._id}
+            id={travel.id}
             title={travel.title}
             place={travel.destination}
             ratings={travel.rating}
@@ -73,7 +80,7 @@ export default function HomePage() {
       return (
         <SwiperSlide key={index}>
           <InformationCard
-            id={travel._id}
+            id={travel.id}
             title={travel.title}
             place={travel.location}
             ratings={travel.rating}
@@ -84,6 +91,9 @@ export default function HomePage() {
       )
     })
   }
+
+  if (error) return <div>Error: {error}</div>
+  if (isLoading) return <div>Loading...</div>
 
   return (
     <div className='w-4/5 mx-auto mt-10'>
@@ -100,21 +110,23 @@ export default function HomePage() {
           <img src='/src/assets/christmas.avif' alt='banner' className='w-full h-full object-fill mt-5' />
         </div>
       </div>
-      <div className='mt-28'>
-        <header className='text-3xl font-bold'>Most Attractive Place</header>
-        <HomeCardSlide renderData={renderTourData} />
-      </div>
-      <div className='mt-24'>
-        <header className='text-3xl font-bold'>Your Best Suitable Flights</header>
-        <HomeCardSlide renderData={renderFlightData} />
-      </div>
-      <div className='mt-24'>
-        <header className='text-3xl font-bold'>Most Comfortable And Convenient Houses</header>
-        <HomeCardSlide renderData={renderStayData} />
-      </div>
-      <div className='mt-24'>
-        <header className='text-3xl font-bold'>Most Reasonable Pricing CarRental</header>
-        <HomeCardSlide renderData={renderCarRentalData} />
+      <div>
+        <div className='mt-28'>
+          <header className='text-3xl font-bold'>Most Attractive Place</header>
+          <HomeCardSlide renderData={renderTourData} />
+        </div>
+        <div className='mt-24'>
+          <header className='text-3xl font-bold'>Your Best Suitable Flights</header>
+          <HomeCardSlide renderData={renderFlightData} />
+        </div>
+        <div className='mt-24'>
+          <header className='text-3xl font-bold'>Most Comfortable And Convenient Houses</header>
+          <HomeCardSlide renderData={renderStayData} />
+        </div>
+        <div className='mt-24'>
+          <header className='text-3xl font-bold'>Most Reasonable Pricing CarRental</header>
+          <HomeCardSlide renderData={renderCarRentalData} />
+        </div>
       </div>
     </div>
   )

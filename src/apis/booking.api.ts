@@ -1,13 +1,13 @@
-import { BookingList } from '~/types/booking.type'
+import { BookingModel } from '~/models/booking.model'
 import http from '~/utils/http'
 
-const URLGetAll = 'book/getAllBooksByUserId'
-// const URLGetOne = 'travel/getTravelById'
-const URLCreateBook = 'book/createBook'
+const basePath = 'book'
 
 const bookingApi = {
-  getAllBookings(id: string) {
-    return http.get<BookingList>(`${URLGetAll}/${id}`).then((response) => {
+  getAllBookingsByUserId(id: string) {
+    console.log(`${basePath}/getAllBooksByUserId/${id}`)
+
+    return http.get<BookingModel[]>(`${basePath}/getAllBooksByUserId/${id}`).then((response) => {
       const bookings = response.data
       return bookings
     })
@@ -21,29 +21,8 @@ const bookingApi = {
       amount
     }
 
-    return http.post(URLCreateBook, body)
+    return http.post<BookingModel>(`${basePath}`, body)
   }
-  // getBookById<Booking>(id: string): Promise<T> {
-  //   return http.get<Booking>(`${URLGetOne}/${id}`).then((response) => {
-  //     const BookingDetail = response.data
-
-  //     // Type guard to ensure type correctness
-  //     if (travelDetail.travelType === 'flight' && (travelDetail as Flight)) {
-  //       return travelDetail as T
-  //     }
-  //     if (travelDetail.travelType === 'carRental' && (travelDetail as CarRental)) {
-  //       return travelDetail as T
-  //     }
-  //     if (travelDetail.travelType === 'tour' && (travelDetail as Attraction)) {
-  //       return travelDetail as T
-  //     }
-  //     if (travelDetail.travelType === 'hotel' && (travelDetail as Stay)) {
-  //       return travelDetail as T
-  //     }
-
-  //     throw new Error(`Unexpected travel type: ${travelDetail.travelType}`)
-  //   })
-  // }
 }
 
 export default bookingApi

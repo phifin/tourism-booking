@@ -1,6 +1,6 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import userDataApi from '~/apis/userData.api'
+import { userApi } from '~/apis/user.api'
 import { format, formatDistanceToNow, isToday, isYesterday, differenceInDays } from 'date-fns'
 type PostUserProfileProps = {
   userId: string
@@ -8,7 +8,7 @@ type PostUserProfileProps = {
 }
 
 export default function PostUserProfile({ userId, createdAt }: PostUserProfileProps) {
-  const { data: userData } = useQuery(['userData', userId], () => userDataApi.getUserDataById(userId), {
+  const { data: userData } = useQuery(['userData', userId], () => userApi.fetchUserById(userId), {
     enabled: !!userId // Chỉ fetch khi userId tồn tại
   })
   const formattedTime = () => {
@@ -38,16 +38,14 @@ export default function PostUserProfile({ userId, createdAt }: PostUserProfilePr
       <div className='flex items-center'>
         <div className='h-12 w-12 object-cover overflow-hidden border rounded-full'>
           <img
-            src={
-              userData?.data.profileImageUrl ? userData?.data.profileImageUrl : '/src/assets/default_profile_img.jpg'
-            }
+            src={userData?.profileImageUrl ? userData?.profileImageUrl : '/src/assets/default_profile_img.jpg'}
             alt='userProfile'
             className='p-1'
           />
         </div>
       </div>
       <div className='px-2 py-1 mt-1'>
-        <header className='font-bold'>{userData?.data?.lastName + ' ' + userData?.data?.firstName}</header>
+        <header className='font-bold'>{userData?.lastName + ' ' + userData?.firstName}</header>
         <div className='text-gray-500 mt-1'>{formattedTime()}</div>
       </div>
     </div>
