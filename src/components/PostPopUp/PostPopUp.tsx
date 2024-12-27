@@ -16,7 +16,7 @@ interface PostPopUpProps {
 }
 
 export default function PostPopUp({ onClick }: PostPopUpProps) {
-  const { register, handleSubmit, setValue, reset } = useForm<FormData>()
+  const { register, handleSubmit, setValue, reset, watch } = useForm<FormData>()
   const { userEmail } = useContext(AppContext)
 
   // Fetch user data
@@ -76,6 +76,12 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
     createPostMutation.mutate(data)
   })
 
+  const content = watch('content')
+  const image = watch('image')
+
+  // Enable button only if content or image is provided, and not during mutation loading
+  const isPostEnabled = !!content || (!!image && !createPostMutation.isLoading)
+
   return (
     <form
       className={`fixed justify-center top-40 left-95 z-50 
@@ -116,7 +122,7 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
       </div>
       <button
         type='submit'
-        disabled={createPostMutation.isLoading} // Disable button while loading
+        disabled={!isPostEnabled} // Disable button while loading
         className='flex items-center justify-center mt-3 h-12 mx-auto bg-blue-600 hover:bg-blue-700 text-white border w-95/100 border-gray-400 rounded-xl font-semibold cursor-pointer'
       >
         {createPostMutation.isLoading ? 'Posting...' : 'Post'}
