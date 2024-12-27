@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { UserModel } from '~/models/user.model'
 import { AppDispatch, RootState } from '~/store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { editUser } from '~/store/user.slice'
+import { cloudinaryApi } from '~/apis/cloudinary.api'
 
 const MyAccount: React.FC = () => {
   const userRedux = useSelector((state: RootState) => state.user)
@@ -13,13 +14,24 @@ const MyAccount: React.FC = () => {
   if (userRedux.loading || userRedux.data == null) return <div>Loading...</div>
   if (userRedux.error) return <div>Error: {userRedux.error}</div>
 
-  const [formData, setFormData] = useState<Partial<UserModel>>({
+  const initialFormData: Partial<UserModel> = {
     firstName: userRedux.data.firstName,
     lastName: userRedux.data.lastName,
     email: userRedux.data.email,
     phoneNumber: userRedux.data.phoneNumber,
     profileImageUrl: userRedux.data.profileImageUrl
-  })
+  }
+
+  const [formData, setFormData] = useState<Partial<UserModel>>(initialFormData)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+
+  useEffect(() => {
+    // Compare current formData with initialFormData
+    const isSameAsInitial = Object.keys(initialFormData).every(
+      (key) => formData[key as keyof UserModel] === initialFormData[key as keyof UserModel]
+    )
+    setIsButtonDisabled(isSameAsInitial) // Disable button if form data matches initial state
+  }, [formData, initialFormData])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -46,12 +58,33 @@ const MyAccount: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    dispatch(
-      editUser({
-        id: userRedux.data!.id,
-        data: formData
-      })
-    )
+    if (formData.profileImageUrl !== initialFormData.profileImageUrl) {
+      // Convert the base64 image back to a File object
+      const fileInput = document.querySelector<HTMLInputElement>('input[type="file"]')
+
+      if (fileInput && fileInput.files) {
+        const file = fileInput.files[0]
+        cloudinaryApi.uploadImage(file).then((response) => {
+          const imageUrl = response.data.secure_url
+          dispatch(
+            editUser({
+              id: userRedux.data!.id,
+              data: {
+                ...formData,
+                profileImageUrl: imageUrl
+              }
+            })
+          )
+        })
+      }
+    } else {
+      dispatch(
+        editUser({
+          id: userRedux.data!.id,
+          data: formData
+        })
+      )
+    }
   }
 
   return (
@@ -139,7 +172,12 @@ const MyAccount: React.FC = () => {
           <div>
             <button
               type='submit'
-              className='w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400'
+              disabled={isButtonDisabled}
+              className={`w-full py-2 px-4 rounded-md ${
+                isButtonDisabled
+                  ? 'bg-gray-400 text-white cursor-not-allowed'
+                  : 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-400'
+              }`}
             >
               Save Changes
             </button>
