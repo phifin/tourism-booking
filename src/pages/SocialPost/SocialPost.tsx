@@ -1,9 +1,9 @@
 import PostCard from '~/components/PostCard/PostCard'
-import { Post } from '~/types/post.type'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '~/store'
 import { useEffect } from 'react'
 import { fetchAllPosts } from '~/store/post.slice'
+import { PostModel } from '~/models/post.model'
 
 export default function SocialPost() {
   // Fetch all post data
@@ -27,21 +27,13 @@ export default function SocialPost() {
     return <div>No posts available.</div>
   }
 
+  const posts = Array.isArray(postRedux.data) ? [...postRedux.data].reverse() : []
+
   return (
     <div className='mt-10 w-1/2 mx-auto space-y-11'>
       {/* Render PostCard components */}
-      {postRedux.data.map((post: Post) => (
-        <PostCard
-          key={post.id}
-          id={post.id}
-          userId={post.userId}
-          content={post.content}
-          likes={post.likes}
-          comments={post.comments}
-          imageUrl={post.imageUrl}
-          shares={post.shares}
-          createdAt={post.createdAt}
-        />
+      {posts.map((post: PostModel) => (
+        <PostCard key={post.id} postData={post} />
       ))}
     </div>
   )

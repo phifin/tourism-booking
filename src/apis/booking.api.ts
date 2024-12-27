@@ -1,11 +1,11 @@
-import { BookingModel } from '~/models/booking.model';
+import { BookingModel } from '~/models/booking.model'
 import http from '~/utils/http'
 
 const basePath = 'book'
 
 const bookingApi = {
   getAllBookingsByUserId(id: string) {
-    console.log(`${basePath}/getAllBooksByUserId/${id}`);
+    console.log(`${basePath}/getAllBooksByUserId/${id}`)
 
     return http.get<BookingModel[]>(`${basePath}/getAllBooksByUserId/${id}`).then((response) => {
       const bookings = response.data

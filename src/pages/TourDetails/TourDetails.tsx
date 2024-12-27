@@ -1,19 +1,16 @@
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 // import userDataApi from '~/apis/userData.api'
-import { userApi } from '~/apis/user.api'
 import travelApi from '~/apis/travels.api'
-import bookingApi from '~/apis/booking.api' // API để tạo booking
 // import { Attraction, CarRental, Flight, Stay } from '~/types/travels.type'
 import { Tour, Hotel, Flight, CarRental } from '~/models/travels.model'
-import { useContext } from 'react'
-import { AppContext } from '~/context/app.context' // Giả sử bạn đã lưu thông tin user trong context
+import { useState } from 'react'
+
+import BookInformationForm from '~/components/BookInformationForm'
 
 export default function DetailPage() {
+  const [isBooking, setIsBooking] = useState(false)
   const { id } = useParams<{ id: string | undefined }>() // Lấy id từ URL
-  const { userEmail } = useContext(AppContext)
-  const { data: userData } = useQuery(['userData', userEmail], () => userApi.fetchUserByEmail(userEmail), {})
-  const userId = userData?.id // Lấy userId từ context
 
   // Sử dụng React Query để lấy dữ liệu, kiểm tra `id` trước khi gọi API
   const { data: travelDetail, isLoading } = useQuery<Flight | Tour | CarRental | Hotel>({
@@ -27,40 +24,11 @@ export default function DetailPage() {
     enabled: !!id // Chỉ thực hiện query nếu id tồn tại
   })
 
-  // Mutation để gọi POST request tạo booking
-  const { mutate: createBooking, isLoading: isBookingLoading } = useMutation({
-    mutationFn: async (bookingData: { userId: string; travelId: string; bookedDate: string; amount: number }) => {
-      return bookingApi.createNewBooking(
-        bookingData.userId,
-        bookingData.travelId,
-        bookingData.bookedDate,
-        bookingData.amount
-      ) // Gọi API để tạo booking
-    },
-    onSuccess: () => {
-      // Xử lý khi tạo booking thành công, ví dụ như thông báo thành công hoặc chuyển hướng
-      alert('Booking successfully created!')
-    }
-  })
-
-  // Hàm để tạo booking khi nút được nhấn
-  const handleCreateBooking = () => {
-    console.log(`${userId} ${id}`)
-
-    if (!userId || !id) {
-      alert('User or Travel ID is missing!')
-      return
-    }
-
-    const bookingData = {
-      userId,
-      travelId: id,
-      bookedDate: new Date().toISOString(), // Lấy thời gian hiện tại
-      amount: 1 // Giả sử giá trị amount là 1
-    }
-
-    createBooking(bookingData) // Gọi hàm mutate để tạo booking
+  const onBookingClick = () => {
+    setIsBooking((prevState: boolean) => !prevState)
   }
+
+  // Mutation để gọi POST request tạo booking
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -96,23 +64,20 @@ export default function DetailPage() {
               {'city' in travelDetail
                 ? travelDetail.city
                 : 'destination' in travelDetail
-                ? travelDetail.destination
-                : travelDetail.location || 'Unknown'}
+                  ? travelDetail.destination
+                  : travelDetail.location || 'Unknown'}
             </address>
           </div>
           <img src={travelDetail.imageUrl[0]} alt='Detail' className='mt-5' />
         </div>
       </div>
-      <div className='h-44 col-span-3 border border-slate-500 border-opacity-50'>
+      <div className='h-44 col-span-3 '>
         <p>{travelDetail.description}</p>
-        <button
-          onClick={handleCreateBooking}
-          disabled={isBookingLoading}
-          className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'
-        >
-          {isBookingLoading ? 'Booking...' : 'Book Now'}
+        <button onClick={onBookingClick} className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'>
+          Book now
         </button>
       </div>
+      {isBooking ? <BookInformationForm onClick={onBookingClick} /> : ''}
     </div>
   )
 }

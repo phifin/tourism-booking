@@ -8,7 +8,7 @@ import TourDetails from './pages/TourDetails'
 import { AppContext } from './context/app.context'
 import HomePage from './pages/HomePage'
 import BookingHistory from './pages/BookingHistory'
-import SocialPost from './pages/SocialPost'
+import SocialPage from './pages/SocialPage.tsx'
 import TravelPage from './pages/TravelPage'
 import NotFoundPage from './pages/404Page'
 import UserPage from './pages/UserPage/UserPage'
@@ -90,7 +90,7 @@ export default function useRouteElement() {
           path: '/socialposts',
           element: (
             <PageHeader>
-              <SocialPost />
+              <SocialPage />
             </PageHeader>
           )
         },
