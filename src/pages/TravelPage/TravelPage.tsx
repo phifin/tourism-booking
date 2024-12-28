@@ -71,6 +71,27 @@ export default function Attractions({ travelType }: { travelType: string }) {
       </select>
 
       {renderData()}
+
+      <div className='flex justify-center items-center mt-4'>
+        <button
+          className='px-4 py-2 mr-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
+          disabled={true} // Replace with logic for disabling Previous
+        >
+          Previous
+        </button>
+        <div className='flex space-x-2'>
+          {/* Replace this with dynamic page numbers */}
+          <button className='px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600'>1</button>
+          <button className='px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300'>2</button>
+          <button className='px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300'>3</button>
+        </div>
+        <button
+          className='px-4 py-2 ml-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
+          disabled={false} // Replace with logic for disabling Next
+        >
+          Next
+        </button>
+      </div>
     </div>
   )
 }

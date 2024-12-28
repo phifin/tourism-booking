@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import travelApi from '~/apis/travels.api'
-import { TravelModel } from '~/models/travels.model'
+import { TravelModel, TravelModelWithPage } from '~/models/travels.model'
 
 interface TravelState {
   travels: TravelModel[] | null
+  // travels: TravelModelWithPage[] | null
   isLoading: boolean
   error: string | null
 }
@@ -31,6 +32,22 @@ export const fetchTravel = createAsyncThunk<
   }
 })
 
+export const fetchTravelByPage = createAsyncThunk<
+  TravelModelWithPage, // Kiểu dữ liệu trả về là một mảng TravelModelWithPage
+  { page: number, travelType: string }, // Tham số đầu vào là một object chứa page và travelType
+  { rejectValue: string } // Kiểu rejectValue là string
+>('travel/fetchTravelByPage', async ({ page, travelType }, { rejectWithValue }) => {
+  try {
+    const response = await travelApi.getTravelByPage(page, travelType)
+    return response
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message || 'Failed to fetch travel')
+    }
+    return rejectWithValue('An unknown error occurred')
+  }
+})
+
 const travelSlice = createSlice({
   name: 'travel',
   initialState,
@@ -41,6 +58,20 @@ const travelSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // // This is for fetching travel by page
+      // .addCase(fetchTravelByPage.pending, (state) => {
+      //   state.isLoading = true
+      //   state.error = null
+      // })
+      // .addCase(fetchTravelByPage.fulfilled, (state, action: PayloadAction<TravelModelWithPage>) => {
+      //   state.travels = [...state.travels!, action.payload]
+      //   state.isLoading = false
+      // })
+      // .addCase(fetchTravelByPage.rejected, (state, action: PayloadAction<string | undefined>) => {
+      //   state.isLoading = false
+      //   state.error = action.payload || 'An unknown error occurred'
+      // })
+      // This is for fetching all travels
       .addCase(fetchTravel.pending, (state) => {
         state.isLoading = true
         state.error = null
@@ -49,10 +80,8 @@ const travelSlice = createSlice({
         state.travels = action.payload
         state.isLoading = false
       })
-      // Sửa lại phần rejected, đảm bảo payload là string
       .addCase(fetchTravel.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.isLoading = false
-        // Chắc chắn rằng error luôn là một string
         state.error = action.payload || 'An unknown error occurred'
       })
   }

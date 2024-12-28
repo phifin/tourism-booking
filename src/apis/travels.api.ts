@@ -3,7 +3,8 @@ import {
   CarRental,
   Tour,
   Hotel,
-  TravelModel
+  TravelModel,
+  TravelModelWithPage
 } from '~/models/travels.model'
 import http from '~/utils/http'
 
@@ -14,6 +15,16 @@ const travelApi = {
     const response = await http.get<TravelModel[]>(`${dataPath}`);
 
     return response.data;
+  },
+
+  getTravelByPage: async (page: number, travelType: string): Promise<TravelModelWithPage> => {
+    const response = await http.get<TravelModel[]>(`${dataPath}?page=${page}&travelType=${travelType}`);
+
+    return {
+      travel: response.data,
+      page: page,
+      travelType: travelType
+    }
   },
 
   getTravelsByType() {
