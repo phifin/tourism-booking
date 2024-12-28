@@ -11,7 +11,12 @@ interface UserState {
 const initialState: UserState = {
   data: null,
   loading: false,
-  error: null
+  error: null,
+};
+
+interface Props {
+  id: string;
+  data: Partial<UserModel>
 }
 
 // Async thunk to fetch user data
@@ -30,6 +35,18 @@ export const fetchUser = createAsyncThunk<
     return rejectWithValue('An unknown error occurred')
   }
 })
+
+export const editUser = createAsyncThunk(
+  'user/editUser',
+  async (body: Props, { rejectWithValue }) => {
+    try {
+      userApi.editUserById(body.id, body.data);
+      return body;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to edit user');
+    }
+  }
+)
 
 const userSlice = createSlice({
   name: 'user',
@@ -55,6 +72,21 @@ const userSlice = createSlice({
         // Kiểm tra nếu payload là undefined, thì gán giá trị mặc định
         state.error = action.payload ?? 'An unknown error occurred'
       })
+      // Edit User Cases
+      .addCase(editUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editUser.fulfilled, (state, action: PayloadAction<Props>) => {
+        if (state.data) {
+          state.data = { ...state.data, ...action.payload.data }; // Merge the passed data with current user data
+        }
+        state.loading = false;
+      })
+      .addCase(editUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   }
 })
 
