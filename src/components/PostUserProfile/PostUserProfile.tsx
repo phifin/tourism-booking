@@ -5,9 +5,10 @@ import { format, formatDistanceToNow, isToday, isYesterday, differenceInDays } f
 type PostUserProfileProps = {
   userId: string
   createdAt: string | undefined
+  onClick: () => void
 }
 
-export default function PostUserProfile({ userId, createdAt }: PostUserProfileProps) {
+export default function PostUserProfile({ userId, createdAt, onClick }: PostUserProfileProps) {
   const { data: userData } = useQuery(['userData', userId], () => userApi.fetchUserById(userId), {
     enabled: !!userId // Chỉ fetch khi userId tồn tại
   })
@@ -34,19 +35,19 @@ export default function PostUserProfile({ userId, createdAt }: PostUserProfilePr
     return format(createdDate, 'yyyy-MM-dd') // Fallback for any unexpected case
   }
   return (
-    <div className='flex mt-2 ml-4'>
+    <div className='flex mt-2 ml-2 cursor-pointer' onClick={onClick}>
       <div className='flex items-center'>
         <div className='h-12 w-12 object-cover overflow-hidden border rounded-full'>
           <img
             src={userData?.profileImageUrl ? userData?.profileImageUrl : '/src/assets/default_profile_img.jpg'}
             alt='userProfile'
-            className='p-1'
+            className='h-full w-full object-cover'
           />
         </div>
       </div>
-      <div className='px-2 py-1 mt-1'>
-        <header className='font-bold'>{userData?.lastName + ' ' + userData?.firstName}</header>
-        <div className='text-gray-500 mt-1'>{formattedTime()}</div>
+      <div className='flex items-center px-2 py-1 mt-1'>
+        <header className='font-semibold'>{userData?.lastName + ' ' + userData?.firstName}</header>
+        {createdAt ? <div className='text-gray-500 mt-1'>{formattedTime()}</div> : ''}
       </div>
     </div>
   )
