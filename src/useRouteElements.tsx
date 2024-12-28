@@ -11,6 +11,7 @@ import BookingHistory from './pages/BookingHistory'
 import SocialPage from './pages/SocialPage.tsx'
 import TravelPage from './pages/TravelPage'
 import NotFoundPage from './pages/404Page'
+import AdminPage from './pages/AdminPage/AdminPage.tsx'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -89,6 +90,14 @@ export default function useRouteElement() {
           element: (
             <PageHeader>
               <SocialPage />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/admin',
+          element: (
+            <PageHeader>
+              <AdminPage />
             </PageHeader>
           )
         }

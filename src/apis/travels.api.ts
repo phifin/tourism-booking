@@ -1,19 +1,13 @@
-import {
-  Flight,
-  CarRental,
-  Tour,
-  Hotel,
-  TravelModel
-} from '~/models/travels.model'
+import { Flight, CarRental, Tour, Hotel, TravelModel } from '~/models/travels.model'
 import http from '~/utils/http'
 
 const dataPath = 'travel'
 
 const travelApi = {
   fetchAllTravels: async (): Promise<TravelModel[]> => {
-    const response = await http.get<TravelModel[]>(`${dataPath}`);
+    const response = await http.get<TravelModel[]>(`${dataPath}`)
 
-    return response.data;
+    return response.data
   },
 
   getTravelsByType() {
@@ -52,6 +46,55 @@ const travelApi = {
 
       throw new Error(`Unexpected travel type: ${travelDetail.travelType}`)
     })
+  },
+  postTravelData: async (
+    title?: string,
+    description?: string,
+    body?: string,
+    imageUrl?: string[],
+    travelType?: string, // Hotel, Flight, Tour, CarRental
+    price?: number,
+    address?: string,
+    contact?: string,
+    createdAt?: string,
+    city?: string,
+    capacity?: number,
+    origin?: string,
+    destination?: string,
+    startDate?: string,
+    endDate?: string,
+    airline?: string,
+    location?: string,
+    carType?: string
+  ) => {
+    const postData = {
+      title,
+      description,
+      body,
+      imageUrl,
+      travelType,
+      price,
+      address,
+      contact,
+      createdAt,
+      city,
+      capacity,
+      origin,
+      destination,
+      startDate,
+      endDate,
+      airline,
+      location,
+      carType
+    }
+
+    try {
+      const response = await http.post(`${dataPath}`, postData)
+      return response.data
+    } catch (error) {
+      console.error('Error posting travel data:', error)
+      throw error
+    }
   }
 }
 
