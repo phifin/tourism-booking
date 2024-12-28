@@ -3,11 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '~/store'
 import { useEffect } from 'react'
 import { fetchAllPosts } from '~/store/post.slice'
-import { PostModel } from '~/models/post.model'
+// import { PostModel } from '~/models/post.model'
 
 export default function SocialPost() {
-  // Fetch all post data
-  // const { data: postData, isLoading, error } = useQuery(['postData'], () => postApi.getAllPosts())
   const postRedux = useSelector((state: RootState) => state.posts)
   const dispatch: AppDispatch = useDispatch()
 
@@ -20,6 +18,7 @@ export default function SocialPost() {
   }
 
   if (postRedux.error) {
+    console.log(postRedux.error)
     return <div>Failed to load posts!</div>
   }
 
@@ -31,10 +30,13 @@ export default function SocialPost() {
 
   return (
     <div className='mt-10 w-1/2 mx-auto space-y-11'>
-      {/* Render PostCard components */}
-      {posts.map((post: PostModel) => (
-        <PostCard key={post.id} postData={post} />
-      ))}
+      {posts.map((post) => {
+        // if (!post || !post.id) {
+        //   console.warn('Invalid post detected:', post) // Debug nếu có bài viết lỗi
+        //   return null
+        // }
+        return <PostCard key={post.id} postData={post} />
+      })}
     </div>
   )
 }

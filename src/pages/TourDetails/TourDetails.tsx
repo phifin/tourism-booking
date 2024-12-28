@@ -5,7 +5,6 @@ import travelApi from '~/apis/travels.api'
 // import { Attraction, CarRental, Flight, Stay } from '~/types/travels.type'
 import { Tour, Hotel, Flight, CarRental } from '~/models/travels.model'
 import { useState } from 'react'
-
 import BookInformationForm from '~/components/BookInformationForm'
 
 export default function DetailPage() {
@@ -72,10 +71,16 @@ export default function DetailPage() {
         </div>
       </div>
       <div className='h-44 col-span-3 '>
-        <p>{travelDetail.description}</p>
-        <button onClick={onBookingClick} className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'>
-          Book now
-        </button>
+        <header className='text-xl font-bold'>Description</header>
+        <p className='mt-2'>{travelDetail.description}</p>
+        <div>
+          <button onClick={onBookingClick} className='mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded'>
+            Book now
+          </button>
+          <button className='mt-4 ml-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded'>
+            Add to favorites
+          </button>
+        </div>
       </div>
       {isBooking ? <BookInformationForm onClick={onBookingClick} /> : ''}
     </div>

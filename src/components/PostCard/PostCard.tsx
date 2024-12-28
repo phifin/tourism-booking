@@ -59,11 +59,11 @@ export default function PostCard({ postData }: { postData: PostModel }) {
     <div className='border shadow-xl rounded-lg'>
       <div className='mt-2 mx-auto'>
         <div className='mt-3 ml-4 flex items-center'>
-          <div className='h-12 w-12 object-cover overflow-hidden border rounded-full'>
+          <div className='h-12 w-12 overflow-hidden border rounded-full'>
             <img
               src={userRedux.data?.profileImageUrl ?? '/src/assets/default_profile_img.jpg'}
               alt='userProfile'
-              className='p-1'
+              className='h-full w-full object-cover'
             />
           </div>
           <div className='px-2 py-1 '>
