@@ -104,17 +104,23 @@ export default function ChattingForm({ userId, onClose }: ChattingFormProps) {
       // Lắng nghe các tin nhắn mới từ server
       socket.onmessage = (event) => {
         try {
-          const messageData = event.data.trim()
+          const messageData = event.data.trim() // Xóa khoảng trắng thừa ở đầu/cuối
+          const jsonData = messageData.replace(/^(Success): /, '')
+          const parsedMessage = JSON.parse(jsonData) // Parse JSON từ server
+
+          // Kiểm tra nếu message là thông điệp chào mừng
+          if (parsedMessage.message === 'Welcome to WebSocket server!') {
+            return // Bỏ qua thông điệp chào mừng
+          }
 
           // Kiểm tra nếu message có tiền tố "Error: " và xử lý riêng
           if (messageData.startsWith('Error: ')) {
             console.error('Server error:', messageData)
-            // Có thể hiển thị thông báo lỗi cho người dùng tại đây
             return
           }
 
           // Loại bỏ phần "Success: " hoặc "Error: " nếu có
-          const jsonData = messageData.replace(/^(Success|Error): /, '')
+          // const jsonData = messageData.replace(/^(Success): /, '')
 
           // Kiểm tra xem có phải là JSON hợp lệ không
           let newMessage = null
@@ -148,11 +154,11 @@ export default function ChattingForm({ userId, onClose }: ChattingFormProps) {
 
   // Hàm đóng kết nối WebSocket
   const closeWebSocket = () => {
-    if (!user) {
-      if (socketRef.current) {
-        socketRef.current.close()
-      }
-    }
+    // if (!user) {
+    //   if (socketRef.current) {
+    //     socketRef.current.close()
+    //   }
+    // }
   }
 
   // Gọi hàm mở kết nối khi component mount và đóng kết nối khi không có user hợp lệ
