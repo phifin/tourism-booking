@@ -23,6 +23,9 @@ export default function Attractions({ travelType }: { travelType: string }) {
   const [sortCheck, setSortCheck] = useState(false)
   const [typeSortCheck, setTypeSortCheck] = useState('default')
 
+  const [currentPage, setCurrentPage] = useState(0)
+  const lastPageIndex = Math.ceil(travel.length / 5) - 1
+
   const sortedTourData = useMemo(() => {
     if (!sortCheck) return travelData
 
@@ -38,10 +41,10 @@ export default function Attractions({ travelType }: { travelType: string }) {
   const renderData = () => {
     if (error) return <div>Error: {error}</div>
     if (isLoading) return <ShimmerEffectList count={5} />
-    return sortedTourData?.map((travel, index) => {
+    return sortedTourData.slice(currentPage * 5, currentPage * 5 + 5).map((travel) => {
       return (
         <InformationLongCard
-          key={index}
+          key={travel.id}
           id={travel.id}
           title={travel.title}
           city={'city' in travel ? (travel as Hotel | Tour).city : undefined}
@@ -52,6 +55,16 @@ export default function Attractions({ travelType }: { travelType: string }) {
           height='h-44'
         />
       )
+    })
+  }
+
+  const handlePageChange = (index: number) => {
+    setCurrentPage(index)
+
+    // Scroll to the top of the page
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // Smooth scrolling animation
     })
   }
 
@@ -72,26 +85,86 @@ export default function Attractions({ travelType }: { travelType: string }) {
 
       {renderData()}
 
-      <div className='flex justify-center items-center mt-4'>
-        <button
-          className='px-4 py-2 mr-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
-          disabled={true} // Replace with logic for disabling Previous
-        >
-          Previous
-        </button>
-        <div className='flex space-x-2'>
-          {/* Replace this with dynamic page numbers */}
-          <button className='px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600'>1</button>
-          <button className='px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300'>2</button>
-          <button className='px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300'>3</button>
-        </div>
-        <button
-          className='px-4 py-2 ml-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
-          disabled={false} // Replace with logic for disabling Next
-        >
-          Next
-        </button>
+      <PaginationButtons currentIndex={currentPage} lastIndex={lastPageIndex} onPageChange={handlePageChange} />
+    </div>
+  )
+}
+
+function PaginationButtons({
+  currentIndex,
+  lastIndex,
+  onPageChange
+}: {
+  currentIndex: number
+  lastIndex: number
+  onPageChange: (index: number) => void
+}) {
+  // Determine the range of pages to display
+  const maxVisiblePages = 7
+
+  let startPage = Math.max(0, currentIndex - 3)
+  let endPage = startPage + maxVisiblePages - 1
+
+  // Adjust start and end if the end exceeds the last index
+  if (endPage > lastIndex) {
+    endPage = lastIndex
+    startPage = Math.max(0, endPage - maxVisiblePages + 1)
+  }
+
+  // Generate page numbers
+  const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i)
+
+  return (
+    <div className='flex justify-center items-center mt-4'>
+      {/* First Button */}
+      <button
+        className='px-4 py-2 mr-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
+        disabled={currentIndex === 0}
+        onClick={() => onPageChange(0)}
+      >
+        First
+      </button>
+
+      {/* Previous Button */}
+      <button
+        className='px-4 py-2 mr-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
+        disabled={currentIndex === 0}
+        onClick={() => onPageChange(currentIndex - 1)}
+      >
+        Previous
+      </button>
+
+      {/* Page Numbers */}
+      <div className='flex space-x-2'>
+        {pageNumbers.map((page) => (
+          <button
+            key={page}
+            className={`w-12 px-3 py-1 rounded-md text-center ${
+              page === currentIndex ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+            onClick={() => onPageChange(page)}
+          >
+            {page + 1}
+          </button>
+        ))}
       </div>
+
+      {/* Next Button */}
+      <button
+        className='px-4 py-2 ml-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
+        disabled={currentIndex === lastIndex}
+        onClick={() => onPageChange(currentIndex + 1)}
+      >
+        Next
+      </button>
+      {/* Last Button */}
+      <button
+        className='px-4 py-2 ml-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
+        disabled={currentIndex === lastIndex}
+        onClick={() => onPageChange(lastIndex)}
+      >
+        Last
+      </button>
     </div>
   )
 }
