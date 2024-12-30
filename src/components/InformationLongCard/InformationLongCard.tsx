@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import travelApi from '~/apis/travels.api'
 import { Hotel, Tour, TravelModel } from '~/models/travels.model'
+import { faBookmark } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { toast } from 'react-toastify'
 
 // interface Props {
 //   id: string // Thêm id để xác định thẻ
@@ -74,18 +77,32 @@ function RatingBadge({ id }: { id: string }) {
 
 export function InformationLongCard({ travelData }: { travelData: TravelModel }) {
   const navigate = useNavigate()
+  const [isBookmarked, setIsBookmarked] = useState(false)
 
   const handleCardClick = () => {
     console.log('Clicked on card with id:', travelData.id)
+    navigate(`/travel/${travelData.id}`) // Navigate to the detail page
+  }
 
-    navigate(`/travel/${travelData.id}`) // Chuyển hướng đến URL chi tiết
+  const toggleBookmark = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation() // Prevent triggering the card's click event
+    setIsBookmarked(!isBookmarked)
+    toast.success(isBookmarked ? 'Removed from bookmark' : 'Added to bookmark')
   }
 
   return (
     <div
-      onClick={handleCardClick} // Gọi hàm điều hướng khi nhấn vào thẻ
-      className={`flex h-44 w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden cursor-pointer`}
+      onClick={handleCardClick}
+      className='relative flex h-44 w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden cursor-pointer'
     >
+      {/* Bookmark Button */}
+      <button onClick={toggleBookmark} className='absolute top-3 right-3 text-xl text-gray-700 hover:text-gray-900'>
+        <FontAwesomeIcon
+          icon={faBookmark}
+          className={isBookmarked ? 'text-red-600 hover:text-red-800' : 'text-gray-700 hover:text-gray-900'}
+        />
+      </button>
+
       <div className='w-1/4 flex-shrink-0'>
         <img
           src={travelData.imageUrl[0]}
@@ -95,7 +112,7 @@ export function InformationLongCard({ travelData }: { travelData: TravelModel })
             const target = e.target as HTMLImageElement
             target.src = 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg'
           }}
-        ></img>
+        />
       </div>
       <div className='w-3/4'>
         <div className='ml-3 mt-3 text-2xl font-bold'>{travelData.title}</div>
@@ -103,25 +120,6 @@ export function InformationLongCard({ travelData }: { travelData: TravelModel })
         <div className='ml-3 mt-3'>{'city' in travelData ? (travelData as Hotel | Tour).city : undefined}</div>
         <div className='flex mt-3 ml-3'>
           <RatingBadge id={travelData.id} />
-          {/* <div className='w-52'>
-            <span
-              className={`px-2 py-1 mr-2 rounded-lg border-1 
-    ${travelData.rating >= 3 ? 'bg-green-600' : travelData.rating < 2 ? 'bg-red-600' : 'bg-yellow-500'} 
-    text-white`}
-            >
-              {travelData.rating}
-            </span>
-            <span>
-              {travelData.rating >= 4
-                ? 'Excellent'
-                : travelData.rating >= 3
-                ? 'Very Good'
-                : travelData.rating >= 2.5
-                ? 'Good'
-                : 'Bad'}
-            </span>
-          </div> */}
-
           <div className='ml-96 w-52 text-xl font-bold text-blue-900'>${travelData.price}.00 USD</div>
         </div>
       </div>
