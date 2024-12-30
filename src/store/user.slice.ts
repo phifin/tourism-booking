@@ -14,9 +14,14 @@ const initialState: UserState = {
   error: null,
 };
 
-interface Props {
+interface EditUserProps {
   id: string;
   data: Partial<UserModel>
+}
+
+interface ToggleBookmarkProps {
+  id: string
+  travelId: string
 }
 
 // Async thunk to fetch user data
@@ -38,12 +43,24 @@ export const fetchUser = createAsyncThunk<
 
 export const editUser = createAsyncThunk(
   'user/editUser',
-  async (body: Props, { rejectWithValue }) => {
+  async (body: EditUserProps, { rejectWithValue }) => {
     try {
       userApi.editUserById(body.id, body.data);
       return body;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || 'Failed to edit user');
+    }
+  }
+)
+
+export const toggleUserTravelingBookmark = createAsyncThunk(
+  'user/toggleUserTravelingBookmark',
+  async (body: ToggleBookmarkProps, { rejectWithValue }) => {
+    try {
+      userApi.toggleBookmark(body.id, body.travelId);
+      return body;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || 'Failed to toggle bookmark');
     }
   }
 )
@@ -77,7 +94,7 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(editUser.fulfilled, (state, action: PayloadAction<Props>) => {
+      .addCase(editUser.fulfilled, (state, action: PayloadAction<EditUserProps>) => {
         if (state.data) {
           state.data = { ...state.data, ...action.payload.data }; // Merge the passed data with current user data
         }
@@ -86,7 +103,30 @@ const userSlice = createSlice({
       .addCase(editUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // Toggle Bookmark Cases
+      .addCase(toggleUserTravelingBookmark.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(toggleUserTravelingBookmark.fulfilled, (state, action: PayloadAction<ToggleBookmarkProps>) => {
+        if (state.data) {
+          if (!state.data.bookmarksId) {
+            state.data.bookmarksId = [];
+          }
+          const index = state.data.bookmarksId.indexOf(action.payload.travelId);
+          if (index === -1) {
+            state.data.bookmarksId.push(action.payload.travelId);
+          } else {
+            state.data.bookmarksId.splice(index, 1);
+          }
+        }
+        state.loading = false;
+      })
+      .addCase(toggleUserTravelingBookmark.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   }
 })
 

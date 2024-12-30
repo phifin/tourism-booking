@@ -20,4 +20,11 @@ export const userApi = {
     const response = await http.put<UserModel>(`${dataPath}/${id}`, body);
     return response.data;
   },
+  toggleBookmark: async (id: string, travelId: string): Promise<any> => {
+    const response = await http.post<UserModel>(`${dataPath}/toggleBookmark`, {
+      senderId: id,
+      targetId: travelId
+    });
+    return response.data;
+  }
 }

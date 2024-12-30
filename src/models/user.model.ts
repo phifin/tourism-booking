@@ -7,7 +7,7 @@ export interface UserModel {
   phoneNumber: string
   userFriends: never[]
   refreshToken: string
-  bookmarkedTravels: string[]
+  bookmarksId: string[]
   updatedAt: string
   profileImageUrl: string
 }

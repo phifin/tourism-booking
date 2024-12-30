@@ -5,6 +5,9 @@ import { Hotel, Tour, TravelModel } from '~/models/travels.model'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '~/store'
+import { toggleUserTravelingBookmark } from '~/store/user.slice'
 
 // interface Props {
 //   id: string // Thêm id để xác định thẻ
@@ -77,7 +80,8 @@ function RatingBadge({ id }: { id: string }) {
 
 export function InformationLongCard({ travelData }: { travelData: TravelModel }) {
   const navigate = useNavigate()
-  const [isBookmarked, setIsBookmarked] = useState(false)
+  const userRedux = useSelector((state: RootState) => state.user)
+  const dispatch: AppDispatch = useDispatch()
 
   const handleCardClick = () => {
     console.log('Clicked on card with id:', travelData.id)
@@ -86,9 +90,22 @@ export function InformationLongCard({ travelData }: { travelData: TravelModel })
 
   const toggleBookmark = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation() // Prevent triggering the card's click event
-    setIsBookmarked(!isBookmarked)
-    toast.success(isBookmarked ? 'Removed from bookmark' : 'Added to bookmark')
+    dispatch(
+      toggleUserTravelingBookmark({
+        id: userRedux.data!.id,
+        travelId: travelData.id
+      })
+    )
+    // setIsBookmarked(!isBookmarked)
+    if (userRedux?.data?.bookmarksId != undefined && userRedux?.data?.bookmarksId.includes(travelData.id)) {
+      toast.warning('Removed from bookmark!')
+    } else {
+      toast.success('Added to bookmark!')
+    }
   }
+
+  if (userRedux.loading || userRedux.data == null) return <div>Loading...</div>
+  if (userRedux.error) return <div>Error: {userRedux.error}</div>
 
   return (
     <div
@@ -99,7 +116,11 @@ export function InformationLongCard({ travelData }: { travelData: TravelModel })
       <button onClick={toggleBookmark} className='absolute top-3 right-3 text-xl text-gray-700 hover:text-gray-900'>
         <FontAwesomeIcon
           icon={faBookmark}
-          className={isBookmarked ? 'text-red-600 hover:text-red-800' : 'text-gray-700 hover:text-gray-900'}
+          className={
+            userRedux?.data?.bookmarksId != undefined && userRedux?.data?.bookmarksId.includes(travelData.id)
+              ? 'text-red-600 hover:text-red-800'
+              : 'text-gray-700 hover:text-gray-900'
+          }
         />
       </button>
 
