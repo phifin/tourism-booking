@@ -1,15 +1,18 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import travelApi from '~/apis/travels.api'
+import { Hotel, Tour, TravelModel } from '~/models/travels.model'
 
-interface Props {
-  id: string // Thêm id để xác định thẻ
-  image: string
-  title: string
-  city?: string
-  description: string
-  ratings: number
-  price: number
-  height: string // New prop for controlling the container height
-}
+// interface Props {
+//   id: string // Thêm id để xác định thẻ
+//   image: string
+//   title: string
+//   city?: string
+//   description: string
+//   ratings: number
+//   price: number
+//   height: string // New prop for controlling the container height
+// }
 
 export function ShimmerEffectList({ count }: { count: number }) {
   return (
@@ -38,23 +41,54 @@ export function ShimmerEffect() {
   )
 }
 
-export function InformationLongCard({ id, image, title, ratings, price, city, description, height }: Props) {
+function RatingBadge({ id }: { id: string }) {
+  const [isLoading, setIsLoading] = useState(true)
+
+  const [rating, setRating] = useState(0)
+
+  useEffect(() => {
+    travelApi.getTravelRatingById(id).then((res) => {
+      setRating(res)
+      setIsLoading(false)
+    })
+  }, [])
+
+  return !isLoading ? (
+    <div className='w-52'>
+      <span
+        className={`px-2 py-1 mr-2 rounded-lg border-1 
+    ${rating >= 3 ? 'bg-green-600' : rating < 2 ? 'bg-red-600' : 'bg-yellow-500'} 
+    text-white`}
+      >
+        {rating}
+      </span>
+      <span>{rating >= 4 ? 'Excellent' : rating >= 3 ? 'Very Good' : rating >= 2.5 ? 'Good' : 'Bad'}</span>
+    </div>
+  ) : (
+    <div className='w-52 flex items-center space-x-4'>
+      <div className='w-12 h-6 rounded-lg bg-gray-200 shimmer' />
+      <div className='w-24 h-4 rounded bg-gray-200 shimmer' />
+    </div>
+  )
+}
+
+export function InformationLongCard({ travelData }: { travelData: TravelModel }) {
   const navigate = useNavigate()
 
   const handleCardClick = () => {
-    console.log('Clicked on card with id:', id)
+    console.log('Clicked on card with id:', travelData.id)
 
-    navigate(`/travel/${id}`) // Chuyển hướng đến URL chi tiết
+    navigate(`/travel/${travelData.id}`) // Chuyển hướng đến URL chi tiết
   }
 
   return (
     <div
       onClick={handleCardClick} // Gọi hàm điều hướng khi nhấn vào thẻ
-      className={`flex ${height} w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden cursor-pointer`}
+      className={`flex h-44 w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden cursor-pointer`}
     >
       <div className='w-1/4 flex-shrink-0'>
         <img
-          src={image}
+          src={travelData.imageUrl[0]}
           className='w-full h-full object-cover'
           alt='Card Image'
           onError={(e) => {
@@ -64,22 +98,31 @@ export function InformationLongCard({ id, image, title, ratings, price, city, de
         ></img>
       </div>
       <div className='w-3/4'>
-        <div className='ml-3 mt-3 text-2xl font-bold'>{title}</div>
-        <div className='ml-3 mt-4 w-full pr-6 line-clamp-2'>{description}</div>
-        <div className='ml-3 mt-3'>{city}</div>
+        <div className='ml-3 mt-3 text-2xl font-bold'>{travelData.title}</div>
+        <div className='ml-3 mt-4 w-full pr-6 line-clamp-2'>{travelData.description}</div>
+        <div className='ml-3 mt-3'>{'city' in travelData ? (travelData as Hotel | Tour).city : undefined}</div>
         <div className='flex mt-3 ml-3'>
-          <div className='w-52'>
+          <RatingBadge id={travelData.id} />
+          {/* <div className='w-52'>
             <span
               className={`px-2 py-1 mr-2 rounded-lg border-1 
-    ${ratings >= 3 ? 'bg-green-600' : ratings < 2 ? 'bg-red-600' : 'bg-yellow-500'} 
+    ${travelData.rating >= 3 ? 'bg-green-600' : travelData.rating < 2 ? 'bg-red-600' : 'bg-yellow-500'} 
     text-white`}
             >
-              {ratings}
+              {travelData.rating}
             </span>
-            <span>{ratings >= 4 ? 'Excellent' : ratings >= 3 ? 'Very Good' : ratings >= 2.5 ? 'Good' : 'Bad'}</span>
-          </div>
+            <span>
+              {travelData.rating >= 4
+                ? 'Excellent'
+                : travelData.rating >= 3
+                ? 'Very Good'
+                : travelData.rating >= 2.5
+                ? 'Good'
+                : 'Bad'}
+            </span>
+          </div> */}
 
-          <div className='ml-96 w-52 text-xl font-bold text-blue-900'>${price}.00 USD</div>
+          <div className='ml-96 w-52 text-xl font-bold text-blue-900'>${travelData.price}.00 USD</div>
         </div>
       </div>
     </div>

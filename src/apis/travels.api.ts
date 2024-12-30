@@ -12,6 +12,8 @@ const dataPath = 'travel'
 
 const travelApi = {
   fetchAllTravels: async (): Promise<TravelModel[]> => {
+    console.log('fetching all travels');
+
     const response = await http.get<TravelModel[]>(`${dataPath}`);
 
     return response.data;
@@ -63,7 +65,12 @@ const travelApi = {
 
       throw new Error(`Unexpected travel type: ${travelDetail.travelType}`)
     })
-  }
+  },
+  getTravelRatingById(id: string): Promise<number> {
+    return http.get<number>(`${dataPath}/getTravelRatingByTravelId/${id}`).then((response) => {
+      return response.data
+    })
+  },
 }
 
 export default travelApi

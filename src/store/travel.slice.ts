@@ -3,7 +3,7 @@ import travelApi from '~/apis/travels.api'
 import { TravelModel, TravelModelWithPage } from '~/models/travels.model'
 
 interface TravelState {
-  travels: TravelModel[] | null
+  travels: TravelModel[]
   // travels: TravelModelWithPage[] | null
   isLoading: boolean
   error: string | null
@@ -53,7 +53,7 @@ const travelSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      state.travels = null
+      state.travels = []
     }
   },
   extraReducers: (builder) => {

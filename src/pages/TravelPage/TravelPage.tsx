@@ -3,15 +3,17 @@ import { InformationLongCard, ShimmerEffectList } from '~/components/Information
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchTravel } from '~/store/travel.slice'
 import { AppDispatch, RootState } from '~/store'
-import { Hotel, Tour, TravelModel } from '~/models/travels.model'
+import { TravelModel } from '~/models/travels.model'
 
 export default function Attractions({ travelType }: { travelType: string }) {
   const dispatch: AppDispatch = useDispatch()
   const { travels, isLoading, error } = useSelector((state: RootState) => state.travels)
 
   useEffect(() => {
-    dispatch(fetchTravel())
-  }, [dispatch])
+    if (travels.length === 0) {
+      dispatch(fetchTravel())
+    }
+  }, [dispatch, travels?.length])
 
   const travel = travels!.filter((travel: TravelModel) => travel.travelType === travelType) as TravelModel[]
 
@@ -23,8 +25,13 @@ export default function Attractions({ travelType }: { travelType: string }) {
   const [sortCheck, setSortCheck] = useState(false)
   const [typeSortCheck, setTypeSortCheck] = useState('default')
 
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState<number>(0)
   const lastPageIndex = Math.ceil(travel.length / 5) - 1
+
+  // add this to fix the issue where currentPage is not reverted back to 0 when user switch to another travel type
+  useEffect(() => {
+    setCurrentPage(0)
+  }, [travelType])
 
   const sortedTourData = useMemo(() => {
     if (!sortCheck) return travelData
@@ -42,30 +49,23 @@ export default function Attractions({ travelType }: { travelType: string }) {
     if (error) return <div>Error: {error}</div>
     if (isLoading) return <ShimmerEffectList count={5} />
     return sortedTourData.slice(currentPage * 5, currentPage * 5 + 5).map((travel) => {
-      return (
-        <InformationLongCard
-          key={travel.id}
-          id={travel.id}
-          title={travel.title}
-          city={'city' in travel ? (travel as Hotel | Tour).city : undefined}
-          ratings={travel.rating}
-          image={travel.imageUrl[0]}
-          description={travel.description}
-          price={travel.price}
-          height='h-44'
-        />
-      )
+      return <InformationLongCard key={travel.id} travelData={travel} />
     })
   }
 
   const handlePageChange = (index: number) => {
     setCurrentPage(index)
 
+    console.log('====================================')
+    console.log(index)
+
     // Scroll to the top of the page
     window.scrollTo({
       top: 0,
       behavior: 'smooth' // Smooth scrolling animation
     })
+
+    console.log('====================================')
   }
 
   return (
@@ -85,7 +85,9 @@ export default function Attractions({ travelType }: { travelType: string }) {
 
       {renderData()}
 
-      <PaginationButtons currentIndex={currentPage} lastIndex={lastPageIndex} onPageChange={handlePageChange} />
+      <div className='pb-10 '>
+        <PaginationButtons currentIndex={currentPage} lastIndex={lastPageIndex} onPageChange={handlePageChange} />
+      </div>
     </div>
   )
 }
