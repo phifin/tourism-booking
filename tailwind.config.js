@@ -17,5 +17,32 @@ export default {
       }
     }
   },
-  plugins: [require('@tailwindcss/line-clamp')]
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-hidden': {
+          /* Ẩn scrollbar */
+          'scrollbar-width': 'none' // Firefox
+        },
+        '.scrollbar-hidden::-webkit-scrollbar': {
+          display: 'none' // Chrome, Safari
+        },
+        '.scrollbar-thin': {
+          'scrollbar-width': 'thin' // Firefox
+        },
+        '.scrollbar-thin::-webkit-scrollbar': {
+          width: '4px',
+          height: '4px'
+        },
+        '.scrollbar-thin::-webkit-scrollbar-thumb': {
+          background: '#888',
+          borderRadius: '4px'
+        },
+        '.scrollbar-thin::-webkit-scrollbar-thumb:hover': {
+          background: '#555'
+        }
+      })
+    }
+  ]
 }

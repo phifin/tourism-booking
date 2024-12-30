@@ -5,6 +5,8 @@ const URLLikePost = 'post/likePost'
 const URLCreatePost = 'post'
 const URLUploadImage = 'cloudinary/uploadImage'
 const URLGetCommentsOfPost = 'post/getAllCommentPostsOfPost'
+const URLGetPostById = 'post'
+const URLGetNormalPosts = 'post/getAllNormalPosts'
 // const URLGetOne = 'travel/getTravelById'
 // const URLCreateBook = 'book/createBook'
 
@@ -21,6 +23,12 @@ export const postApi = {
       postId
     }
     return http.post(URLLikePost, body)
+  },
+  getNormalPosts() {
+    return http.get<PostModel[]>(URLGetNormalPosts).then((response) => {
+      const posts = response.data
+      return posts
+    })
   },
   async createPost({
     userId,
@@ -88,7 +96,11 @@ export const postApi = {
     }
   },
   async fetchCommentsByPostId(id: string) {
-    const response = await http.post(`${URLGetCommentsOfPost}?id=${id}`)
+    const response = await http.get(`${URLGetCommentsOfPost}/${id}`)
+    return response
+  },
+  async fetchPostById(id: string) {
+    const response = await http.get(`${URLGetPostById}/${id}`)
     return response
   }
   // createNewBooking(userId: string, travelId: string, bookedDate: string, amount: number) {

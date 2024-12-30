@@ -55,6 +55,9 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
     onClick()
   })
 
+  const onUserProfileClick = () => {
+    console.log('clicked up')
+  }
   // Handle file selection
   const handleFileUpload = () => {
     if (fileInputRef.current) {
@@ -87,7 +90,11 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
         </div>
       </div>
       <div>
-        <PostUserProfile createdAt='' userId={userData.data?.id ? userData.data?.id : ''} />
+        <PostUserProfile
+          createdAt={undefined}
+          userId={userData.data?.id ? userData.data?.id : ''}
+          onClick={onUserProfileClick}
+        />
       </div>
       <input
         className='mt-4 ml-4 w-95/100 text-2xl border-none focus:ring-0 focus:outline-none bg-slate-50'

@@ -1,14 +1,35 @@
 import PostCard from '~/components/PostCard/PostCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '~/store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchAllPosts } from '~/store/post.slice'
+import CommentPopUp from '~/components/CommentPopUp'
 // import { PostModel } from '~/models/post.model'
+// import { PostModel } from '~/models/post.model'
+
+// interface SocialPostProps {
+//   onCommentClick: () => void
+// }
 
 export default function SocialPost() {
   const postRedux = useSelector((state: RootState) => state.posts)
   const dispatch: AppDispatch = useDispatch()
-
+  const [commentPostState, setCommentPostState] = useState<boolean>(false)
+  const [selectedPostId, setSelectedPostId] = useState<string>('')
+  // const [currentCommentsList, setCurrentCommentList] = useState<PostModel[]>([])
+  const [likesNum, setLikesNum] = useState(0)
+  const [liked, setLiked] = useState(false)
+  const onCommentClick = (postId: string, likesNum: number, liked: boolean) => {
+    setSelectedPostId(postId)
+    setLikesNum(likesNum)
+    setLiked(liked)
+    // setCurrentCommentList(currentCommentsList)
+    setCommentPostState(true)
+  }
+  const closeComment = () => {
+    setCommentPostState(false)
+    setSelectedPostId('')
+  }
   useEffect(() => {
     dispatch(fetchAllPosts())
   }, [dispatch])
@@ -35,8 +56,13 @@ export default function SocialPost() {
         //   console.warn('Invalid post detected:', post) // Debug nếu có bài viết lỗi
         //   return null
         // }
-        return <PostCard key={post.id} postData={post} />
+        return <PostCard key={post.id} postData={post} onCommentClick={onCommentClick} />
       })}
+      {commentPostState && selectedPostId ? (
+        <CommentPopUp onCloseComment={closeComment} postId={selectedPostId} likesNum={likesNum} liked={liked} />
+      ) : (
+        false
+      )}
     </div>
   )
 }

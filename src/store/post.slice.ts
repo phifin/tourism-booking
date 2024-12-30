@@ -15,9 +15,9 @@ const initialState: PostState = {
   error: null
 }
 
-export const fetchAllPosts = createAsyncThunk('travel/fetchAllPosts', async (_, { rejectWithValue }) => {
+export const fetchAllPosts = createAsyncThunk('post/fetchAllPosts', async (_, { rejectWithValue }) => {
   try {
-    const response = await postApi.getAllPosts()
+    const response = await postApi.getNormalPosts()
     return response
   } catch (error: unknown) {
     if (error instanceof Error && 'response' in error) {
@@ -58,7 +58,7 @@ export const createPost = createAsyncThunk(
       userId: string
       imageUrl: string
       content: string
-      postId: null
+      postId: string | null
       sharedPostId: null
       travelId: null
     },

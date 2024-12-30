@@ -45,9 +45,9 @@ export default function PostUserProfile({ userId, createdAt, onClick }: PostUser
           />
         </div>
       </div>
-      <div className='flex items-center px-2 py-1 mt-1'>
+      <div className={`flex flex-col px-2 py-1 mt-1 ${createdAt ? '' : 'justify-center'}`}>
         <header className='font-semibold'>{userData?.lastName + ' ' + userData?.firstName}</header>
-        {createdAt ? <div className='text-gray-500 mt-1'>{formattedTime()}</div> : ''}
+        {createdAt ? <div className='text-gray-500 mt-1'>{formattedTime()}</div> : undefined}
       </div>
     </div>
   )
