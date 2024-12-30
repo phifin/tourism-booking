@@ -14,6 +14,7 @@ import NotFoundPage from './pages/404Page'
 import UserPage from './pages/UserPage/UserPage'
 import MyAccount from './components/user/MyAccount/MyAccount'
 import AdminPage from './pages/AdminPage/AdminPage.tsx'
+import BookingCart from './pages/BookingCart/BookingCart.tsx'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -126,6 +127,14 @@ export default function useRouteElement() {
           element: (
             <PageHeader>
               <AdminPage />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/bookingcart',
+          element: (
+            <PageHeader>
+              <BookingCart />
             </PageHeader>
           )
         }

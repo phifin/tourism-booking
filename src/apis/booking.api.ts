@@ -22,6 +22,9 @@ const bookingApi = {
     }
 
     return http.post<BookingModel>(`${basePath}`, body)
+  },
+  getBookingById(id: string) {
+    return http.get<BookingModel>(`${basePath}/${id}`)
   }
 }
 
