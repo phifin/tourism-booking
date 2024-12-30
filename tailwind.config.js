@@ -13,6 +13,7 @@ export default {
         '95/100': '95%'
       },
       spacing: {
+        90: '21rem',
         95: '23rem'
       }
     }

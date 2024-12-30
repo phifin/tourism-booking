@@ -194,7 +194,7 @@ export default function ChattingForm({ userId, onClose }: ChattingFormProps) {
     return <div className='h-96 w-80 fixed right-52 bottom-0 border border-gray-600 bg-white z-50'>Error: {error}</div>
 
   return (
-    <div className='h-96 w-80 fixed right-52 bottom-0 border border-gray-200 bg-white z-50 rounded-xl overflow-hidden flex flex-col'>
+    <div className='h-104 w-90 fixed right-52 bottom-0 border border-gray-200 bg-white z-50 rounded-xl overflow-y-auto flex flex-col'>
       {/* Header */}
       <div className='pl-3 h-12 flex justify-between items-center text-white bg-blue-500'>
         <div className='flex items-center mt-1 font-bold'>
@@ -216,10 +216,12 @@ export default function ChattingForm({ userId, onClose }: ChattingFormProps) {
       </div>
 
       {/* Content */}
-      <div className='flex-grow p-3 overflow-y-auto'>
-        {messages.map((message, index) => (
-          <MessageBox key={index} userId={message.sender} message={message.message} createdAt={message.createdAt} />
-        ))}
+      <div className='p-3 overflow-y-auto'>
+        <div className=''>
+          {messages.map((message, index) => (
+            <MessageBox key={index} userId={message.sender} message={message.message} createdAt={message.createdAt} />
+          ))}
+        </div>
         {/* Thêm một phần tử trống để cuộn đến cuối */}
         <div ref={messagesEndRef}></div>
       </div>

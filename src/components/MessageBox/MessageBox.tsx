@@ -55,19 +55,20 @@ export default function MessageBox({ userId, message, createdAt }: MessageBoxPro
               className='h-full w-full object-cover'
             />
           </div>
-          <div className='flex items-center h-10 px-2 py-1 ml-2 mt-1 bg-slate-100 rounded-xl'>
-            <p>{message}</p>
+          <div className='flex max-w-52 px-2 py-2 ml-2 mt-1 bg-slate-100 rounded-xl'>
+            <div className='max-w-48 break-words'>{message}</div>
           </div>
         </div>
       ) : (
         ''
       )}
-
+      {/* message from current user */}
       {userId === userRedux.data?.id ? (
         <div className='flex items-center mt-1 justify-end'>
-          <div className='flex items-center h-10 mr-2 px-2 py-1 mt-1 bg-blue-500 text-white rounded-xl'>
-            <p>{message}</p>
+          <div className='flex max-w-52 py-2 px-2 mr-2 mt-1 bg-blue-500 text-white rounded-xl '>
+            <div className='max-w-48 break-words'>{message}</div>
           </div>
+
           <div className='h-12 w-12 object-cover overflow-hidden border rounded-full'>
             <img
               src={
