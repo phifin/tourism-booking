@@ -8,16 +8,16 @@ interface Props {
   onDrop: () => void
   onAdd: () => void
   onMinus: () => void
+  bookDate: string
 }
-export default function BookingCartCard({ travelId, amount, onDrop, onAdd, onMinus }: Props) {
+export default function BookingCartCard({ travelId, amount, bookDate, onDrop, onAdd, onMinus }: Props) {
   const { data: traavelData } = useQuery(['travel', travelId], () => travelApi.getTravelById(travelId))
 
   // const handle
-
   // Format ngày sử dụng date-fns
 
   return (
-    <div className={`flex h-44 w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden`}>
+    <div className={`flex h-52 w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden`}>
       <div className='w-1/4 flex-shrink-0'>
         <img src={traavelData?.imageUrl[0]} className='w-full h-full object-cover' alt='travelImage'></img>
       </div>
@@ -39,9 +39,8 @@ export default function BookingCartCard({ travelId, amount, onDrop, onAdd, onMin
         <div className='h-9 ml-3 mt-4 w-full pr-6 line-clamp-2'>{traavelData?.description}</div>
         <div className='ml-3 mt-3 text-blue-900 font-semibold'>Type: {toUpper(traavelData?.travelType)}</div>
         <div className='ml-3 mt-1'>Amount: {amount}</div>
-        <div className='flex ml-56'>
-          <div className='ml-96 w-52 text-xl font-bold text-blue-900'>${traavelData?.price}.00 USD</div>
-        </div>
+        <div className='ml-3 mt-1'>Booking Date: {bookDate}</div>
+        <div className='ml-3 mt-1  font-bold text-blue-900'>${traavelData?.price}.00 USD</div>
       </div>
     </div>
   )

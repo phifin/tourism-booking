@@ -3,18 +3,21 @@ import { useParams } from 'react-router-dom'
 // import userDataApi from '~/apis/userData.api'
 import travelApi from '~/apis/travels.api'
 // import { Attraction, CarRental, Flight, Stay } from '~/types/travels.type'
-import { Tour, Hotel, Flight, CarRental, TravelModel } from '~/models/travels.model'
+import { Tour, Hotel, Flight, CarRental } from '~/models/travels.model'
 import { useState } from 'react'
 import BookInformationForm from '~/components/BookInformationForm'
+import BookingAddToCartForm from '~/components/BookingAddToCartForm'
 
-interface CartItemFromLS {
-  id: string | undefined
-  amount: number
-  price: number
-}
+// interface CartItemFromLS {
+//   id: string | undefined
+//   amount: number
+//   price: number
+//   bookDate: Date
+// }
 
 export default function DetailPage() {
   const [isBooking, setIsBooking] = useState(false)
+  const [isAddingToCart, setIsAddingToCart] = useState(false)
   const { id } = useParams<{ id: string | undefined }>() // Lấy id từ URL
 
   // Sử dụng React Query để lấy dữ liệu, kiểm tra `id` trước khi gọi API
@@ -33,6 +36,10 @@ export default function DetailPage() {
     setIsBooking((prevState: boolean) => !prevState)
   }
 
+  const onAddingToCart = () => {
+    setIsAddingToCart((prevState: boolean) => !prevState)
+  }
+
   // Mutation để gọi POST request tạo booking
 
   if (isLoading) {
@@ -43,28 +50,28 @@ export default function DetailPage() {
     return <div>Travel detail not found</div>
   }
 
-  const addToCard = (travelDetail: TravelModel) => {
-    const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')!) : []
+  // const addToCard = (travelDetail: TravelModel) => {
+  //   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')!) : []
 
-    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-    const existingProductIndex = cart.findIndex((item: CartItemFromLS) => item.id === travelDetail.id)
+  //   // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+  //   const existingProductIndex = cart.findIndex((item: CartItemFromLS) => item.id === travelDetail.id)
 
-    if (existingProductIndex !== -1) {
-      // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
-      cart[existingProductIndex].amount += 1
-    } else {
-      // Nếu sản phẩm chưa có, thêm sản phẩm vào giỏ hàng với số lượng 1
-      const newOrder: CartItemFromLS = {
-        id,
-        amount: 1,
-        price: travelDetail.price
-      }
-      cart.push(newOrder)
-    }
+  //   if (existingProductIndex !== -1) {
+  //     // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
+  //     cart[existingProductIndex].amount += 1
+  //   } else {
+  //     // Nếu sản phẩm chưa có, thêm sản phẩm vào giỏ hàng với số lượng 1
+  //     const newOrder: CartItemFromLS = {
+  //       id,
+  //       amount: 1,
+  //       price: travelDetail.price
+  //     }
+  //     cart.push(newOrder)
+  //   }
 
-    // Lưu giỏ hàng đã cập nhật vào LocalStorage
-    localStorage.setItem('cart', JSON.stringify(cart))
-  }
+  //   // Lưu giỏ hàng đã cập nhật vào LocalStorage
+  //   localStorage.setItem('cart', JSON.stringify(cart))
+  // }
   return (
     <div className='w-5/6 mx-auto mt-12 grid grid-cols-12 gap-2'>
       <div className='col-span-9'>
@@ -107,13 +114,14 @@ export default function DetailPage() {
           </button>
           <button
             className='mt-4 ml-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded'
-            onClick={() => addToCard(travelDetail)}
+            onClick={onAddingToCart}
           >
             Add To Cart
           </button>
         </div>
       </div>
       {isBooking ? <BookInformationForm onClick={onBookingClick} /> : ''}
+      {isAddingToCart ? <BookingAddToCartForm onClick={onAddingToCart} /> : ''}
     </div>
   )
 }

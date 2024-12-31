@@ -5,6 +5,7 @@ interface CartItemFromLS {
   id: string | undefined
   amount: number
   price: number
+  bookDate: string
 }
 export default function BookingCart() {
   const [cart, setCart] = useState<CartItemFromLS[]>(() => {
@@ -13,23 +14,23 @@ export default function BookingCart() {
   })
   // Hàm lấy dữ liệu từ localStorage và fetch booking từ API
   // Hàm render BookingCard
-  const handleDelete = (travelId: string | undefined) => {
-    if (!travelId) return
+  const handleDelete = (travelId: string | undefined, bookDate: string | undefined) => {
+    if (!travelId || !bookDate) return
 
     // Lọc bỏ item có id bằng travelId
-    const updatedCart = cart.filter((item) => item.id !== travelId)
+    const updatedCart = cart.filter((item) => !(item.id === travelId && item.bookDate === bookDate))
 
     // Cập nhật state và localStorage
     setCart(updatedCart)
     localStorage.setItem('cart', JSON.stringify(updatedCart))
   }
 
-  const onAdd = (id: string | undefined) => {
+  const onAdd = (id: string | undefined, bookDate: string | undefined) => {
     if (!id) return
 
     // Cập nhật amount của item có id tương ứng
     const updatedCart = cart.map((item) => {
-      if (item.id === id) {
+      if (item.id === id && item.bookDate === bookDate) {
         return { ...item, amount: item.amount + 1 } // Tăng số lượng lên 1
       }
       return item
@@ -41,12 +42,12 @@ export default function BookingCart() {
   }
 
   // Hàm giảm số lượng của item theo id
-  const onMinus = (id: string | undefined) => {
+  const onMinus = (id: string | undefined, bookDate: string | undefined) => {
     if (!id) return
 
     // Cập nhật amount của item có id tương ứng
     const updatedCart = cart.map((item) => {
-      if (item.id === id && item.amount > 1) {
+      if (item.id === id && item.bookDate === bookDate && item.amount > 1) {
         return { ...item, amount: item.amount - 1 } // Giảm số lượng xuống 1, không cho nhỏ hơn 1
       }
       return item
@@ -66,9 +67,10 @@ export default function BookingCart() {
         key={item.id}
         travelId={item.id || ''}
         amount={item.amount}
-        onDrop={() => handleDelete(item.id)}
-        onAdd={() => onAdd(item.id)}
-        onMinus={() => onMinus(item.id)} // amount từ localStorage
+        onDrop={() => handleDelete(item.id, item.bookDate)}
+        onAdd={() => onAdd(item.id, item.bookDate)}
+        onMinus={() => onMinus(item.id, item.bookDate)}
+        bookDate={item.bookDate}
       />
     ))
   }
