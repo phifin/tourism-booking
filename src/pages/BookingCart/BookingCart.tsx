@@ -23,6 +23,39 @@ export default function BookingCart() {
     setCart(updatedCart)
     localStorage.setItem('cart', JSON.stringify(updatedCart))
   }
+
+  const onAdd = (id: string | undefined) => {
+    if (!id) return
+
+    // Cập nhật amount của item có id tương ứng
+    const updatedCart = cart.map((item) => {
+      if (item.id === id) {
+        return { ...item, amount: item.amount + 1 } // Tăng số lượng lên 1
+      }
+      return item
+    })
+
+    // Cập nhật lại state và localStorage
+    setCart(updatedCart)
+    localStorage.setItem('cart', JSON.stringify(updatedCart))
+  }
+
+  // Hàm giảm số lượng của item theo id
+  const onMinus = (id: string | undefined) => {
+    if (!id) return
+
+    // Cập nhật amount của item có id tương ứng
+    const updatedCart = cart.map((item) => {
+      if (item.id === id && item.amount > 1) {
+        return { ...item, amount: item.amount - 1 } // Giảm số lượng xuống 1, không cho nhỏ hơn 1
+      }
+      return item
+    })
+
+    // Cập nhật lại state và localStorage
+    setCart(updatedCart)
+    localStorage.setItem('cart', JSON.stringify(updatedCart))
+  }
   const renderBookingCards = () => {
     if (!cart) {
       return <div>No bookings found!</div>
@@ -33,7 +66,9 @@ export default function BookingCart() {
         key={item.id}
         travelId={item.id || ''}
         amount={item.amount}
-        onDrop={() => handleDelete(item.id)} // amount từ localStorage
+        onDrop={() => handleDelete(item.id)}
+        onAdd={() => onAdd(item.id)}
+        onMinus={() => onMinus(item.id)} // amount từ localStorage
       />
     ))
   }
