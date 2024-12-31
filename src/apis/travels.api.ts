@@ -95,6 +95,19 @@ const travelApi = {
       console.error('Error posting travel data:', error)
       throw error
     }
+  },
+  deleteTravel(id: string) {
+    return http.delete(`${dataPath}/${id}`)
+  },
+  editTravel(
+    id: string,
+    title: string | undefined,
+    description: string | undefined,
+    price: number | undefined,
+    imageUrl: string[] | undefined
+  ) {
+    const travelData = { title, description, price, imageUrl }
+    return http.put(`${dataPath}/${id}`, travelData)
   }
 }
 

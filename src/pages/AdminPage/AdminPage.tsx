@@ -3,6 +3,7 @@ import CarForm from '~/components/CarForm.tsx'
 import FlightForm from '~/components/FlightForm'
 import TourForm from '~/components/TourForm'
 import HotelForm from '~/components/HotelForm'
+import { Link } from 'react-router-dom'
 
 export default function AdminPage() {
   const [propertyType, setPropertyType] = useState('Tour') // Mặc định là 'Tour'
@@ -28,7 +29,12 @@ export default function AdminPage() {
 
   return (
     <div className='mt-10 pb-16 w-1/2 mx-auto'>
-      <h1 className='text-3xl font-bold'>Admin Dashboard</h1>
+      <div className='flex justify-between'>
+        <h1 className='text-3xl font-bold'>Admin Space</h1>
+        <Link to='/adminDashboard' className='text-blue-800 underline'>
+          Manage all Posted Travels
+        </Link>
+      </div>
       <div className='mt-4 border border-gray-400 shadow-md'>
         <header className='min-w-56 mt-5 ml-3 text-xl font-semibold'>Enter the information of property</header>
         <div className='text-lg flex ml-3 mt-3'>
