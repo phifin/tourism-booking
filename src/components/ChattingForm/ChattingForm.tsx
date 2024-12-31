@@ -188,8 +188,30 @@ export default function ChattingForm({ userId, onClose }: ChattingFormProps) {
   }
 
   // Hiển thị trạng thái loading, lỗi, hoặc thông tin user
-  if (loading)
-    return <div className='h-96 w-80 fixed right-52 bottom-0 border border-gray-600 bg-white z-50'>Loading...</div>
+  if (loading) {
+    return (
+      <div className='h-104 w-90 fixed right-52 bottom-0 border border-gray-200 bg-white z-50 rounded-xl overflow-y-auto flex flex-col'>
+        {/* Shimmer header */}
+        <div className='pl-3 h-12 flex items-center bg-gray-300 animate-pulse rounded-t-xl'></div>
+
+        {/* Shimmer content */}
+        <div className='p-3 flex-1 overflow-y-auto'>
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className='flex space-x-4 mb-4'>
+              <div className='w-10 h-10 bg-gray-300 rounded-full animate-pulse'></div>
+              <div className='flex-1 space-y-2'>
+                <div className='h-4 bg-gray-300 rounded animate-pulse w-3/4'></div>
+                <div className='h-4 bg-gray-300 rounded animate-pulse w-1/2'></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Shimmer input */}
+        <div className='h-12 border-t border-gray-300 flex items-center p-2 bg-gray-200 animate-pulse rounded-b-xl'></div>
+      </div>
+    )
+  }
   if (error)
     return <div className='h-96 w-80 fixed right-52 bottom-0 border border-gray-600 bg-white z-50'>Error: {error}</div>
 
