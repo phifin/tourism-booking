@@ -1,13 +1,35 @@
-import { Flight, CarRental, Tour, Hotel, TravelModel } from '~/models/travels.model'
+import { Flight, CarRental, Tour, Hotel, TravelModel, TravelModelWithPage } from '~/models/travels.model'
 import http from '~/utils/http'
 
 const dataPath = 'travel'
 
 const travelApi = {
   fetchAllTravels: async (): Promise<TravelModel[]> => {
+    console.log('fetching all travels')
+
     const response = await http.get<TravelModel[]>(`${dataPath}`)
 
     return response.data
+  },
+
+  getTravelByPage: async (page: number, travelType: string): Promise<TravelModelWithPage> => {
+    const response = await http.get<TravelModel[]>(`${dataPath}?page=${page}&travelType=${travelType}`)
+
+    return {
+      travel: response.data,
+      page: page,
+      travelType: travelType
+    }
+  },
+
+  getTravelByPage: async (page: number, travelType: string): Promise<TravelModelWithPage> => {
+    const response = await http.get<TravelModel[]>(`${dataPath}?page=${page}&travelType=${travelType}`)
+
+    return {
+      travel: response.data,
+      page: page,
+      travelType: travelType
+    }
   },
 
   getTravelsByType() {
@@ -108,6 +130,11 @@ const travelApi = {
   ) {
     const travelData = { title, description, price, imageUrl }
     return http.put(`${dataPath}/${id}`, travelData)
+  },
+  getTravelRatingById(id: string): Promise<number> {
+    return http.get<number>(`${dataPath}/getTravelRatingByTravelId/${id}`).then((response) => {
+      return response.data
+    })
   }
 }
 

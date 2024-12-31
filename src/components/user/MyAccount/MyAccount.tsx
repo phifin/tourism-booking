@@ -104,8 +104,8 @@ const MyAccount: React.FC = () => {
                 />
               ) : (
                 <div className='w-20 h-20 bg-gray-300 flex items-center justify-center rounded-full text-2xl font-bold shadow-md border border-white'>
-                  {userRedux.data.firstName[0].toUpperCase()}
-                  {userRedux.data.lastName[0].toUpperCase()}
+                  {userRedux.data.firstName ? userRedux.data.firstName[0].toUpperCase() : ''}
+                  {userRedux.data.lastName ? userRedux.data.lastName[0].toUpperCase() : ''}
                 </div>
               )}
 

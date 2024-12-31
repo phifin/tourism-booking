@@ -5,6 +5,7 @@ import { AppDispatch, store } from './store/index.ts'
 import { useContext, useEffect } from 'react'
 import { AppContext } from './context/app.context.tsx'
 import { fetchUser } from './store/user.slice.ts'
+import { ToastContainer } from 'react-toastify'
 
 const InitializeUser = ({ children }: { children: React.ReactNode }) => {
   const { userEmail } = useContext(AppContext)
@@ -25,7 +26,10 @@ function App() {
   return (
     <div>
       <Provider store={store}>
-        <InitializeUser>{routeElements}</InitializeUser>
+        <InitializeUser>
+          {routeElements}
+          <ToastContainer />
+        </InitializeUser>
       </Provider>
     </div>
   )

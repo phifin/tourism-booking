@@ -16,8 +16,10 @@ export default function HomePage() {
   const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchTravel())
-  }, [dispatch])
+    if (travels.length === 0) {
+      dispatch(fetchTravel())
+    }
+  }, [dispatch, travels?.length])
 
   const tourData = travels?.filter((travel: TravelModel) => travel.travelType === 'Tour') as Tour[]
   const hotelData = travels?.filter((travel: TravelModel) => travel.travelType === 'Hotel') as Hotel[]

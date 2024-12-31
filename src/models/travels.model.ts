@@ -8,6 +8,7 @@ export interface TravelModel {
   travelType: string
 }
 
+
 export interface Flight extends TravelModel {
   origin: string
   destination: string
@@ -33,4 +34,10 @@ export interface CarRental extends TravelModel {
   location: string
   contact: string
   carType: string
+}
+
+export interface TravelModelWithPage {
+  travel: TravelModel[]
+  page: number
+  travelType: string
 }

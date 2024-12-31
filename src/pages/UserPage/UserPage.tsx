@@ -50,8 +50,8 @@ const ProfileSidebar: React.FC<{ userData: UserModel }> = ({ userData }) => {
       <div className='p-6 border-b'>
         <div className='flex items-center'>
           <div className='w-16 h-16 bg-gray-300 flex items-center justify-center rounded-full text-2xl font-bold'>
-            {userData.firstName[0].toUpperCase()}
-            {userData.lastName[0].toUpperCase()}
+            {userData.firstName ? userData.firstName[0].toUpperCase() : ''}
+            {userData.lastName ? userData.lastName[0].toUpperCase() : ''}
           </div>
           <div className='ml-4'>
             <h1 className='text-lg font-bold'>
