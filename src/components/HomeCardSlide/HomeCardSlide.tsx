@@ -12,7 +12,7 @@ export default function HomeCardSlide({ renderData }: HomeCardSlideProps) {
   const prevRef = useRef<HTMLButtonElement | null>(null) // Ref cho nút Prev
   const nextRef = useRef<HTMLButtonElement | null>(null) // Ref cho nút Next
   return (
-    <div className='relative'>
+    <div className='relative z-0'>
       <Swiper
         modules={[Navigation]}
         spaceBetween={20}

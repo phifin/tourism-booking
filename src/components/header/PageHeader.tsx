@@ -95,7 +95,7 @@ export default function PageHeader({ children, showNavBar }: Props) {
   if (userRedux.error) return <div>Error: {userRedux.error}</div>
 
   const topNavigationBar = (
-    <div>
+    <div className='relative z-50'>
       <div
         className={classNames('top-0 z-50 w-full bg-cover bg-center overscroll-none', {
           'fixed bg-white text-black shadow-md transition-all duration-300 ease-in-out': isScrolled && showNavBar,
