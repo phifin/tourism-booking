@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import NavBar from '../NavBar'
 import { AppContext } from '~/context/app.context'
 import PersonalBar from '../PersonalBar'
-import SearchBar from '../SearchBar'
+// import SearchBar from '../SearchBar'
 import { RootState } from '~/store'
 import { useSelector } from 'react-redux'
 
@@ -271,9 +271,6 @@ export default function PageHeader({ children, showNavBar }: Props) {
             <header className='pt-12 ml-44 text-5xl font-extrabold'>{title}</header>
             <div className='mx-auto mt-10'>
               <NavBar />
-            </div>
-            <div className='w-3/4 mx-auto mt-10'>
-              <SearchBar />
             </div>
           </div>
         ) : (
