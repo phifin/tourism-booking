@@ -5,9 +5,12 @@ import travelApi from '~/apis/travels.api'
 interface Props {
   travelId: string
   amount: number
+  onDrop: () => void
 }
-export default function BookingCartCard({ travelId, amount }: Props) {
+export default function BookingCartCard({ travelId, amount, onDrop }: Props) {
   const { data: traavelData } = useQuery(['travel', travelId], () => travelApi.getTravelById(travelId))
+
+  // const handle
 
   // Format ngày sử dụng date-fns
 
@@ -17,7 +20,12 @@ export default function BookingCartCard({ travelId, amount }: Props) {
         <img src={traavelData?.imageUrl[0]} className='w-full h-full object-cover' alt='travelImage'></img>
       </div>
       <div className='w-3/4'>
-        <div className='ml-3 mt-3 text-2xl font-bold'>{traavelData?.title}</div>
+        <div className='flex justify-between items-center'>
+          <div className='ml-3 mt-3 text-2xl font-bold'>{traavelData?.title}</div>
+          <div className='py-2 px-2 bg-blue-800 text-white rounded-lg cursor-pointer' onClick={onDrop}>
+            Delete
+          </div>
+        </div>
         <div className='h-9 ml-3 mt-4 w-full pr-6 line-clamp-2'>{traavelData?.description}</div>
         <div className='ml-3 mt-3 text-blue-900 font-semibold'>Type: {toUpper(traavelData?.travelType)}</div>
         <div className='ml-3 mt-1'>Amount: {amount}</div>
