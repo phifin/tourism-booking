@@ -57,7 +57,7 @@ function RatingBadge({ id }: { id: string }) {
       setRating(res)
       setIsLoading(false)
     })
-  }, [])
+  }, [id])
 
   return !isLoading ? (
     <div className='w-52'>

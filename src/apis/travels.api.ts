@@ -22,16 +22,6 @@ const travelApi = {
     }
   },
 
-  getTravelByPage: async (page: number, travelType: string): Promise<TravelModelWithPage> => {
-    const response = await http.get<TravelModel[]>(`${dataPath}?page=${page}&travelType=${travelType}`)
-
-    return {
-      travel: response.data,
-      page: page,
-      travelType: travelType
-    }
-  },
-
   getTravelsByType() {
     return http.get<TravelModel[]>(`${dataPath}`).then((response) => {
       const travels = response.data

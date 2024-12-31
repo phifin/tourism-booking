@@ -11,13 +11,13 @@ export default function Attractions({ travelType }: { travelType: string }) {
   const { travels, isLoading, error } = useSelector((state: RootState) => state.travels)
 
   useEffect(() => {
-    if (travels.length === 0) {
+    if (!travels.length) {
       dispatch(fetchTravel())
     }
   }, [dispatch, travels?.length])
 
   // Lọc dữ liệu theo loại travelType
-  const travel = travels!.filter((travel: TravelModel) => travel.travelType === travelType) as TravelModel[]
+  const travel = travels ? travels.filter((travel: TravelModel) => travel.travelType === travelType) : []
 
   const travelData = useMemo(() => {
     return travel || [] // Fallback to an empty array if travel is undefined
@@ -27,12 +27,13 @@ export default function Attractions({ travelType }: { travelType: string }) {
   const [typeSortCheck, setTypeSortCheck] = useState('default')
 
   const [currentPage, setCurrentPage] = useState<number>(0)
-  const lastPageIndex = Math.ceil(travel.length / 5) - 1
+  const lastPageIndex = Math.ceil(travelData.length / 5) - 1
 
   // add this to fix the issue where currentPage is not reverted back to 0 when user switch to another travel type
   useEffect(() => {
     setCurrentPage(0)
   }, [travelType])
+
   const [searchQuery, setSearchQuery] = useState({ keyword: '', priceRange: '', timeBudget: '' })
 
   // Reset filters và searchQuery khi travelType thay đổi
@@ -78,6 +79,8 @@ export default function Attractions({ travelType }: { travelType: string }) {
   const renderData = () => {
     if (error) return <div>Error: {error}</div>
     if (isLoading) return <ShimmerEffectList count={5} />
+    if (sortedAndFilteredData.length === 0) return <div>No data available</div>
+
     return sortedAndFilteredData.slice(currentPage * 5, currentPage * 5 + 5).map((travel) => {
       return <InformationLongCard key={travel.id} travelData={travel} />
     })
@@ -86,16 +89,11 @@ export default function Attractions({ travelType }: { travelType: string }) {
   const handlePageChange = (index: number) => {
     setCurrentPage(index)
 
-    console.log('====================================')
-    console.log(index)
-
     // Scroll to the top of the page
     window.scrollTo({
       top: 0,
       behavior: 'smooth' // Smooth scrolling animation
     })
-
-    console.log('====================================')
   }
 
   return (
@@ -121,8 +119,9 @@ export default function Attractions({ travelType }: { travelType: string }) {
 
         {renderData()}
 
-      <div className='pb-10 '>
-        <PaginationButtons currentIndex={currentPage} lastIndex={lastPageIndex} onPageChange={handlePageChange} />
+        <div className='pb-10'>
+          <PaginationButtons currentIndex={currentPage} lastIndex={lastPageIndex} onPageChange={handlePageChange} />
+        </div>
       </div>
     </div>
   )
@@ -195,6 +194,7 @@ function PaginationButtons({
       >
         Next
       </button>
+
       {/* Last Button */}
       <button
         className='px-4 py-2 ml-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
@@ -203,7 +203,6 @@ function PaginationButtons({
       >
         Last
       </button>
-      </div>
     </div>
   )
 }
