@@ -23,21 +23,31 @@ interface MenuItem {
   path: string // New field for navigation paths
 }
 
-const menuItems: MenuItem[] = [
-  { icon: <FontAwesomeIcon icon={faCoins} />, label: '0', path: '/user/coins' },
-  { icon: <FontAwesomeIcon icon={faContactCard} />, label: 'My Cards', path: '/user/cards' },
-  { icon: <FontAwesomeIcon icon={faRectangleList} />, label: 'My Booking', path: '/user/booking' },
-  { icon: <FontAwesomeIcon icon={faShoppingCart} />, label: 'Purchase List', path: '/user/purchases' },
-  { icon: <FontAwesomeIcon icon={faMoneyBill1Wave} />, label: 'Refunds', path: '/user/refunds' },
-  { icon: <FontAwesomeIcon icon={faBell} />, label: 'Flight Price Alerts', path: '/user/alerts' },
-  { icon: <FontAwesomeIcon icon={faUserGroup} />, label: 'Saved Passenger Details', path: '/user/passengers' },
-  { icon: <FontAwesomeIcon icon={faEnvelope} />, label: 'Promo Info', path: '/user/promo' },
-  { icon: <FontAwesomeIcon icon={faCog} />, label: 'My Account', path: '/user/account' },
-  { icon: <FontAwesomeIcon icon={faPowerOff} />, label: 'Logging Out', path: '/logout' }
-]
-
 const ProfileSidebar: React.FC<{ userData: UserModel }> = ({ userData }) => {
   const location = useLocation()
+
+  const menuItems: MenuItem[] = [
+    { icon: <FontAwesomeIcon icon={faCoins} />, label: userData.progression.toString(), path: '/user/coins' },
+    { icon: <FontAwesomeIcon icon={faContactCard} />, label: 'My Cards', path: '/user/cards' },
+    { icon: <FontAwesomeIcon icon={faRectangleList} />, label: 'My Booking', path: '/user/booking' },
+    { icon: <FontAwesomeIcon icon={faShoppingCart} />, label: 'Purchase List', path: '/user/purchases' },
+    { icon: <FontAwesomeIcon icon={faMoneyBill1Wave} />, label: 'Refunds', path: '/user/refunds' },
+    { icon: <FontAwesomeIcon icon={faBell} />, label: 'Flight Price Alerts', path: '/user/alerts' },
+    { icon: <FontAwesomeIcon icon={faUserGroup} />, label: 'Saved Passenger Details', path: '/user/passengers' },
+    { icon: <FontAwesomeIcon icon={faEnvelope} />, label: 'Promo Info', path: '/user/promo' },
+    { icon: <FontAwesomeIcon icon={faCog} />, label: 'My Account', path: '/user/account' },
+    { icon: <FontAwesomeIcon icon={faPowerOff} />, label: 'Logging Out', path: '/logout' }
+  ]
+
+  const levels = [
+    { level: 'Bronze', min: 0, max: 1000, color: 'from-[#d4af7a] to-[#b9824f]' },
+    { level: 'Silver', min: 1000, max: 2000, color: 'from-[#c0c0c0] to-[#a8a8a8]' },
+    { level: 'Gold', min: 2000, max: 3000, color: 'from-[#ffcc00] to-[#e6b800]' },
+    { level: 'Platinum', min: 3000, max: 4000, color: 'from-[#00ff99] to-[#00cc7a]' },
+    { level: 'Diamond', min: 4000, max: Infinity, color: 'from-[#b9f2ff] to-[#87d3e0]' }
+  ]
+
+  const currentLevel = levels.find((level) => userData.progression >= level.min && userData.progression < level.max)
 
   // const [chosenIndex, setChosenIndex] = React.useState(0)
 
@@ -61,9 +71,11 @@ const ProfileSidebar: React.FC<{ userData: UserModel }> = ({ userData }) => {
           </div>
         </div>
         {/* Badge */}
-        <div className='mt-4 bg-gradient-to-r from-[#d4af7a] to-[#b9824f] rounded-md text-white px-4 py-2 flex items-center justify-between'>
+        <div
+          className={`mt-4 bg-gradient-to-r ${currentLevel?.color} rounded-md text-white px-4 py-2 flex items-center justify-between`}
+        >
           <span className='text-sm'>
-            🧸 You're our <strong>Bronze Priority</strong>
+            You're our <strong>{currentLevel?.level} Priority</strong>
           </span>
           <span>›</span>
         </div>
