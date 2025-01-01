@@ -13,6 +13,7 @@ import TravelPage from './pages/TravelPage'
 import NotFoundPage from './pages/404Page'
 import UserPage from './pages/UserPage/UserPage'
 import MyAccount from './components/user/MyAccount/MyAccount'
+import MyBooking from './components/user/MyBooking/MyBooking.tsx'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -108,6 +109,16 @@ export default function useRouteElement() {
             <PageHeader showNavBar={false}>
               <UserPage>
                 <MyAccount />
+              </UserPage>
+            </PageHeader>
+          )
+        },
+        {
+          path: '/user/booking',
+          element: (
+            <PageHeader showNavBar={false}>
+              <UserPage>
+                <MyBooking />
               </UserPage>
             </PageHeader>
           )
