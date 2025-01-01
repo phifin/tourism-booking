@@ -16,6 +16,9 @@ import MyAccount from './components/user/MyAccount/MyAccount'
 import MyBooking from './components/user/MyBooking/MyBooking.tsx'
 import MyCards from './components/user/MyCards/MyCards.tsx'
 import MyProgression from './components/user/MyProgression/MyProgression.tsx'
+import AdminPage from './pages/AdminPage/AdminPage.tsx'
+import BookingCart from './pages/BookingCart/BookingCart.tsx'
+import AdminDataDashboard from './pages/AdminDataDashboard/AdminDataDashboard.tsx'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -150,6 +153,30 @@ export default function useRouteElement() {
           element: (
             <PageHeader showNavBar={false}>
               <UserPage />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/admin',
+          element: (
+            <PageHeader>
+              <AdminPage />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/adminDashboard',
+          element: (
+            <PageHeader>
+              <AdminDataDashboard />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/bookingcart',
+          element: (
+            <PageHeader>
+              <BookingCart />
             </PageHeader>
           )
         }

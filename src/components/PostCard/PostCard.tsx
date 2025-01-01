@@ -4,11 +4,45 @@ import { RootState } from '~/store'
 import { PostModel } from '~/models/post.model'
 import { likePost } from '~/store/post.slice' // Import action likePost
 import { AppDispatch } from '~/store'
+import { useEffect, useState } from 'react'
+import { postApi } from '~/apis/post.api'
 
-export default function PostCard({ postData }: { postData: PostModel }) {
+interface PostCardProps {
+  postData: PostModel
+  onCommentClick: (postId: string, likesNum: number, liked: boolean) => void
+}
+
+export default function PostCard({ postData, onCommentClick }: PostCardProps) {
   const dispatch = useDispatch<AppDispatch>()
   const userRedux = useSelector((state: RootState) => state.user)
+  const [commentsNum, setCommentsNum] = useState(0)
 
+  useEffect(() => {
+    let isMounted = true // Cờ để kiểm tra component vẫn đang được render
+
+    const fetchData = async () => {
+      try {
+        if (postData?.id) {
+          const response = await postApi.fetchCommentsByPostId(postData.id)
+          console.log(response.data)
+          // Chỉ cập nhật state nếu component vẫn đang được render
+          if (isMounted && response.data && Array.isArray(response.data)) {
+            setCommentsNum(response.data.length)
+          }
+        }
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error('Error fetching comments:', err)
+        }
+      }
+    }
+
+    fetchData()
+
+    return () => {
+      isMounted = false // Ngăn cập nhật state nếu component đã unmount
+    }
+  }, [postData])
   const formattedTime = () => {
     const createdDate = new Date(postData.createdAt)
     const daysDifference = differenceInDays(new Date(), createdDate)
@@ -54,16 +88,16 @@ export default function PostCard({ postData }: { postData: PostModel }) {
 
     return <img src={postData.imageUrl} alt='post-media' className='h-96 w-full object-cover' />
   }
-  console.log(postData)
+  // const onOpenComments = ()
   return (
     <div className='border shadow-xl rounded-lg'>
       <div className='mt-2 mx-auto'>
         <div className='mt-3 ml-4 flex items-center'>
-          <div className='h-12 w-12 object-cover overflow-hidden border rounded-full'>
+          <div className='h-12 w-12 overflow-hidden border rounded-full'>
             <img
               src={userRedux.data?.profileImageUrl ?? '/src/assets/default_profile_img.jpg'}
               alt='userProfile'
-              className='p-1'
+              className='h-full w-full object-cover'
             />
           </div>
           <div className='px-2 py-1 '>
@@ -71,8 +105,8 @@ export default function PostCard({ postData }: { postData: PostModel }) {
             <div className='text-gray-500'>{formattedTime()}</div>
           </div>
         </div>
-        <div className='mt-3 ml-6'>
-          <p>{postData.content}</p>
+        <div className='mt-3 mx-6'>
+          <p className='w-full break-words'>{postData.content}</p>
         </div>
         {postData.imageUrl ? <div className='mt-4'>{renderMedia()}</div> : ''}
         <div className={`${postData.likes ? 'mt-3' : 'mt-1'} ml-1 flex items-center justify-between`}>
@@ -91,13 +125,18 @@ export default function PostCard({ postData }: { postData: PostModel }) {
               </div>
             )}
           </div>
-          <div className='flex text-gray-500'>
+          <div
+            className='flex text-gray-500 cursor-pointer'
+            onClick={() =>
+              onCommentClick(
+                postData.id,
+                postData?.likes?.length,
+                Array.isArray(postData.likes) && postData.likes.includes(userRedux?.data?.id ?? '')
+              )
+            }
+          >
             <div className='mr-4'>
-              {postData.comments === null || postData.comments.length <= 0 ? (
-                ''
-              ) : (
-                <div>{postData.comments.length} comments</div>
-              )}
+              {commentsNum === null || commentsNum <= 0 ? '' : <div>{commentsNum} comments</div>}
             </div>
             <div className='mr-4'>
               {postData.shares === null || postData.shares.length <= 0 ? (
@@ -132,7 +171,16 @@ export default function PostCard({ postData }: { postData: PostModel }) {
             </span>
             <header className='ml-2'>Like</header>
           </div>
-          <div className='flex py-1 items-center justify-center text-gray-500 font-semibold  cursor-pointer'>
+          <div
+            className='flex py-1 items-center justify-center text-gray-500 font-semibold  cursor-pointer'
+            onClick={() =>
+              onCommentClick(
+                postData.id,
+                postData?.likes?.length,
+                Array.isArray(postData.likes) && postData.likes.includes(userRedux?.data?.id ?? '')
+              )
+            }
+          >
             <span>
               <svg aria-label='Comment' fill='currentColor' height='24' role='img' viewBox='0 0 24 24' width='24'>
                 <title>Comment</title>

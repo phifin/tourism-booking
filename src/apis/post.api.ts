@@ -1,9 +1,13 @@
 import http from '~/utils/http'
 import { PostModel } from '~/models/post.model'
-const URLGetAll = 'post'
+const URLGetAll = 'post/getAllNormalPosts'
 const URLLikePost = 'post/likePost'
 const URLCreatePost = 'post'
 const URLUploadImage = 'cloudinary/uploadImage'
+const URLGetCommentsOfPost = 'post/getAllCommentPostsOfPost'
+const URLGetPostById = 'post'
+const URLGetNormalPosts = 'post/getAllNormalPosts'
+const URLGetReviewsPosts = '/post/getAllRatingPostsOfTravel'
 // const URLGetOne = 'travel/getTravelById'
 // const URLCreateBook = 'book/createBook'
 
@@ -21,24 +25,62 @@ export const postApi = {
     }
     return http.post(URLLikePost, body)
   },
+  getNormalPosts() {
+    return http.get<PostModel[]>(URLGetNormalPosts).then((response) => {
+      const posts = response.data
+      return posts
+    })
+  },
   async createPost({
     userId,
     content,
     postId,
-    imageUrl
+    imageUrl,
+    sharedPostId,
+    travelId,
+    rating
   }: {
     userId: string | undefined
     content: string
     postId: string | null
     imageUrl: string | null
+    sharedPostId: string | null
+    travelId: string | null
+    rating: number | null
   }) {
-    const response = await http.post(URLCreatePost, {
-      userId,
-      content,
-      postId,
-      imageUrl
-    })
-    return response.data
+    if (postId === null && sharedPostId === null && travelId === null) {
+      const response = await http.post(URLCreatePost, {
+        userId,
+        content,
+        imageUrl
+      })
+      return response
+    } else if (postId !== null) {
+      const response = await http.post(URLCreatePost, {
+        userId,
+        content,
+        imageUrl,
+        postId
+      })
+      return response
+    } else if (sharedPostId !== null) {
+      const response = await http.post(URLCreatePost, {
+        userId,
+        content,
+        imageUrl,
+        sharedPostId
+      })
+      return response
+    } else if (travelId !== null) {
+      const response = await http.post(URLCreatePost, {
+        userId,
+        content,
+        imageUrl,
+        travelId,
+        rating
+      })
+      return response
+    }
   },
   async uploadImage(image: File) {
     const formData = new FormData()
@@ -56,6 +98,18 @@ export const postApi = {
       console.error('Error uploading image:', error)
       throw error
     }
+  },
+  async fetchCommentsByPostId(id: string) {
+    const response = await http.get(`${URLGetCommentsOfPost}/${id}`)
+    return response
+  },
+  async fetchPostById(id: string) {
+    const response = await http.get(`${URLGetPostById}/${id}`)
+    return response
+  },
+  async getReviewsOfPost(id: string) {
+    const response = await http.get(`${URLGetReviewsPosts}/${id}`)
+    return response
   }
   // createNewBooking(userId: string, travelId: string, bookedDate: string, amount: number) {
   //   const body = {

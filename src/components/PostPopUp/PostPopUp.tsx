@@ -1,10 +1,11 @@
-import React, { useRef, useState, useContext } from 'react'
+import React, { useRef, useState } from 'react'
 import PostUserProfile from '../PostUserProfile'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import { AppContext } from '~/context/app.context'
+import { RootState } from '~/store'
 import { useForm } from 'react-hook-form'
-import { userApi } from '~/apis/user.api'
 import { postApi } from '~/apis/post.api'
+import { AppDispatch } from '~/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { createPost } from '~/store/post.slice'
 
 interface FormData {
   content: string
@@ -16,46 +17,47 @@ interface PostPopUpProps {
 }
 
 export default function PostPopUp({ onClick }: PostPopUpProps) {
-  const { register, handleSubmit, setValue, reset, watch } = useForm<FormData>()
-  const { userEmail } = useContext(AppContext)
+  const { register, handleSubmit, setValue } = useForm<FormData>()
+  const dispatch: AppDispatch = useDispatch()
 
   // Fetch user data
-  const { data: userData } = useQuery(['userData', userEmail], () => userApi.fetchUserByEmail(userEmail))
+  const userData = useSelector((state: RootState) => state.user)
 
   // State for image preview
   const [previewImage, setPreviewImage] = useState<string>('')
 
   // File input reference
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  // Mutation for creating post
-  const createPostMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      let imageUrl = null
-
-      if (formData.image) {
-        const uploadResponse = await postApi.uploadImage(formData.image)
-        imageUrl = uploadResponse.url
-      }
-
-      return postApi.createPost({
-        userId: userData?.id,
-        content: formData.content,
-        postId: null,
-        imageUrl
-      })
-    },
-    onSuccess: () => {
-      console.log('Post created successfully')
-      reset() // Reset form
-      setPreviewImage('') // Clear preview image
-      onClick() // Close popup
-    },
-    onError: (error) => {
-      console.error('Error creating post:', error)
+  const onSubmit = handleSubmit(async (data) => {
+    let imageUrl = null
+    if (data.image) {
+      const uploadResponse = await postApi.uploadImage(data.image)
+      imageUrl = uploadResponse.url
     }
+
+    const resultAction = await dispatch(
+      createPost({
+        userId: userData.data?.id ? userData.data?.id : '',
+        content: data.content,
+        imageUrl: imageUrl,
+        postId: null,
+        sharedPostId: null,
+        travelId: null
+      })
+    )
+    if (createPost.fulfilled.match(resultAction)) {
+      console.log('Post created successfully:', resultAction.payload)
+    } else if (createPost.rejected.match(resultAction)) {
+      // Hiển thị lỗi cho người dùng
+      console.log(`Post creation failed: ${resultAction.payload}`)
+      console.error('Post creation failed:', resultAction.payload)
+    }
+    onClick()
   })
 
+  const onUserProfileClick = () => {
+    console.log('clicked up')
+  }
   // Handle file selection
   const handleFileUpload = () => {
     if (fileInputRef.current) {
@@ -71,16 +73,6 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
       setValue('image', files[0]) // Update form value
     }
   }
-
-  const onSubmit = handleSubmit((data) => {
-    createPostMutation.mutate(data)
-  })
-
-  const content = watch('content')
-  const image = watch('image')
-
-  // Enable button only if content or image is provided, and not during mutation loading
-  const isPostEnabled = !!content || (!!image && !createPostMutation.isLoading)
 
   return (
     <form
@@ -98,7 +90,11 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
         </div>
       </div>
       <div>
-        <PostUserProfile createdAt='' userId={userData?.id ? userData?.id : ''} />
+        <PostUserProfile
+          createdAt={undefined}
+          userId={userData.data?.id ? userData.data?.id : ''}
+          onClick={onUserProfileClick}
+        />
       </div>
       <input
         className='mt-4 ml-4 w-95/100 text-2xl border-none focus:ring-0 focus:outline-none bg-slate-50'
@@ -122,10 +118,9 @@ export default function PostPopUp({ onClick }: PostPopUpProps) {
       </div>
       <button
         type='submit'
-        disabled={!isPostEnabled} // Disable button while loading
         className='flex items-center justify-center mt-3 h-12 mx-auto bg-blue-600 hover:bg-blue-700 text-white border w-95/100 border-gray-400 rounded-xl font-semibold cursor-pointer'
       >
-        {createPostMutation.isLoading ? 'Posting...' : 'Post'}
+        Post
       </button>
     </form>
   )

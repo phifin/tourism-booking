@@ -1,26 +1,19 @@
-import {
-  Flight,
-  CarRental,
-  Tour,
-  Hotel,
-  TravelModel,
-  TravelModelWithPage
-} from '~/models/travels.model'
+import { Flight, CarRental, Tour, Hotel, TravelModel, TravelModelWithPage } from '~/models/travels.model'
 import http from '~/utils/http'
 
 const dataPath = 'travel'
 
 const travelApi = {
   fetchAllTravels: async (): Promise<TravelModel[]> => {
-    console.log('fetching all travels');
+    console.log('fetching all travels')
 
-    const response = await http.get<TravelModel[]>(`${dataPath}`);
+    const response = await http.get<TravelModel[]>(`${dataPath}`)
 
-    return response.data;
+    return response.data
   },
 
   getTravelByPage: async (page: number, travelType: string): Promise<TravelModelWithPage> => {
-    const response = await http.get<TravelModel[]>(`${dataPath}?page=${page}&travelType=${travelType}`);
+    const response = await http.get<TravelModel[]>(`${dataPath}?page=${page}&travelType=${travelType}`)
 
     return {
       travel: response.data,
@@ -66,11 +59,73 @@ const travelApi = {
       throw new Error(`Unexpected travel type: ${travelDetail.travelType}`)
     })
   },
+  postTravelData: async (
+    title?: string,
+    description?: string,
+    body?: string,
+    imageUrl?: string[],
+    travelType?: string, // Hotel, Flight, Tour, CarRental
+    price?: number,
+    address?: string,
+    contact?: string,
+    createdAt?: string,
+    city?: string,
+    capacity?: number,
+    origin?: string,
+    destination?: string,
+    startDate?: string,
+    endDate?: string,
+    airline?: string,
+    location?: string,
+    carType?: string
+  ) => {
+    const postData = {
+      title,
+      description,
+      body,
+      imageUrl,
+      travelType,
+      price,
+      address,
+      contact,
+      createdAt,
+      city,
+      capacity,
+      origin,
+      destination,
+      startDate,
+      endDate,
+      airline,
+      location,
+      carType
+    }
+
+    try {
+      const response = await http.post(`${dataPath}`, postData)
+      return response.data
+    } catch (error) {
+      console.error('Error posting travel data:', error)
+      throw error
+    }
+  },
+  deleteTravel(id: string) {
+    return http.delete(`${dataPath}/${id}`)
+  },
+  editTravel(
+    id: string,
+    title: string | undefined,
+    description: string | undefined,
+    price: number | undefined,
+    imageUrl: string[] | undefined
+  ) {
+    const travelData = { title, description, price, imageUrl }
+    return http.put(`${dataPath}/${id}`, travelData)
+  },
   getTravelRatingById(id: string): Promise<number> {
     return http.get<number>(`${dataPath}/getTravelRatingByTravelId/${id}`).then((response) => {
       return response.data
     })
-  },
+  }
 }
 
 export default travelApi
