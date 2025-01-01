@@ -16,6 +16,8 @@ import MyAccount from './components/user/MyAccount/MyAccount'
 import AdminPage from './pages/AdminPage/AdminPage.tsx'
 import BookingCart from './pages/BookingCart/BookingCart.tsx'
 import AdminDataDashboard from './pages/AdminDataDashboard/AdminDataDashboard.tsx'
+import QrPayment from './pages/QrPayment/QrPayment.tsx'
+import PaymentPage from './pages/PaymentPage/PaymentPage.tsx'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -144,6 +146,22 @@ export default function useRouteElement() {
           element: (
             <PageHeader>
               <BookingCart />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/qrPayment',
+          element: (
+            <PageHeader>
+              <QrPayment />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/paymentPage',
+          element: (
+            <PageHeader>
+              <PaymentPage />
             </PageHeader>
           )
         }

@@ -1,58 +1,64 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import bookingApi from '~/apis/booking.api'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useContext, useState } from 'react'
-import { AppContext } from '~/context/app.context'
-import { userApi } from '~/apis/user.api'
-import { useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
+import { useSelector } from 'react-redux'
+import { RootState } from '~/store'
+// import bookingApi from '~/apis/booking.api' // Import API module
+import travelApi from '~/apis/travels.api'
+
 interface BookInformationFormProps {
   onClick: () => void
 }
 
 export default function BookInformationForm({ onClick }: BookInformationFormProps) {
-  const { userEmail } = useContext(AppContext)
-  const { data: userData } = useQuery(['userData', userEmail], () => userApi.fetchUserByEmail(userEmail), {})
-  const userId = userData?.id // Lấy userId từ context
   const { id } = useParams<{ id: string | undefined }>() // Lấy id từ URL
   const [bookingDate, setBookingDate] = useState<dayjs.Dayjs | null>(dayjs())
   const [peopleAmount, setPeopleAmount] = useState(0)
+  const [price, setPrice] = useState<number | null>(null)
+  const userRedux = useSelector((state: RootState) => state.user)
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (id) {
+      travelApi
+        .getTravelById(id)
+        .then((data) => {
+          setPrice(data.price) // Gán giá trị price từ API response
+        })
+        .catch((error) => {
+          console.error('Error fetching travel details:', error)
+        })
+    }
+  }, [id])
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value) // Chuyển đổi giá trị từ string sang number
     setPeopleAmount(value)
-    // console.log(value)
   }
-  const { mutate: createBooking } = useMutation({
-    mutationFn: async (bookingData: { userId: string; travelId: string; bookedDate: string; amount: number }) => {
-      return bookingApi.createNewBooking(
-        bookingData.userId,
-        bookingData.travelId,
-        bookingData.bookedDate,
-        bookingData.amount
-      ) // Gọi API để tạo booking
-    },
-    onSuccess: () => {
-      // Xử lý khi tạo booking thành công, ví dụ như thông báo thành công hoặc chuyển hướng
-      alert('Booking successfully created!')
-    }
-  })
-  // Hàm để tạo booking khi nút được nhấn
+
+  // Hàm để lưu booking vào localStorage
   const handleCreateBooking = () => {
-    if (!userId || !id) {
-      alert('User or Travel ID is missing!')
+    if (!id) {
+      alert('Travel ID is missing!')
       return
     }
 
-    const bookingData = {
-      userId,
-      travelId: id,
-      bookedDate: bookingDate ? bookingDate.toISOString() : dayjs().toISOString(), // Lấy thời gian hiện tại
-      amount: peopleAmount // Giả sử giá trị amount là 1
-    }
+    const bookingData = [
+      {
+        userId: userRedux.data?.id,
+        travelId: id,
+        bookedDate: bookingDate ? bookingDate.toISOString() : dayjs().toISOString(), // Lấy thời gian hiện tại
+        amount: peopleAmount, // Giả sử giá trị amount là 1
+        price: price // Thêm giá trị price
+      }
+    ]
 
-    createBooking(bookingData)
-    onClick() // Gọi hàm mutate để tạo booking
+    localStorage.setItem('paymentbill', JSON.stringify(bookingData))
+
+    navigate('/paymentPage')
+    onClick()
   }
+
   return (
     <div
       className={`fixed justify-center top-40 left-95 z-50 
@@ -74,6 +80,10 @@ export default function BookInformationForm({ onClick }: BookInformationFormProp
       <div className='flex items-center mt-7'>
         <header className='mx-4 text-xl'>Select the date you want to travel</header>
         <DatePicker value={bookingDate} onChange={(newValue) => setBookingDate(newValue)} />
+      </div>
+      <div className='flex items-center mt-7'>
+        <header className='mx-4 text-xl'>Price per person:</header>
+        <div>{price !== null ? `$${price}` : 'Loading...'}</div>
       </div>
 
       <button

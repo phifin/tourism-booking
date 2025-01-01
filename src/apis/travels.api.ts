@@ -59,6 +59,7 @@ const travelApi = {
       throw new Error(`Unexpected travel type: ${travelDetail.travelType}`)
     })
   },
+
   postTravelData: async (
     title?: string,
     description?: string,

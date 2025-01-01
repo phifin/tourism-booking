@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function BookingCard({ travelId, bookDate }: Props) {
-  const { data: travelData, isLoading } = useQuery(['travel', travelId], () => travelApi.getTravelById(travelId))
+  const { data: travelData, isLoading, error } = useQuery(['travel', travelId], () => travelApi.getTravelById(travelId))
 
   // Format ngày sử dụng date-fns
   const formattedDate = format(bookDate, 'yyyy-MM-dd HH:mm:ss')
@@ -28,6 +28,8 @@ export default function BookingCard({ travelId, bookDate }: Props) {
       </div>
     )
   }
+
+  if (error) return
 
   return (
     <div className={`flex h-44 w-full shadow-lg my-10 mx-auto rounded-xl overflow-hidden`}>

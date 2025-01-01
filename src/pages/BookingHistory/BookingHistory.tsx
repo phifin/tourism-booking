@@ -49,7 +49,7 @@ export default function BookingHistory() {
     }
 
     return bookings.map((book: BookingModel) => (
-      <BookingCard key={book.travelId} travelId={book.travelId} bookDate={book.bookedDate} />
+      <BookingCard key={book.id} travelId={book.travelId} bookDate={book.bookedDate} />
     ))
   }
 

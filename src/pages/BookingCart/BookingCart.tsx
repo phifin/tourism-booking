@@ -1,26 +1,29 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import BookingCartCard from '~/components/BookingCartCard'
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from '~/store'
+
 interface CartItemFromLS {
   id: string | undefined
   amount: number
   price: number
   bookDate: string
 }
+
 export default function BookingCart() {
+  const userData = useSelector((state: RootState) => state.user)
   const [cart, setCart] = useState<CartItemFromLS[]>(() => {
     const savedCart = localStorage.getItem('cart')
     return savedCart ? JSON.parse(savedCart) : []
   })
-  // Hàm lấy dữ liệu từ localStorage và fetch booking từ API
-  // Hàm render BookingCard
+  const navigate = useNavigate()
+
   const handleDelete = (travelId: string | undefined, bookDate: string | undefined) => {
     if (!travelId || !bookDate) return
 
-    // Lọc bỏ item có id bằng travelId
     const updatedCart = cart.filter((item) => !(item.id === travelId && item.bookDate === bookDate))
 
-    // Cập nhật state và localStorage
     setCart(updatedCart)
     localStorage.setItem('cart', JSON.stringify(updatedCart))
   }
@@ -28,35 +31,31 @@ export default function BookingCart() {
   const onAdd = (id: string | undefined, bookDate: string | undefined) => {
     if (!id) return
 
-    // Cập nhật amount của item có id tương ứng
     const updatedCart = cart.map((item) => {
       if (item.id === id && item.bookDate === bookDate) {
-        return { ...item, amount: item.amount + 1 } // Tăng số lượng lên 1
+        return { ...item, amount: item.amount + 1 }
       }
       return item
     })
 
-    // Cập nhật lại state và localStorage
     setCart(updatedCart)
     localStorage.setItem('cart', JSON.stringify(updatedCart))
   }
 
-  // Hàm giảm số lượng của item theo id
   const onMinus = (id: string | undefined, bookDate: string | undefined) => {
     if (!id) return
 
-    // Cập nhật amount của item có id tương ứng
     const updatedCart = cart.map((item) => {
       if (item.id === id && item.bookDate === bookDate && item.amount > 1) {
-        return { ...item, amount: item.amount - 1 } // Giảm số lượng xuống 1, không cho nhỏ hơn 1
+        return { ...item, amount: item.amount - 1 }
       }
       return item
     })
 
-    // Cập nhật lại state và localStorage
     setCart(updatedCart)
     localStorage.setItem('cart', JSON.stringify(updatedCart))
   }
+
   const renderBookingCards = () => {
     if (!cart) {
       return <div>No bookings found!</div>
@@ -80,7 +79,18 @@ export default function BookingCart() {
     return totalCartValue + item.price * item.amount
   }, 0)
 
-  // Render dữ liệu booking
+  const handleProceedToPayment = () => {
+    const paymentBill = cart.map((item) => ({
+      travelId: item.id,
+      userId: userData.data?.id,
+      bookedDate: item.bookDate,
+      amount: item.amount
+    }))
+
+    localStorage.setItem('paymentbill', JSON.stringify(paymentBill))
+    navigate('/paymentPage')
+  }
+
   return (
     <div className='w-3/4 mx-auto mt-10 pb-20'>
       <div className='flex flex-col'>
@@ -106,7 +116,10 @@ export default function BookingCart() {
               />
               <button className='py-2 px-2 bg-blue-700 hover:bg-blue-800 text-white w-1/4'>Apply</button>
             </form>
-            <div className='w-95/100 mx-auto py-2 bg-blue-500 hover:bg-blue-600 mt-6 rounded-lg text-white'>
+            <div
+              onClick={handleProceedToPayment}
+              className='w-95/100 mx-auto py-2 bg-blue-500 hover:bg-blue-600 mt-6 rounded-lg text-white cursor-pointer'
+            >
               <header className='text-center'>Proceed to Payment</header>
             </div>
             <div className='text-sm text-slate-400 text-center mt-3'>or</div>
