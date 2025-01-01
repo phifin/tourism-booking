@@ -49,10 +49,7 @@ export default function AdminDataDashboard() {
     e.preventDefault()
     if (editModalData) {
       const formData = new FormData(e.currentTarget)
-      // Kiểm tra nếu 'imageUrl' là một chuỗi hợp lệ và gán vào mảng
-      const imgUrl = formData.get('imageUrl')?.toString() || '' // Tránh trường hợp undefined
-
-      // Nếu imgUrl có giá trị, thêm vào mảng, nếu không thì để mảng trống
+      const imgUrl = formData.get('imageUrl')?.toString() || ''
       const imageUrls = imgUrl ? [imgUrl] : []
 
       editTravelMutation.mutate({
@@ -65,8 +62,23 @@ export default function AdminDataDashboard() {
     }
   }
 
+  const Shimmer = () => (
+    <div className='animate-pulse'>
+      <div className='grid grid-cols-4 gap-5'>
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div key={index} className='col-span-1 bg-gray-300 rounded h-40'></div>
+        ))}
+      </div>
+    </div>
+  )
+
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div className='w-4/5 mx-auto'>
+        <h1 className='text-2xl font-bold my-5'>Admin Data Dashboard</h1>
+        <Shimmer />
+      </div>
+    )
   }
 
   if (isError) {
