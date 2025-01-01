@@ -7,6 +7,7 @@ const URLUploadImage = 'cloudinary/uploadImage'
 const URLGetCommentsOfPost = 'post/getAllCommentPostsOfPost'
 const URLGetPostById = 'post'
 const URLGetNormalPosts = 'post/getAllNormalPosts'
+const URLGetReviewsPosts = '/post/getAllRatingPostsOfTravel'
 // const URLGetOne = 'travel/getTravelById'
 // const URLCreateBook = 'book/createBook'
 
@@ -36,7 +37,8 @@ export const postApi = {
     postId,
     imageUrl,
     sharedPostId,
-    travelId
+    travelId,
+    rating
   }: {
     userId: string | undefined
     content: string
@@ -44,6 +46,7 @@ export const postApi = {
     imageUrl: string | null
     sharedPostId: string | null
     travelId: string | null
+    rating: number | null
   }) {
     if (postId === null && sharedPostId === null && travelId === null) {
       const response = await http.post(URLCreatePost, {
@@ -73,7 +76,8 @@ export const postApi = {
         userId,
         content,
         imageUrl,
-        travelId
+        travelId,
+        rating
       })
       return response
     }
@@ -101,6 +105,10 @@ export const postApi = {
   },
   async fetchPostById(id: string) {
     const response = await http.get(`${URLGetPostById}/${id}`)
+    return response
+  },
+  async getReviewsOfPost(id: string) {
+    const response = await http.get(`${URLGetReviewsPosts}/${id}`)
     return response
   }
   // createNewBooking(userId: string, travelId: string, bookedDate: string, amount: number) {

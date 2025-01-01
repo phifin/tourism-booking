@@ -3,7 +3,7 @@ import { userApi } from '~/apis/user.api'
 
 type CommentCardProps = {
   userId: string
-  imageUrl: string
+  imageUrl: string | undefined
   content: string
 }
 
@@ -15,7 +15,7 @@ export default function CommentCard({ userId, imageUrl, content }: CommentCardPr
   return (
     <div>
       <div className='flex mt-2 ml-2 cursor-pointer'>
-        <div className='flex items-start mt-2'>
+        <div className='flex items-start mt-2 '>
           <div className='h-12 w-12 object-cover overflow-hidden border rounded-full'>
             <img
               src={userData?.profileImageUrl ? userData?.profileImageUrl : '/src/assets/default_profile_img.jpg'}
@@ -24,10 +24,10 @@ export default function CommentCard({ userId, imageUrl, content }: CommentCardPr
             />
           </div>
         </div>
-        <div className='flex flex-col  justify-center '>
-          <div className={`${content ? 'bg-slate-200' : ''} rounded-2xl px-3 py-2 mt-1 ml-1 mr-4`}>
+        <div className='flex flex-col  justify-center break-words '>
+          <div className={`${content ? 'bg-slate-200' : ''} rounded-2xl px-3 py-2 mt-1 ml-1 mr-4  break-all`}>
             <header className='text-sm font-semibold'>{userData?.lastName + ' ' + userData?.firstName}</header>
-            <div className='mt-1'>{content}</div>
+            <div className='mt-1 w-full break-words'>{content}</div>
           </div>
         </div>
       </div>

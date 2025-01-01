@@ -119,7 +119,8 @@ export default function CommentPopUp({
       imageUrl: imageUrl,
       postId: postId,
       sharedPostId: null,
-      travelId: null
+      travelId: null,
+      rating: null
     })
 
     // Thêm comment mới vào danh sách sau khi gửi thành công
@@ -129,11 +130,10 @@ export default function CommentPopUp({
         userId: userData.data?.id || '',
         postId: postId,
         imageUrl: imageUrl
-        // Bạn có thể thay đổi field này tùy thuộc vào API của bạn
       }
 
       // Cập nhật lại list comments bằng cách thêm comment mới
-      setCurrentCommentsList((prevComments) => [...prevComments, newComment]) // Thêm vào đầu hoặc bạn có thể sử dụng: [...prevComments, newComment]
+      setCurrentCommentsList((prevComments) => [...prevComments, newComment]) //
     }
 
     // Reset form

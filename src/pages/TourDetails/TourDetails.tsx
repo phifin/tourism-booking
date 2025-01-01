@@ -7,6 +7,7 @@ import { Tour, Hotel, Flight, CarRental } from '~/models/travels.model'
 import { useState } from 'react'
 import BookInformationForm from '~/components/BookInformationForm'
 import BookingAddToCartForm from '~/components/BookingAddToCartForm'
+import TravelReview from '~/components/TravelReview'
 
 // interface CartItemFromLS {
 //   id: string | undefined
@@ -119,6 +120,9 @@ export default function DetailPage() {
             Add To Cart
           </button>
         </div>
+      </div>
+      <div className='col-span-9 break-words'>
+        <TravelReview travelId={id ? id : ''} />
       </div>
       {isBooking ? <BookInformationForm onClick={onBookingClick} /> : ''}
       {isAddingToCart ? <BookingAddToCartForm onClick={onAddingToCart} /> : ''}

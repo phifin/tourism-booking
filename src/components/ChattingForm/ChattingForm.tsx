@@ -96,9 +96,9 @@ export default function ChattingForm({ userId, onClose }: ChattingFormProps) {
   // Hàm mở kết nối WebSocket
   const openWebSocket = () => {
     if (user && userRedux.data) {
-      const connectionId = user.id < userRedux.data.id ? user.id : userRedux.data?.id
+      // const connectionId = user.id < userRedux.data.id ? user.id : userRedux.data?.id
 
-      const socket = new WebSocket(`ws://localhost:8080/VelocityBackend_war_exploded/websocket/${connectionId}`)
+      const socket = new WebSocket(`ws://localhost:8080/VelocityBackend_war_exploded/websocket/${userRedux.data.id}`)
       socketRef.current = socket
 
       // Lắng nghe các tin nhắn mới từ server
@@ -107,6 +107,8 @@ export default function ChattingForm({ userId, onClose }: ChattingFormProps) {
           const messageData = event.data.trim() // Xóa khoảng trắng thừa ở đầu/cuối
           const jsonData = messageData.replace(/^(Success): /, '')
           const parsedMessage = JSON.parse(jsonData) // Parse JSON từ server
+
+          console.log(parsedMessage)
 
           // Kiểm tra nếu message là thông điệp chào mừng
           if (parsedMessage.message === 'Welcome to WebSocket server!') {
@@ -238,8 +240,8 @@ export default function ChattingForm({ userId, onClose }: ChattingFormProps) {
       </div>
 
       {/* Content */}
-      <div className='p-3 overflow-y-auto'>
-        <div className=''>
+      <div className='flex-grow p-3 overflow-y-auto'>
+        <div className='flex-grow '>
           {messages.map((message, index) => (
             <MessageBox key={index} userId={message.sender} message={message.message} createdAt={message.createdAt} />
           ))}

@@ -27,7 +27,8 @@ export default function Attractions({ travelType }: { travelType: string }) {
   const [typeSortCheck, setTypeSortCheck] = useState('default')
 
   const [currentPage, setCurrentPage] = useState<number>(0)
-  const lastPageIndex = Math.ceil(travelData.length / 5) - 1
+  let lastPageIndex = Math.ceil(travelData.length / 5) - 1
+  // const [lastPageIndex, setLastPageIndex] = useState<number>(Math.ceil(travelData.length / 5) - 1)
 
   // add this to fix the issue where currentPage is not reverted back to 0 when user switch to another travel type
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function Attractions({ travelType }: { travelType: string }) {
         filteredData.sort((a, b) => a.rating - b.rating)
       }
     }
-
+    lastPageIndex = Math.ceil(filteredData.length / 5) - 1
     return filteredData
   }, [travelData, sortCheck, typeSortCheck, searchQuery])
 

@@ -105,8 +105,8 @@ export default function PostCard({ postData, onCommentClick }: PostCardProps) {
             <div className='text-gray-500'>{formattedTime()}</div>
           </div>
         </div>
-        <div className='mt-3 ml-6'>
-          <p>{postData.content}</p>
+        <div className='mt-3 mx-6'>
+          <p className='w-full break-words'>{postData.content}</p>
         </div>
         {postData.imageUrl ? <div className='mt-4'>{renderMedia()}</div> : ''}
         <div className={`${postData.likes ? 'mt-3' : 'mt-1'} ml-1 flex items-center justify-between`}>
