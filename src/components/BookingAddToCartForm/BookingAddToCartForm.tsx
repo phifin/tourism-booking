@@ -66,6 +66,7 @@ export default function BookingAddToCartForm({ onClick }: BookAddingToCartProps)
 
     // Lưu giỏ hàng đã cập nhật vào LocalStorage
     localStorage.setItem('cart', JSON.stringify(cart))
+    onClick()
   }
 
   return (

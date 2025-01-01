@@ -152,7 +152,7 @@ export default function useRouteElement() {
         {
           path: '/qrPayment',
           element: (
-            <PageHeader>
+            <PageHeader showNavBar={false}>
               <QrPayment />
             </PageHeader>
           )
@@ -160,7 +160,7 @@ export default function useRouteElement() {
         {
           path: '/paymentPage',
           element: (
-            <PageHeader>
+            <PageHeader showNavBar={false}>
               <PaymentPage />
             </PageHeader>
           )

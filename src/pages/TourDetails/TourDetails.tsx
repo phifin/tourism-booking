@@ -74,7 +74,7 @@ export default function DetailPage() {
   //   localStorage.setItem('cart', JSON.stringify(cart))
   // }
   return (
-    <div className='w-5/6 mx-auto mt-12 grid grid-cols-12 gap-2'>
+    <div className={`w-5/6 mx-auto mt-12 grid grid-cols-12 gap-2 }`}>
       <div className='col-span-9'>
         <div>
           <header className='font-bold text-2xl'>{travelDetail.title}</header>

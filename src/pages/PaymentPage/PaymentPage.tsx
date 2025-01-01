@@ -1,18 +1,34 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import travelApi from '~/apis/travels.api'
+import { InformationLongCard } from '~/components/InformationLongCard/InformationLongCard'
 export default function PaymentPage() {
   const [selectedOption, setSelectedOption] = useState<string>('')
   const [price, setPrice] = useState<number>(0)
+  const [bookingDetails, setBookingDetails] = useState<any[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {
-    const paymentBill = JSON.parse(localStorage.getItem('paymentbill') || '[]')
-    const totalPrice = paymentBill.reduce((acc: number, item: { amount: number; price: number }) => {
-      return acc + item.amount * item.price
-    }, 0)
-    setPrice(totalPrice)
+    const fetchBookingDetails = async () => {
+      const paymentBill = JSON.parse(localStorage.getItem('paymentbill') || '[]')
+      const totalPrice = paymentBill.reduce((acc: number, item: { amount: number; price: number }) => {
+        return acc + item.amount * item.price
+      }, 0)
+
+      const bookingDetailsWithTravel = await Promise.all(
+        paymentBill.map(async (item: { travelId: string; [key: string]: any }) => {
+          const travelDetails = await travelApi.getTravelById(item.travelId)
+          return { ...item, travelDetails }
+        })
+      )
+
+      setPrice(totalPrice)
+      setBookingDetails(bookingDetailsWithTravel)
+    }
+
+    fetchBookingDetails()
   }, [])
+  console.log(bookingDetails)
 
   const paymentOptions = [
     {
@@ -47,49 +63,67 @@ export default function PaymentPage() {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '20px',
-        fontFamily: 'Arial, sans-serif',
-        width: '60%',
-        margin: 'auto'
-      }}
-    >
-      <h1>Thanh toán</h1>
-      <p>Số tiền: {price.toLocaleString()} VNĐ</p>
+    <div className='flex flex-col p-6 font-sans w-4/5 mx-auto'>
+      <h1 className='text-2xl font-bold mb-4 text-gray-800'>Payment Details</h1>
 
-      <div style={{ marginTop: '20px' }}>
+      <div className='mb-6'>
+        {bookingDetails.map((detail, index) => (
+          <div key={index} className='border border-gray-300 rounded-lg p-4 mb-4 bg-gray-50 shadow-md'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <div className='flex flex-col'>
+                <label className='text-gray-700 font-medium'>Full Name</label>
+                <div className='border border-gray-300 rounded-md p-2 bg-white'>{detail.fullName}</div>
+              </div>
+              <div className='flex flex-col'>
+                <label className='text-gray-700 font-medium'>Email</label>
+                <div className='border border-gray-300 rounded-md p-2 bg-white'>{detail.email}</div>
+              </div>
+              <div className='flex flex-col'>
+                <label className='text-gray-700 font-medium'>Phone Number</label>
+                <div className='border border-gray-300 rounded-md p-2 bg-white'>{detail.phoneNumber}</div>
+              </div>
+              <div className='flex flex-col'>
+                <label className='text-gray-700 font-medium'>Booking Date</label>
+                <div className='border border-gray-300 rounded-md p-2 bg-white'>
+                  {new Date(detail.bookedDate).toLocaleDateString()}
+                </div>
+              </div>
+              <div className='flex flex-col'>
+                <label className='text-gray-700 font-medium'>Number of People</label>
+                <div className='border border-gray-300 rounded-md p-2 bg-white'>{detail.amount}</div>
+              </div>
+              <div className='flex flex-col'>
+                <label className='text-gray-700 font-medium'>Number of Nights</label>
+                <div className='border border-gray-300 rounded-md p-2 bg-white'>{detail.nights}</div>
+              </div>
+              <div className='flex flex-col'>
+                <label className='text-gray-700 font-medium'>Price per Person</label>
+                <div className='border border-gray-300 rounded-md p-2 bg-white'>${detail.price}</div>
+              </div>
+            </div>
+            <InformationLongCard travelData={bookingDetails[0].travelDetails} />
+          </div>
+        ))}
+      </div>
+
+      <h2 className='text-xl font-semibold text-green-600 mb-4'>Total Amount: {price.toLocaleString()} USD</h2>
+
+      <div className='mt-4'>
         {paymentOptions.map((option) => (
           <div
             key={option.id}
             onClick={() => handleSelectOption(option.id)}
-            style={{
-              border: selectedOption === option.id ? '2px solid blue' : '1px solid #ccc',
-              borderRadius: '8px',
-              padding: '15px',
-              marginBottom: '10px',
-              cursor: 'pointer'
-            }}
+            className={`border rounded-lg p-4 mb-4 cursor-pointer shadow-md transition-all duration-300 ${
+              selectedOption === option.id ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-white'
+            }`}
           >
             {option.label && (
-              <span
-                style={{
-                  display: 'inline-block',
-                  backgroundColor: '#d1f7d6',
-                  color: '#4caf50',
-                  padding: '2px 5px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  marginBottom: '5px'
-                }}
-              >
+              <span className='inline-block bg-green-100 text-green-600 px-2 py-1 rounded text-xs mb-2'>
                 {option.label}
               </span>
             )}
-            <h3 style={{ margin: '5px 0' }}>{option.title}</h3>
-            {option.description && <p style={{ fontSize: '14px', color: '#666' }}>{option.description}</p>}
+            <h3 className='text-lg font-medium text-gray-800 mb-1'>{option.title}</h3>
+            {option.description && <p className='text-sm text-gray-600'>{option.description}</p>}
           </div>
         ))}
       </div>
@@ -97,20 +131,11 @@ export default function PaymentPage() {
       <button
         onClick={handleAcceptPayment}
         disabled={!selectedOption}
-        style={{
-          width: '30%',
-          alignSelf: 'end',
-          marginTop: '20px',
-          padding: '10px 20px',
-          backgroundColor: selectedOption ? 'blue' : '#ccc',
-          color: 'white',
-          border: 'none',
-          borderRadius: '10px',
-          fontWeight: 'bold',
-          cursor: selectedOption ? 'pointer' : 'not-allowed'
-        }}
+        className={`w-1/3 self-end mt-6 py-2 px-4 rounded-lg font-bold text-white transition-all duration-300 ${
+          selectedOption ? 'bg-blue-600 hover:bg-blue-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'
+        }`}
       >
-        Xác nhận thanh toán
+        Confirm Payment
       </button>
     </div>
   )
