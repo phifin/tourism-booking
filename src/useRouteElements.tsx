@@ -13,6 +13,9 @@ import TravelPage from './pages/TravelPage'
 import NotFoundPage from './pages/404Page'
 import UserPage from './pages/UserPage/UserPage'
 import MyAccount from './components/user/MyAccount/MyAccount'
+import MyBooking from './components/user/MyBooking/MyBooking.tsx'
+import MyCards from './components/user/MyCards/MyCards.tsx'
+import MyProgression from './components/user/MyProgression/MyProgression.tsx'
 import AdminPage from './pages/AdminPage/AdminPage.tsx'
 import BookingCart from './pages/BookingCart/BookingCart.tsx'
 import AdminDataDashboard from './pages/AdminDataDashboard/AdminDataDashboard.tsx'
@@ -120,6 +123,36 @@ export default function useRouteElement() {
             <PageHeader showNavBar={false}>
               <UserPage>
                 <MyAccount />
+              </UserPage>
+            </PageHeader>
+          )
+        },
+        {
+          path: '/user/booking',
+          element: (
+            <PageHeader showNavBar={false}>
+              <UserPage>
+                <MyBooking />
+              </UserPage>
+            </PageHeader>
+          )
+        },
+        {
+          path: '/user/cards',
+          element: (
+            <PageHeader showNavBar={false}>
+              <UserPage>
+                <MyCards />
+              </UserPage>
+            </PageHeader>
+          )
+        },
+        {
+          path: '/user/coins',
+          element: (
+            <PageHeader showNavBar={false}>
+              <UserPage>
+                <MyProgression />
               </UserPage>
             </PageHeader>
           )

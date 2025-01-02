@@ -10,6 +10,7 @@ export interface UserModel {
   bookmarksId: string[]
   updatedAt: string
   profileImageUrl: string
+  progression: number
   userType: string
   createdAt: string
 }
