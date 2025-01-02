@@ -1,11 +1,13 @@
-import React from 'react'
+import { useState } from 'react'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
-import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Tour, Hotel, Flight, CarRental } from '~/models/travels.model'
 import travelApi from '~/apis/travels.api'
+import { Flight, Tour, Hotel, CarRental } from '~/models/travels.model'
+import { useSelector } from 'react-redux'
+import { RootState } from '~/store'
+// import { useNavigate } from 'react-router-dom'
 
 interface BookAddingToCartProps {
   onClick: () => void
@@ -16,17 +18,25 @@ interface CartItemFromLS {
   amount: number
   price: number | undefined
   bookDate: string
+  fullName: string
+  email: string | undefined
+  phoneNumber: string
+  nights: number
 }
 
 export default function BookingAddToCartForm({ onClick }: BookAddingToCartProps) {
-  const [bookingDate, setBookingDate] = useState<dayjs.Dayjs | null>(dayjs())
-  const [peopleAmount, setPeopleAmount] = useState(0)
+  const userRedux = useSelector((state: RootState) => state.user)
   const { id } = useParams<{ id: string | undefined }>()
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value) // Chuyển đổi giá trị từ string sang number
-    setPeopleAmount(value)
-    // console.log(value)
-  }
+  const [bookingDate, setBookingDate] = useState<dayjs.Dayjs | null>(dayjs())
+  const [peopleAmount, setPeopleAmount] = useState(1)
+  const [fullName, setFullName] = useState(userRedux.data?.lastName + ' ' + userRedux.data?.firstName)
+  const [email, setEmail] = useState(userRedux.data?.email)
+  const [phoneNumber, setPhoneNumber] = useState(
+    userRedux.data?.phoneNumber ? userRedux.data?.phoneNumber : '0913242142'
+  )
+  const [nights, setNights] = useState(1)
+  // const navigate = useNavigate()
+
   const formatDate = (date: dayjs.Dayjs | null) => {
     return date ? date.format('DD-MM-YYYY') : ''
   }
@@ -37,41 +47,72 @@ export default function BookingAddToCartForm({ onClick }: BookAddingToCartProps)
       if (id) {
         return travelApi.getTravelById(id)
       }
-      throw new Error('ID is undefined') // Xử lý trường hợp id bị undefined
+      throw new Error('ID is undefined')
     },
-    enabled: !!id // Chỉ thực hiện query nếu id tồn tại
+    enabled: !!id
   })
 
-  const addToCard = (travelDetail: Flight | Tour | CarRental | Hotel | undefined) => {
+  const addToCart = (travelDetail: Flight | Tour | CarRental | Hotel | undefined) => {
     const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')!) : []
 
-    // Kiểm tra xem sản phẩm có id và bookDate giống nhau đã có trong giỏ hàng chưa
     const existingProductIndex = cart.findIndex(
       (item: CartItemFromLS) => item.id === travelDetail?.id && item.bookDate === formatDate(bookingDate)
     )
 
     if (existingProductIndex !== -1) {
-      // Nếu sản phẩm có id và bookDate trùng khớp, tăng số lượng (amount)
       cart[existingProductIndex].amount += peopleAmount
     } else {
-      // Nếu sản phẩm chưa có trong giỏ hàng, thêm sản phẩm vào giỏ hàng với số lượng ban đầu là peopleAmount
       const newOrder: CartItemFromLS = {
         id: travelDetail?.id || '',
         amount: peopleAmount,
         price: travelDetail?.price || 0,
-        bookDate: formatDate(bookingDate)
+        bookDate: formatDate(bookingDate),
+        fullName,
+        email,
+        phoneNumber,
+        nights
       }
       cart.push(newOrder)
     }
 
-    // Lưu giỏ hàng đã cập nhật vào LocalStorage
     localStorage.setItem('cart', JSON.stringify(cart))
     onClick()
   }
 
+  // const handleCreateBooking = () => {
+  //   if (!id) {
+  //     alert('Travel ID is missing!')
+  //     return
+  //   }
+
+  //   if (!fullName || !email || !phoneNumber) {
+  //     alert('Please fill in all the required fields!')
+  //     return
+  //   }
+
+  //   const bookingData = [
+  //     {
+  //       userId: userRedux.data?.id,
+  //       travelId: id,
+  //       bookedDate: bookingDate ? bookingDate.toISOString() : dayjs().toISOString(),
+  //       amount: peopleAmount,
+  //       price: travelDetail?.price || 0,
+  //       fullName,
+  //       email,
+  //       phoneNumber,
+  //       nights
+  //     }
+  //   ]
+
+  //   localStorage.setItem('paymentbill', JSON.stringify(bookingData))
+
+  //   navigate('/paymentPage')
+  //   onClick()
+  // }
+
   return (
     <div
-      className={`fixed justify-center top-40 left-95 z-50 
+      className={`fixed justify-center top-36 left-95 z-50 
          w-1/2 border-gray-700 shadow-2xl bg-slate-50 rounded-xl`}
     >
       <div className='py-4 h-1/6 w-95/100 mx-auto flex justify-center items-center border-b font-bold text-xl border-gray-300 relative'>
@@ -83,18 +124,70 @@ export default function BookingAddToCartForm({ onClick }: BookAddingToCartProps)
           X
         </div>
       </div>
-      <div className='flex items-center mt-7'>
-        <header className='mx-4 text-xl'>Number of people</header>
-        <input type='number' value={peopleAmount} min='0' className='h-10' onChange={handleInputChange} />
-      </div>
-      <div className='flex items-center mt-7'>
-        <header className='mx-4 text-xl'>Select the date you want to travel</header>
-        <DatePicker value={bookingDate} onChange={(newValue) => setBookingDate(newValue)} />
+      <div className='flex flex-col gap-4 mt-7 px-4'>
+        <div className='flex items-center'>
+          <header className='w-1/3 text-xl'>Full Name:</header>
+          <input
+            type='text'
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className='flex-1 h-10 border rounded px-2'
+            placeholder='Enter your full name'
+          />
+        </div>
+        <div className='flex items-center'>
+          <header className='w-1/3 text-xl'>Email:</header>
+          <input
+            type='email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className='flex-1 h-10 border rounded px-2'
+            placeholder='Enter your email'
+          />
+        </div>
+        <div className='flex items-center'>
+          <header className='w-1/3 text-xl'>Phone Number:</header>
+          <input
+            type='tel'
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className='flex-1 h-10 border rounded px-2'
+            placeholder='Enter your phone number'
+          />
+        </div>
+        <div className='flex items-center'>
+          <header className='w-1/3 text-xl'>Number of People:</header>
+          <input
+            type='number'
+            value={peopleAmount}
+            min='0'
+            onChange={(e) => setPeopleAmount(Number(e.target.value))}
+            className='flex-1 h-10 border rounded px-2'
+          />
+        </div>
+        <div className='flex items-center'>
+          <header className='w-1/3 text-xl'>Number of Nights:</header>
+          <input
+            type='number'
+            value={nights}
+            min='1'
+            onChange={(e) => setNights(Number(e.target.value))}
+            className='flex-1 h-10 border rounded px-2'
+          />
+        </div>
+        <div className='flex items-center'>
+          <header className='w-1/3 text-xl'>Travel Date:</header>
+          <DatePicker value={bookingDate} onChange={(newValue) => setBookingDate(newValue)} />
+        </div>
+        <div className='flex items-center'>
+          <header className='w-1/3 text-xl'>Price per Person:</header>
+          <div>{travelDetail?.price ? `$${travelDetail.price}` : 'Loading...'}</div>
+        </div>
       </div>
 
       <button
-        onClick={() => addToCard(travelDetail)}
-        className='flex items-center justify-center mt-3 mb-3 h-12 mx-auto bg-blue-600 hover:bg-blue-700 text-white border w-95/100 border-gray-400 rounded-xl font-semibold cursor-pointer'
+        onClick={() => addToCart(travelDetail)}
+        className='flex items-center justify-center mt-6 mb-3 h-12 mx-auto bg-blue-600 hover:bg-blue-700 text-white border w-95/100 border-gray-400 rounded-xl font-semibold cursor-pointer'
       >
         Add to Cart
       </button>

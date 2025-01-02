@@ -9,6 +9,10 @@ interface CartItemFromLS {
   amount: number
   price: number
   bookDate: string
+  fullName: string
+  email: string | undefined
+  phoneNumber: string
+  nights: number
 }
 
 export default function BookingCart() {
@@ -84,7 +88,12 @@ export default function BookingCart() {
       travelId: item.id,
       userId: userData.data?.id,
       bookedDate: item.bookDate,
-      amount: item.amount
+      amount: item.amount,
+      nights: item.nights,
+      fullName: item.fullName,
+      email: item.email,
+      phoneNumber: item.phoneNumber,
+      price: item.price
     }))
 
     localStorage.setItem('paymentbill', JSON.stringify(paymentBill))

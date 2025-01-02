@@ -101,7 +101,7 @@ export default function PaymentPage() {
                 <div className='border border-gray-300 rounded-md p-2 bg-white'>${detail.price}</div>
               </div>
             </div>
-            <InformationLongCard travelData={bookingDetails[0].travelDetails} />
+            <InformationLongCard travelData={bookingDetails[index].travelDetails} />
           </div>
         ))}
       </div>
