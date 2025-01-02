@@ -10,6 +10,7 @@ import { userApi } from '~/apis/user.api'
 import { UserModel } from '~/models/user.model'
 import CommentCard from '../CommentCard'
 import { PostModel } from '~/models/post.model'
+import { useQuery } from '@tanstack/react-query'
 
 interface CommentPopUpProps {
   postId: string
@@ -55,7 +56,9 @@ export default function CommentPopUp({
     fetchData()
   }, [postId, likesNum])
   // Fetch user data
-  const userData = useSelector((state: RootState) => state.user)
+  const { data: userData } = useQuery(['userData', currentPostData?.userId], () =>
+    userApi.fetchUserById(currentPostData?.userId ? currentPostData?.userId : '')
+  )
 
   // Fetch currrent user data
   useEffect(() => {
@@ -114,7 +117,7 @@ export default function CommentPopUp({
 
     // Tạo post mới
     await postApi.createPost({
-      userId: userData.data?.id || '',
+      userId: userRedux.data?.id || '',
       content: data.content,
       imageUrl: imageUrl,
       postId: postId,
@@ -127,7 +130,7 @@ export default function CommentPopUp({
     if (data) {
       const newComment = {
         content: data.content,
-        userId: userData.data?.id || '',
+        userId: userRedux.data?.id || '',
         postId: postId,
         imageUrl: imageUrl
       }
@@ -179,7 +182,7 @@ export default function CommentPopUp({
 
   return (
     <div
-      className={`fixed ${previewImage ? 'top-6' : 'top-28'} left-95 z-50 w-1/2 border-gray-700 shadow-2xl bg-slate-50 rounded-xl `}
+      className={`fixed ${previewImage ? 'top-6' : 'top-28'} left-95 z-40 w-1/2 border-gray-700 shadow-2xl bg-slate-50 rounded-xl `}
     >
       <div className='py-4 h-16 w-95/100 mx-auto flex justify-center items-center border-b font-bold text-xl border-gray-300'>
         <header>
@@ -197,7 +200,7 @@ export default function CommentPopUp({
         <div>
           <PostUserProfile
             createdAt={currentPostData?.createdAt}
-            userId={userData.data?.id || ''}
+            userId={userData?.id || ''}
             onClick={onUserProfileClick}
           />
         </div>

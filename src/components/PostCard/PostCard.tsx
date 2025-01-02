@@ -7,6 +7,8 @@ import { AppDispatch } from '~/store'
 import { useEffect, useState } from 'react'
 import { postApi } from '~/apis/post.api'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
+import { userApi } from '~/apis/user.api'
 
 interface PostCardProps {
   postData: PostModel
@@ -14,6 +16,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ postData, onCommentClick }: PostCardProps) {
+  const { data: userData } = useQuery(['userData', postData.userId], () => userApi.fetchUserById(postData.userId))
   const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
   const userRedux = useSelector((state: RootState) => state.user)
@@ -97,13 +100,13 @@ export default function PostCard({ postData, onCommentClick }: PostCardProps) {
         <div className='mt-3 ml-4 flex items-center'>
           <div className='h-12 w-12 overflow-hidden border rounded-full'>
             <img
-              src={userRedux.data?.profileImageUrl ?? '/src/assets/default_profile_img.jpg'}
+              src={userData?.profileImageUrl ?? '/src/assets/default_profile_img.jpg'}
               alt='userProfile'
               className='h-full w-full object-cover'
             />
           </div>
           <div className='px-2 py-1 '>
-            <header className='font-bold'>{userRedux.data?.lastName + ' ' + userRedux.data?.firstName}</header>
+            <header className='font-bold'>{userData?.lastName + ' ' + userData?.firstName}</header>
             <div className='text-gray-500'>{formattedTime()}</div>
           </div>
         </div>

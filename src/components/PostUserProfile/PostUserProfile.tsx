@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { userApi } from '~/apis/user.api'
 import { format, formatDistanceToNow, isToday, isYesterday, differenceInDays } from 'date-fns'
+import ProfilePopUp from '../ProfilePopUp'
 
 type PostUserProfileProps = {
   userId: string
@@ -13,6 +14,8 @@ export default function PostUserProfile({ userId, createdAt, onClick }: PostUser
   const { data: userData, isLoading } = useQuery(['userData', userId], () => userApi.fetchUserById(userId), {
     enabled: !!userId // Chỉ fetch khi userId tồn tại
   })
+
+  const [openDialog, setOpenDialog] = useState(false)
 
   const formattedTime = () => {
     if (!createdAt) {
@@ -36,7 +39,9 @@ export default function PostUserProfile({ userId, createdAt, onClick }: PostUser
 
     return format(createdDate, 'yyyy-MM-dd') // Fallback for any unexpected case
   }
-
+  // const handleHover = (state: boolean) => {
+  //   setOpenDialog(state)
+  // }
   if (isLoading) {
     return (
       <div className='flex mt-2 ml-2 animate-pulse'>
@@ -52,9 +57,13 @@ export default function PostUserProfile({ userId, createdAt, onClick }: PostUser
   }
 
   return (
-    <div className='flex mt-2 ml-2 cursor-pointer' onClick={onClick}>
+    <div className=' relative flex mt-2 ml-2 cursor-pointer' onClick={onClick}>
       <div className='flex items-center'>
-        <div className='h-12 w-12 object-cover overflow-hidden border rounded-full'>
+        <div
+          className=' h-12 w-12 object-cover overflow-hidden border rounded-full'
+          onMouseEnter={() => setOpenDialog(true)}
+          onMouseLeave={() => setOpenDialog(false)}
+        >
           <img
             src={userData?.profileImageUrl ? userData?.profileImageUrl : '/src/assets/default_profile_img.jpg'}
             alt='userProfile'
@@ -66,6 +75,16 @@ export default function PostUserProfile({ userId, createdAt, onClick }: PostUser
         <header className='font-semibold'>{userData?.lastName + ' ' + userData?.firstName}</header>
         {createdAt ? <div className='text-gray-500 mt-1'>{formattedTime()}</div> : undefined}
       </div>
+      {openDialog ? (
+        <ProfilePopUp
+          imageUrl={userData?.profileImageUrl}
+          userId={userData?.id ? userData?.id : ''}
+          onHover={() => setOpenDialog(true)}
+          onLeave={() => setOpenDialog(false)}
+        />
+      ) : (
+        ''
+      )}
     </div>
   )
 }

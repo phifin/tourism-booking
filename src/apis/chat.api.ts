@@ -2,6 +2,7 @@ import { MessageModel } from '~/models/message.model'
 import http from '~/utils/http'
 
 const URLGetAllMessages = 'message'
+const URLGetAllNotification = '/notification'
 
 const messageApi = {
   getMessages: async () => {
@@ -13,6 +14,23 @@ const messageApi = {
       // Xử lý lỗi nếu có
       console.error('Failed to fetch messages:', error)
       throw error
+    }
+  },
+  getNotification: async () => {
+    try {
+      const response = await http.get(URLGetAllNotification)
+      return response.data
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  postNotification: async (type: string, sender: string, receiver: string) => {
+    try {
+      const body = { type, sender, receiver }
+      const response = await http.post(URLGetAllNotification, body)
+      return response.data
+    } catch (error) {
+      console.log(error)
     }
   }
 

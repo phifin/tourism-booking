@@ -11,4 +11,5 @@ export interface UserModel {
   updatedAt: string
   profileImageUrl: string
   userType: string
+  createdAt: string
 }

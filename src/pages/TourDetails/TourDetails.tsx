@@ -44,10 +44,12 @@ export default function DetailPage() {
 
   const onBookingClick = () => {
     setIsBooking((prevState) => !prevState)
+    console.log(isBooking)
   }
 
   const onAddingToCart = () => {
     setIsAddingToCart((prevState) => !prevState)
+    console.log(isAddingToCart)
   }
 
   if (isLoadingTravel || isLoadingComments) {
@@ -76,8 +78,8 @@ export default function DetailPage() {
                 Book now
               </button>
               <button
-                onClick={() => onAddingToCart}
                 className='ml-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded font-semibold'
+                onClick={onAddingToCart}
               >
                 Add To Cart
               </button>
