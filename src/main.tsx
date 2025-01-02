@@ -9,6 +9,8 @@ import { AppProvider } from './context/app.context.tsx'
 import ScrollToTop from './utils/pinToTop.ts'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import '~/i18n/i18n.ts'
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

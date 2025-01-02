@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 interface SearchBarProps {
   onSearch: (query: { keyword: string; priceRange: string; timeBudget: string }) => void
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
+  const { t } = useTranslation()
   const [keyword, setKeyword] = useState('')
   const [priceRange, setPriceRange] = useState('')
   const [timeBudget, setTimeBudget] = useState('')
@@ -24,7 +26,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     >
       <input
         type='text'
-        placeholder='Where are you going?'
+        placeholder={t('where_are_you_going')}
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         className='w-1/3 rounded-tl-lg rounded-bl-lg border-r-2 px-4'
@@ -32,7 +34,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
       />
       <input
         type='text'
-        placeholder='Price range (e.g., 100-500)'
+        placeholder={t('price_range')}
         value={priceRange}
         onChange={(e) => setPriceRange(e.target.value)}
         className='w-1/3 border-r-2 px-4'
@@ -40,7 +42,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
       />
       <input
         type='text'
-        placeholder='Time budget'
+        placeholder={t('time_budget')}
         value={timeBudget}
         onChange={(e) => setTimeBudget(e.target.value)}
         className='w-1/3  border-r-2 px-4'
@@ -50,7 +52,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
         className='w-32 text-center p-2 bg-blue-700 text-white text-lg hover:bg-blue-900 rounded-tr-lg rounded-br-lg'
         onClick={handleSearch}
       >
-        Search
+        {t('search')}
       </button>
     </div>
   )

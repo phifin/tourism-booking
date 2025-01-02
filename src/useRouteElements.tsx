@@ -18,6 +18,8 @@ import BookingCart from './pages/BookingCart/BookingCart.tsx'
 import AdminDataDashboard from './pages/AdminDataDashboard/AdminDataDashboard.tsx'
 import QrPayment from './pages/QrPayment/QrPayment.tsx'
 import PaymentPage from './pages/PaymentPage/PaymentPage.tsx'
+import { useSelector } from 'react-redux'
+import { RootState } from './store/index.ts'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -26,6 +28,11 @@ function ProtectedRoute() {
 function RejectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
+}
+
+function AdminRoute() {
+  const userRedux = useSelector((state: RootState) => state.user)
+  return userRedux.data?.userType === 'admin' ? <Outlet /> : <Navigate to='/' />
 }
 
 export default function useRouteElement() {
@@ -125,22 +132,7 @@ export default function useRouteElement() {
             </PageHeader>
           )
         },
-        {
-          path: '/admin',
-          element: (
-            <PageHeader>
-              <AdminPage />
-            </PageHeader>
-          )
-        },
-        {
-          path: '/adminDashboard',
-          element: (
-            <PageHeader>
-              <AdminDataDashboard />
-            </PageHeader>
-          )
-        },
+
         {
           path: '/bookingcart',
           element: (
@@ -185,6 +177,28 @@ export default function useRouteElement() {
             <AuthenticationLayout>
               <Register />
             </AuthenticationLayout>
+          )
+        }
+      ]
+    },
+
+    {
+      element: <AdminRoute />,
+      children: [
+        {
+          path: '/admin',
+          element: (
+            <PageHeader>
+              <AdminPage />
+            </PageHeader>
+          )
+        },
+        {
+          path: '/adminDashboard',
+          element: (
+            <PageHeader>
+              <AdminDataDashboard />
+            </PageHeader>
           )
         }
       ]

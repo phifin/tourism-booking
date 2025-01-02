@@ -6,6 +6,7 @@ import { likePost } from '~/store/post.slice' // Import action likePost
 import { AppDispatch } from '~/store'
 import { useEffect, useState } from 'react'
 import { postApi } from '~/apis/post.api'
+import { useTranslation } from 'react-i18next'
 
 interface PostCardProps {
   postData: PostModel
@@ -13,6 +14,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ postData, onCommentClick }: PostCardProps) {
+  const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
   const userRedux = useSelector((state: RootState) => state.user)
   const [commentsNum, setCommentsNum] = useState(0)
@@ -136,13 +138,21 @@ export default function PostCard({ postData, onCommentClick }: PostCardProps) {
             }
           >
             <div className='mr-4'>
-              {commentsNum === null || commentsNum <= 0 ? '' : <div>{commentsNum} comments</div>}
+              {commentsNum === null || commentsNum <= 0 ? (
+                ''
+              ) : (
+                <div>
+                  {commentsNum} {t('comment')}
+                </div>
+              )}
             </div>
             <div className='mr-4'>
               {postData.shares === null || postData.shares.length <= 0 ? (
                 ''
               ) : (
-                <div>{postData.shares.length} shares</div>
+                <div>
+                  {postData.shares.length} {t('share')}
+                </div>
               )}
             </div>
           </div>
@@ -169,7 +179,7 @@ export default function PostCard({ postData, onCommentClick }: PostCardProps) {
                 </g>
               </svg>
             </span>
-            <header className='ml-2'>Like</header>
+            <header className='ml-2'>{t('like')}</header>
           </div>
           <div
             className='flex py-1 items-center justify-center text-gray-500 font-semibold  cursor-pointer'
@@ -183,7 +193,7 @@ export default function PostCard({ postData, onCommentClick }: PostCardProps) {
           >
             <span>
               <svg aria-label='Comment' fill='currentColor' height='24' role='img' viewBox='0 0 24 24' width='24'>
-                <title>Comment</title>
+                <title>{t('comment')}</title>
                 <path
                   d='M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z'
                   fill='none'
@@ -193,7 +203,7 @@ export default function PostCard({ postData, onCommentClick }: PostCardProps) {
                 ></path>
               </svg>
             </span>
-            <header className='ml-2'>Comment</header>
+            <header className='ml-2'>{t('comment')}</header>
           </div>
           <div className='flex py-1 items-center justify-center text-gray-500 font-semibold  cursor-pointer'>
             <span>
@@ -218,7 +228,7 @@ export default function PostCard({ postData, onCommentClick }: PostCardProps) {
                 ></polygon>
               </svg>
             </span>
-            <header className='ml-2'>Share</header>
+            <header className='ml-2'>{t('share')}</header>
           </div>
         </div>
       </div>

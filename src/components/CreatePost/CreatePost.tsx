@@ -1,10 +1,12 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface CreatePostProps {
   onClick: () => void
 }
 
 export default function CreatePost({ onClick }: CreatePostProps) {
+  const { t } = useTranslation()
   return (
     <div>
       <div
@@ -44,7 +46,7 @@ export default function CreatePost({ onClick }: CreatePostProps) {
             <g></g>
           </g>
         </svg>
-        <header className='ml-1'>Create Post</header>
+        <header className='ml-1'>{t('create_post')}</header>
       </div>
     </div>
   )

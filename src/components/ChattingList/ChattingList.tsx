@@ -3,10 +3,12 @@ import { userApi } from '~/apis/user.api'
 import { UserModel } from '~/models/user.model'
 import PostUserProfile from '../PostUserProfile'
 import ChattingForm from '~/components/ChattingForm'
+import { useTranslation } from 'react-i18next'
 // import { useSelector } from 'react-redux'
 // import { RootState } from '~/store'
 
 export default function ChattingList() {
+  const { t } = useTranslation()
   const [users, setUsers] = useState<UserModel[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -63,7 +65,7 @@ export default function ChattingList() {
 
   return (
     <div className='fixed right-4 max-h-96 bottom-5 w-80 shadow-lg bg-white p-4 rounded-lg overflow-y-auto'>
-      <h2 className='text-lg font-bold mb-4'>Chatting List</h2>
+      <h2 className='text-lg font-bold mb-4'>{t('chat_list')}</h2>
       <ul>
         {users
           // .filter((user) => user.id !== userRedux?.data?.id)
