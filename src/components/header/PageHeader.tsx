@@ -142,6 +142,12 @@ export default function PageHeader({ children, showNavBar }: Props) {
                 <option value='vi' className='text-gray-500 cursor-pointer'>
                   Tiếng Việt
                 </option>
+                <option value='ja' className='text-gray-500 cursor-pointer'>
+                  日本語
+                </option>
+                <option value='zh' className='text-gray-500 cursor-pointer'>
+                  中文
+                </option>
               </select>
               <span
                 className='absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none'

@@ -12,7 +12,7 @@ const MyBookingCard: React.FC<TravelCardProps> = ({ bookData }) => {
 
   return (
     <div className='flex items-center justify-between p-4 bg-white rounded-lg shadow-md my-4'>
-      <div className='flex items-center'>
+      <div className='flex items-center w-1/2'>
         {/* Thumbnail */}
         <div className='w-20 h-20 overflow-hidden rounded-lg'>
           <img src={travelData?.imageUrl[0]} alt='Travel Thumbnail' className='w-full h-full object-cover' />
@@ -26,7 +26,7 @@ const MyBookingCard: React.FC<TravelCardProps> = ({ bookData }) => {
       </div>
 
       {/* Price */}
-      <div className='text-right'>
+      <div className='text-right w-1/6'>
         <p className='text-gray-500 text-sm'>Total</p>
         <p className='text-xl font-bold text-gray-800'>${travelData?.price.toFixed(2)}</p>
       </div>

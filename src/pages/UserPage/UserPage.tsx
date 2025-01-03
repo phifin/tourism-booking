@@ -6,7 +6,7 @@ import {
   faContactCard,
   faRectangleList,
   faShoppingCart,
-  faMoneyBill1Wave,
+  faHeart,
   faBell,
   faUserGroup,
   faEnvelope,
@@ -31,7 +31,7 @@ const ProfileSidebar: React.FC<{ userData: UserModel }> = ({ userData }) => {
     { icon: <FontAwesomeIcon icon={faContactCard} />, label: 'My Cards', path: '/user/cards' },
     { icon: <FontAwesomeIcon icon={faRectangleList} />, label: 'My Booking', path: '/user/booking' },
     { icon: <FontAwesomeIcon icon={faShoppingCart} />, label: 'Purchase List', path: '/user/purchases' },
-    { icon: <FontAwesomeIcon icon={faMoneyBill1Wave} />, label: 'Refunds', path: '/user/refunds' },
+    { icon: <FontAwesomeIcon icon={faHeart} />, label: 'Saved', path: '/user/refunds' },
     { icon: <FontAwesomeIcon icon={faBell} />, label: 'Flight Price Alerts', path: '/user/alerts' },
     { icon: <FontAwesomeIcon icon={faUserGroup} />, label: 'Saved Passenger Details', path: '/user/passengers' },
     { icon: <FontAwesomeIcon icon={faEnvelope} />, label: 'Promo Info', path: '/user/promo' },
@@ -119,7 +119,7 @@ export default function UserPage({ children }: UserPageProps) {
   if (userRedux.error) return <div>Error: {userRedux.error}</div>
 
   return (
-    <div className='mt-10 w-2/3 mx-auto space-y-11'>
+    <div className='mt-10 w-5/6 mx-auto space-y-11'>
       <div className='flex space-x-4'>
         <ProfileSidebar userData={userRedux.data!} />
         <div className='flex-1 px-6'>{children || <Outlet />}</div>
