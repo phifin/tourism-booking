@@ -23,7 +23,7 @@ import QrPayment from './pages/QrPayment/QrPayment.tsx'
 import PaymentPage from './pages/PaymentPage/PaymentPage.tsx'
 import { useSelector } from 'react-redux'
 import { RootState } from './store/index.ts'
-import MyFavorite from './components/user/MyFavorite/MyFavorite.tsx'
+import MyBookmarks from './components/user/MyBookmarks/MyBookmarks.tsx'
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext) // Use context for authentication state
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
@@ -159,11 +159,11 @@ export default function useRouteElement() {
           )
         },
         {
-          path: '/user/refunds',
+          path: '/user/saved',
           element: (
             <PageHeader showNavBar={false}>
               <UserPage>
-                <MyFavorite />
+                <MyBookmarks />
               </UserPage>
             </PageHeader>
           )
