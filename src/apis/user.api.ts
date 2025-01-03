@@ -31,5 +31,10 @@ export const userApi = {
     const body = { senderId, targetId }
     const response = await http.post(`${dataPath}/addFriends`, body)
     return response
+  },
+  deleteFriend: async (senderId: string, targetId: string) => {
+    const body = { senderId, targetId }
+    const response = await http.post(`${dataPath}/removeFriends`, body)
+    return response
   }
 }

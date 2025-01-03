@@ -10,7 +10,9 @@ import { ToastContainer } from 'react-toastify'
 const InitializeUser = ({ children }: { children: React.ReactNode }) => {
   const { userEmail } = useContext(AppContext)
   const dispatch: AppDispatch = useDispatch()
-
+  useEffect(() => {
+    document.title = 'Velocity Travel'
+  }, []) // Chỉ thay đổi một lần khi component được mount
   useEffect(() => {
     if (userEmail && userEmail.trim() !== '') {
       dispatch(fetchUser(userEmail))

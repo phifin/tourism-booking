@@ -29,7 +29,6 @@ export default function PostCard({ postData, onCommentClick }: PostCardProps) {
       try {
         if (postData?.id) {
           const response = await postApi.fetchCommentsByPostId(postData.id)
-          console.log(response.data)
           // Chỉ cập nhật state nếu component vẫn đang được render
           if (isMounted && response.data && Array.isArray(response.data)) {
             setCommentsNum(response.data.length)

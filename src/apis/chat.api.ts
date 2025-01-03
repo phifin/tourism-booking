@@ -32,6 +32,14 @@ const messageApi = {
     } catch (error) {
       console.log(error)
     }
+  },
+  deleteNotification: async (notiId: string) => {
+    try {
+      const response = http.delete(`${URLGetAllNotification}/${notiId}`)
+      return response
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   // Hàm gửi tin nhắn mới

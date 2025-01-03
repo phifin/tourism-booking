@@ -9,6 +9,7 @@ import { RootState } from '~/store'
 import { useSelector } from 'react-redux'
 import i18n, { locales } from '~/i18n/i18n'
 import { useTranslation } from 'react-i18next'
+import NotificationPopUp from '../NoticationPopUp'
 
 interface Props {
   children: React.ReactNode
@@ -46,6 +47,7 @@ export default function PageHeader({ children, showNavBar }: Props) {
   const { t } = useTranslation()
   const { isAuthenticated, setIsAuthenticated, isAppLoading } = useContext(AppContext)
   const userRedux = useSelector((state: RootState) => state.user)
+  const [openNoti, setOpenNoti] = useState(false)
   const currentLanguage = locales[i18n.language as keyof typeof locales]
   const location = useLocation()
   const navigate = useNavigate()
@@ -154,8 +156,12 @@ export default function PageHeader({ children, showNavBar }: Props) {
                 style={{ color: 'white' }}
               ></span>
             </div>
-
-            <span className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'>
+            {/* cái chuông ở đây */}
+            <span
+              className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'
+              onMouseEnter={() => setOpenNoti(true)}
+              onMouseLeave={() => setOpenNoti(false)}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 viewBox='0 0 24 24'
@@ -165,6 +171,7 @@ export default function PageHeader({ children, showNavBar }: Props) {
               >
                 <path d='M9.28 21.961a2.837 2.837 0 0 0 5.445 0 .75.75 0 1 0-1.44-.422 1.337 1.337 0 0 1-2.565 0 .75.75 0 1 0-1.44.422M12.75 3V.75a.75.75 0 0 0-1.5 0V3a.75.75 0 0 0 1.5 0m-.75.75a6.75 6.75 0 0 1 6.75 6.75c0 3.154.29 5.436.785 6.994.323 1.02.684 1.59.995 1.84L21 18H3l.59 1.212c.248-.315.572-.958.88-2 .49-1.66.78-3.872.78-6.712A6.75 6.75 0 0 1 12 3.75m0-1.5a8.25 8.25 0 0 0-8.25 8.25c0 2.702-.272 4.772-.72 6.288-.254.864-.493 1.336-.62 1.5A.75.75 0 0 0 3 19.5h18c.708 0 1.022-.892.47-1.335.019.016-.008-.015-.07-.113-.14-.223-.29-.553-.435-1.012-.443-1.396-.715-3.529-.715-6.54A8.25 8.25 0 0 0 12 2.25'></path>
               </svg>
+              {openNoti ? <NotificationPopUp /> : ''}
             </span>
             <span className='px-5 py-4 hover:bg-slate-50 hover:bg-opacity-10'>
               <Link to={'/'}>{t('list_your_property')}</Link>

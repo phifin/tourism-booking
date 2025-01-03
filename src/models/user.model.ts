@@ -13,4 +13,5 @@ export interface UserModel {
   progression: number
   userType: string
   createdAt: string
+  friendsId: string[]
 }

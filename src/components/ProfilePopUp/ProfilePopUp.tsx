@@ -21,14 +21,12 @@ export default function ProfilePopUp({ imageUrl, userId, onHover, onLeave }: Pro
   const userRedux = useSelector((state: RootState) => state.user)
   const navigate = useNavigate()
   const [joinSince, setJoinSince] = useState('')
-  const [hoverSelf, setHoverSelf] = useState(userRedux.data?.id === userData?.id)
+  const [hoverSelf, setHoverSelf] = useState(userRedux.data?.id === userId)
   const [relationshipState, setRelationshipState] = useState<RelationshipState>('notFriend')
-
   const { data: notifications } = useQuery(
     ['notifications'], // Key của query
     messageApi.getNotification
   )
-  console.log(notifications)
   useEffect(() => {
     if (userData?.createdAt) {
       setJoinSince(format(new Date(userData.createdAt), 'MM-yyyy'))
@@ -36,15 +34,17 @@ export default function ProfilePopUp({ imageUrl, userId, onHover, onLeave }: Pro
   }, [userData?.createdAt])
 
   useEffect(() => {
-    if (notifications) {
-      const isFriend = notifications.some(
-        (notification: any) =>
-          notification.sender === userRedux.data?.id &&
-          notification.receiver === userData?.id &&
-          notification.sender === userData?.id &&
-          notification.receiver === userRedux.data?.id
-      )
-      const isPending = notifications.some((notification: any) => notification.sender === userRedux.data?.id)
+    if (userRedux.data && userData) {
+      const isFriend =
+        userRedux.data.friendsId?.includes(userData.id) && userData.friendsId?.includes(userRedux.data.id)
+
+      let isPending = false // Define isPending in the outer scope
+
+      if (notifications) {
+        isPending = notifications.some(
+          (notification: any) => notification.sender === userRedux.data?.id && notification.receiver === userData?.id
+        )
+      }
 
       if (isFriend) {
         setRelationshipState('friend')
@@ -54,22 +54,53 @@ export default function ProfilePopUp({ imageUrl, userId, onHover, onLeave }: Pro
         setRelationshipState('notFriend')
       }
     }
-  }, [notifications, userRedux.data?.id, userData?.id])
+  }, [userRedux.data, userData, notifications]) // Added notifications to the dependency array
 
+  console.log(userRedux.data?.id)
   const handleEditUserProfile = () => {
     navigate('/user/account')
   }
+
   const handleAddFriend = async () => {
-    // navigate('/user/account')
-    await messageApi.postNotification(
-      'addFr',
-      userRedux.data?.id ? userRedux.data?.id : '',
-      userData?.id ? userData?.id : ''
-    )
-    if (relationshipState === 'friend' || relationshipState === 'pending') {
-      setRelationshipState('notFriend') // Cập nhật thành "notFriend"
-    } else {
-      setRelationshipState('pending') // Nếu không phải friend/pending, chuyển sang "pending"
+    if (relationshipState === 'notFriend') {
+      await messageApi.postNotification(
+        'addFr',
+        userRedux.data?.id ? userRedux.data.id : '',
+        userData?.id ? userData.id : ''
+      )
+      setRelationshipState('pending')
+    }
+
+    if (relationshipState === 'pending') {
+      // Collect all notification IDs to delete
+      const notiIdsToDelete = notifications
+        ?.filter(
+          (notification: any) => notification.sender === userRedux.data?.id && notification.receiver === userData?.id
+        )
+        .map((notification: any) => notification.id)
+
+      if (notiIdsToDelete && notiIdsToDelete.length > 0) {
+        for (const notiId of notiIdsToDelete) {
+          await messageApi.deleteNotification(notiId)
+        }
+      }
+      setRelationshipState('notFriend')
+    }
+
+    if (relationshipState === 'friend') {
+      await userApi.deleteFriend(userRedux.data?.id ? userRedux.data.id : '', userData?.id ? userData.id : '')
+      const notiIdsToDelete = notifications
+        ?.filter(
+          (notification: any) => notification.sender === userRedux.data?.id && notification.receiver === userData?.id
+        )
+        .map((notification: any) => notification.id)
+
+      if (notiIdsToDelete && notiIdsToDelete.length > 0) {
+        for (const notiId of notiIdsToDelete) {
+          await messageApi.deleteNotification(notiId)
+        }
+      }
+      setRelationshipState('notFriend')
     }
   }
 
@@ -87,7 +118,7 @@ export default function ProfilePopUp({ imageUrl, userId, onHover, onLeave }: Pro
         />
         <div className='mt-2 ml-4'>
           <div className='text-xl font-semibold'>{userData?.firstName + ' ' + userData?.lastName}</div>
-          <div>{userData?.userFriends ? userData?.userFriends.length : 0} friends</div>
+          <div>{userData?.friendsId ? userData.friendsId.length : 0} friends</div>
           <div className='text-sm opacity-60 text-gray-700'>Joined since {joinSince}</div>
         </div>
       </div>
